@@ -1,2 +1,6 @@
 # pen-test-docs
-Documentation notes for penetration testing
+Comprehensive documentation and notes for penetration testing.
+
+Source using Jekyll Just-The-Docs theme.
+
+
