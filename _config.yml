@@ -7,6 +7,8 @@ url: "https://alipali737.github.io" # the base hostname & protocol for your site
 
 remote_theme: pdmosses/just-the-docs@combination-rec-nav
 
+color_scheme: dark
+
 aux_links:
   "Github Source":
     - "//github.com/alipali737/pen-test-docs"
