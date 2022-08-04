@@ -13,14 +13,17 @@ PS1="\[\033[1;32m\]\342\224\200\$([[ \$(/opt/vpnbash.sh) == *\"10.\"* ]] && echo
 ZSH version
 
 ```shell
+{% raw %}
 PROMPT='%B┌──(%F{blue}%n@%m%F{reset})─[%F{#FFFFFF}%~%F{reset}]
 %B└─%F{red}$%F{#FFFFFF} '
-RPROMPT='[%D{%d/%m/%Y} %*]'
+RPROMPT='[%D{\%d/%m/%Y} %*]'
+{% endraw %}
 ```
 
 This can also be achieved similarly with `Oh-My-ZSH` by adding the following in the `.zshrc` file.
 
 ```shell
+{% raw %}
 autoload -Uz vcs_info
 
 precmd() {
@@ -41,6 +44,7 @@ TMOUT=1
 TRAPALRM() {
         zle reset-prompt
 }
+{% endraw %}
 ```
 
 On **Linux** *'script'* can be used:
