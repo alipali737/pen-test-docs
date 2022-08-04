@@ -10,10 +10,37 @@ With the help of `script`, every command and the subsequent result is saved in a
 PS1="\[\033[1;32m\]\342\224\200\$([[ \$(/opt/vpnbash.sh) == *\"10.\"* ]] && echo \"[\[\033[1;34m\]\$(/opt/vpnserver.sh)\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\$(/opt/vpnbash.sh)\[\033[1;32m\]]\342\224\200\")[\[\033[1;37m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\w\[\033[1;32m\]]\n\[\033[1;32m\]\342\224\224\342\224\200\342\224\200\342\225\274 [\[\e[01;33m\]$(date +%D-%r)\[\e[01;32m\]]\\$ \[\e[0m\]"
 ```
 
+ZSH version
+
+```shell
+PROMPT='%B┌──(%F{blue}%n@%m%F{reset})─[%F{#FFFFFF}%~%F{reset}]
+%B└─%F{red}$%F{#FFFFFF} '
+RPROMPT='[%D{%d/%m/%Y} %*]'
+```
+
 This can also be achieved similarly with `Oh-My-ZSH` by adding the following in the `.zshrc` file.
 
-```bash
+```shell
+autoload -Uz vcs_info
 
+precmd() {
+        # Sets the tab title to current dir
+        echo -ne "\e]1;${PWD##*/}\a"
+
+        vcs_info
+}
+
+zstyle ':vcs_info:git:*' formats '%b'
+setopt PROMPT_SUBST
+
+# Configure PROMPT & RPROMPT
+PROMPT='%B┌──[%F{#FFFFFF}%*%F{reset}]─[%F{#FFFFFF}%~%F{reset}]
+%B└─[%F{magenta}${vcs_info_msg_0_}%F{reset}]─%F{red}$%F{#FFFFFF} '
+
+TMOUT=1
+TRAPALRM() {
+        zle reset-prompt
+}
 ```
 
 On **Linux** *'script'* can be used:
