@@ -28,7 +28,7 @@ Key features of a DBMS include:
 | Structured Query Language | SQL simplifies user interaction with the database with an intuitive syntax supporting various operations |
 
 **A two-tiered architecture**
-![[Pasted image 20220409175513.png]]
+![Two Tier Architecture](/assets/sql-injection/two-tier-arch.png)
 **Tier I** usually consists of client-side applications such as websites or GUI programs. High-level interactions that pass data to **Tier II** through API calls or other requests.
 
 **Tier II** is middleware, which interprets these events and puts them in a form required by the DBMS. 

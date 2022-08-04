@@ -15,4 +15,4 @@ A container isn't a VM as it **doesn't** contain its `operating system` or `kern
 ### Vagrant
 [Vagrant](https://www.vagrantup.com/) is a tool that can create, configure and manage virtual machines or vm environments. The VMs are created and configured using a `Vagrantfile`. 
 
-![[windows swarm demo.png]]
+![windows swarm demo](/assets/setting-up/windows-swarm-demo.png)

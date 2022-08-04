@@ -23,7 +23,7 @@ The default port for MySQL/MariaDB is (`3306`)
 
 #### Creating the DB
 Once authentiacted you can create a database with:
-```MySQL
+```mysql
 CREATE DATABASE users;
 
 > Query OK, 1 row affected (0.02 sec)
@@ -32,12 +32,12 @@ CREATE DATABASE users;
 SQL expects all queries to end with a `;`
 
 #### Listing all DB's
-```MySQL
+```mysql
 SHOW DATABASES;
 ```
 
 You will get a list of all the available databases
-```shell-session
+```shell
 +--------------------+
 | Database           |
 +--------------------+
@@ -64,7 +64,7 @@ Databases store data in the form of tables, containing rows and columns with the
 Column datatypes define what value can be stored. Common types are `numbers`, `strings`, `date`, `time`, and `binary data`. Other datatypes can be specific to the DBMS. MySQL's full list of types can be found [here](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
 
 #### Creating a table
-```Mysql
+```mysql
 CREATE TABLE logins (
 	id INT,
 	username VARCHAR(100),

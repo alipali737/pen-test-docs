@@ -22,23 +22,23 @@ Some of the most popluar lnclude:
 1. Default login username: `kali` & password `kali`
 2. Change default password of root user running `passwd` in terminal
 3. Change the default SSH keys
-```shell-session
+```shell
 $ cd /etc/ssh/
 $ dpkg-reconfigure openssh-server
 ```
 4. Update the system with:
-```shell-session
+```shell
 $ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
 ```
 
 **Installing Additional Tools**
 It's important to have an up-to-date tools list to add too [[personal tools list]]
 - To install specific tools use:
-```shell-session
+```shell
 $ sudo apt install netcat ncat nmap ... -y
 ```
 - To install from a list:
-```shell-session
+```shell
 $ sudo apt install $(cat tools.list | tr "\n" " ") -y
 ```
 - Clone any useful repos from git from [[useful git repos]]

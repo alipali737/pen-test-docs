@@ -10,15 +10,21 @@ With the help of `script`, every command and the subsequent result is saved in a
 PS1="\[\033[1;32m\]\342\224\200\$([[ \$(/opt/vpnbash.sh) == *\"10.\"* ]] && echo \"[\[\033[1;34m\]\$(/opt/vpnserver.sh)\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\$(/opt/vpnbash.sh)\[\033[1;32m\]]\342\224\200\")[\[\033[1;37m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[1;32m\]]\342\224\200[\[\033[1;37m\]\w\[\033[1;32m\]]\n\[\033[1;32m\]\342\224\224\342\224\200\342\224\200\342\225\274 [\[\e[01;33m\]$(date +%D-%r)\[\e[01;32m\]]\\$ \[\e[0m\]"
 ```
 
+This can also be achieved similarly with `Oh-My-ZSH` by adding the following in the `.zshrc` file.
+
+```bash
+
+```
+
 On **Linux** *'script'* can be used:
-````shell-session
+````shell
 $ script 03-21-2021-0200pm-exploitation.log
 
 $ exit
 ````
 
 On **Windows** *'Start-Transcript'* can be used to log everything run
-```powershell-session
+```powershell
 C:\> Start-Transcript -Path "C:\Pentesting\03-21-2021-0200pm-exploitation.log"
 
 Transcript started, output file is C:\Pentesting\03-21-2021-0200pm-exploitation.log
