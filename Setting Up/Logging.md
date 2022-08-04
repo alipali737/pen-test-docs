@@ -1,3 +1,7 @@
+---
+layout: page
+title: CLI Logging
+---
 # Logging CLI Tools
 
 Logging is essential for both documentation and our protection. If third parties attack the company during our penetration test and damage occurs, we can prove that the damage did not result from our activities. For this, we can use the tools `script` and `date`. 

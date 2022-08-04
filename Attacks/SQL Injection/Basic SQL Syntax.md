@@ -1,3 +1,8 @@
+---
+layout: page
+title: Basic SQL Syntax
+nav_order: -1
+---
 # Basic SQL Syntax
 SQL syntax can differ between RDBMS but they all follow the [ISO Standard](https://en.wikipedia.org/wiki/ISO/IEC_9075).
 

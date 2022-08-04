@@ -1,3 +1,8 @@
+---
+layout: page
+title: Personal Tools List
+nav_exclude: true
+---
 netcat
 ncat
 nmap

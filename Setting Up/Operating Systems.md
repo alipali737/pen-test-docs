@@ -1,3 +1,7 @@
+---
+layout: page
+title: Operating Systems
+---
 # Operating Systems
 ## Linux
 Most widely used OS for pen testing. Best to develop a certain standard for it that always leads to the same setup we are used to.

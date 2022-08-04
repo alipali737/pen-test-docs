@@ -1,3 +1,8 @@
+---
+layout: page
+title: SQL Injection Introduction
+nav_order: 0
+---
 # Introduction
 User-supplied information can be used to construct database queries. 
 

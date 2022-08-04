@@ -1,3 +1,7 @@
+---
+layout: page
+title: Containers
+---
 # Containers
 An isolated group of processes running on a single host that corresponds to a complete application, including its configuration and dependencies.
 

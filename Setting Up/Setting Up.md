@@ -1,3 +1,8 @@
+---
+layout: page
+title: Setting Up
+nav_order: 0
+---
 # Setting Up
 -----------------------------
 ### My Personal Setup Steps

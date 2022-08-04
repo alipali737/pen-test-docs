@@ -1,3 +1,7 @@
+---
+layout: page
+title: Directory Enumeration Attack
+---
 # Directory Enumeration Attack
 Brute-forces potential pages on a site by searching for a common page name from a wordlist. This can allow you to find potentially hidden or unsecure pages.
 
