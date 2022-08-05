@@ -4,32 +4,18 @@ title: Personal Tools List
 nav_exclude: true
 parent: Setting Up
 ---
-netcat
-ncat
-nmap
-wireshark
-tcpdump
-hashcat
-ffuf
-gobuster
-hydra
-zaproxy
-proxychains
-sqlmap
-radare2
-metasploit-framework
-python2.7
-python3
-spiderfoot
-theharvester
-remmina
-xfreerdp
-rdesktop
-crackmapexec
-exiftool
-curl
-seclists
-testssl.sh
-git
-vim
-tilix
+# Personal tools to install in my environment
+
+A comprehensive documentation for all the tools included in Kali-Linux can be found [here](https://www.kali.org/tools)
+
+Personal Essential Tools:
+
+{{% for tool_category in site.data.personal-tools-list-data.tools %}}
+### {{ tool_category }}
+
+| Tool | Description | Type |
+| --- | --- | --- |
+{% for tool in tool_category -%}
+| {{ tool.name }} | {{ tool.description }} | {{ tool.type }} |
+{% endfor -%}
+{% endfor %}

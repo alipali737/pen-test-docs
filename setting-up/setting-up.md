@@ -7,25 +7,25 @@ has_children: true
 # Setting Up
 -----------------------------
 ### My Personal Setup Steps
-1. Install [Screenshotting]({% link setting-up/screenshotting.md %}) tools
-2. Install [[Virtualization#Introduction to VirtualBox|VirtualBox]] for VMs
-3. Install [[Containers#Docker|Docker]] & [[Containers#Vagrant|Vagrant]] for container images
-4. Download and setup a [[Operating Systems#Installing Kali on VirtualBox|Kali Linux]] VM
+1. Install [Screenshotting](https://alipali737.github.io/pen-test-docs/setting-up/Screenshotting.html) tools
+2. Install [VirtualBox](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html#introduction-to-virtualbox) for VMs
+3. Install [Docker](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#docker) & [Vagrant](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#vagrant) for container images
+4. Download and setup a [Kali Linux](https://alipali737.github.io/pen-test-docs/setting-up/Operating%20Systems.html#setting-up-kali-on-virtualbox) VM
 -----------------------------
 ## Documentation
-### [[Logging]]
+### [Logging](https://alipali737.github.io/pen-test-docs/setting-up/Logging.html)
 
-### [[Screenshotting]]
+### [Screenshotting](https://alipali737.github.io/pen-test-docs/setting-up/Screenshotting.html)
 
-### [[Virtualization]]
-- [[Virtualization#Hardware Virtualization|Hardware Virtualization]]
-- [[Virtualization#Introduction to VirtualBox|Virtual Box]]
+### [Virtualization](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html)
+- [Hardware Virtualization](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html#hardware-virtualization)
+- [Virtual Box](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html#introduction-to-virtualbox)
 
-### [[Containers]]
-- [[Containers#Docker|Docker]]
-- [[Containers#Vagrant|Vagrant]]
+### [Containers](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html)
+- [Docker](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#docker)
+- [Vagrant](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#vagrant)
 
-### [[Operating Systems]]
-- [[Operating Systems#Linux|Linux]]
-- [[Operating Systems#Windows|Windows]]
+### [Operating Systems](https://alipali737.github.io/pen-test-docs/setting-up/Operating%20Systems.html)
+- [Linux](https://alipali737.github.io/pen-test-docs/setting-up/Operating%20Systems.html#linux)
+- [Windows](https://alipali737.github.io/pen-test-docs/setting-up/Operating%20Systems.html#windows)
 

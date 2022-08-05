@@ -37,7 +37,7 @@ $ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && su
 ```
 
 **Installing Additional Tools**
-It's important to have an up-to-date tools list to add too [[personal tools list]]
+It's important to have an up-to-date tools list to add too [personal tools list](https://alipali737.github.io/pen-test-docs/setting-up/personal%20tools%20list.html)
 - To install specific tools use:
 ```shell
 $ sudo apt install netcat ncat nmap ... -y
@@ -46,7 +46,7 @@ $ sudo apt install netcat ncat nmap ... -y
 ```shell
 $ sudo apt install $(cat tools.list | tr "\n" " ") -y
 ```
-- Clone any useful repos from git from [[useful git repos]]
+- Clone any useful repos from git from [useful git repos](https://alipali737.github.io/pen-test-docs/setting-up/useful%20git%20repos.html)
 
 **Snapshotting**
 - After we setup our OS its important to snapshot it so we can return to this state if we ever need too. 
