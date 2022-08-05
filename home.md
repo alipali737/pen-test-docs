@@ -11,7 +11,7 @@ This site is a collection of penetration testing and cyber security related mate
 
 The site is split up into techniques and then individual skills & technologies relating.
 {% assign setting_up_page = site.pages | where:"title","Setting Up" -%}
-General environment setup can be found [here]({% link setting-up/setting-up.html %})
+General environment setup can be found [here]({% link setting-up/setting-up.md %})
 
 ----
 
