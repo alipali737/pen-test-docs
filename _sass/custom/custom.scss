@@ -1,0 +1,21 @@
+.main {
+    max-width: none !important;
+    @include mq(lg) {
+        margin-left: $nav-width;
+    }
+}
+
+.table-wrapper {
+    width: fit-content !important;
+}
+
+.side-bar {
+    @include mq(lg) {
+        width: $nav-width;
+        min-width: $nav-width;
+    }
+}
+
+.language-plaintext {
+    color: greenyellow;
+}
