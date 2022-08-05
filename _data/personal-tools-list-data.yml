@@ -1,112 +1,116 @@
 tools:
   - category: networks
-    - name: ncat 
-      type: CLI
-      description: An extension package to nmap (included as part of nmap). It provides a back-end tool to read and write data across a network using both TCP & UDP.
+    items:
+      - name: ncat 
+        type: CLI
+        description: An extension package to nmap (included as part of nmap). It provides a back-end tool to read and write data across a network using both TCP & UDP.
 
-    - name: nmap 
-      type: CLI
-      description: A network mapping tool, can be used for network discovery & inventory and obtaining detailed network information.
+      - name: nmap 
+        type: CLI
+        description: A network mapping tool, can be used for network discovery & inventory and obtaining detailed network information.
 
-    - name: wireshark 
-      type: Application
-      description: A network protocol analyser and packet sniffer.
+      - name: wireshark 
+        type: Application
+        description: A network protocol analyser and packet sniffer.
 
-    - name: tcpdump 
-      type: CLI
-      description: A command-line packet analyser and portable network traffic capture.
-  
-    - name: proxychains 
-      type: CLI
-      description: Forces any TCP connections to go through a specified proxy.
+      - name: tcpdump 
+        type: CLI
+        description: A command-line packet analyser and portable network traffic capture.
+    
+      - name: proxychains 
+        type: CLI
+        description: Forces any TCP connections to go through a specified proxy.
 
-    - name: theharvester 
-      type: CLI
-      description: Wrapper for several search engines to find associated accounts & information relating to a domain.
+      - name: theharvester 
+        type: CLI
+        description: Wrapper for several search engines to find associated accounts & information relating to a domain.
 
-    - name: curl 
-      type: CLI
-      description: Network utility tool for getting and sending data.
+      - name: curl 
+        type: CLI
+        description: Network utility tool for getting and sending data.
 
-    - name: testssl.sh 
-      type: CLI
-      description: A tool that checks a server's service on any port for the support of TLS/SSL ciphers, protocols as well as recent cryptographic flaws and more.
+      - name: testssl.sh 
+        type: CLI
+        description: A tool that checks a server's service on any port for the support of TLS/SSL ciphers, protocols as well as recent cryptographic flaws and more.
 
   - category: web-applications
-    - name: ffuf 
-      type: CLI
-      description: A fest web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records) and GET and POST parameter fuzzing.
-    
-    - name: gobuster 
-      type: CLI
-      description: A tool to brute-force URIs including directories and files as well as DNS subdomains (simpler version than ffuf)
-    
-    - name: hydra 
-      type: CLI
-      description: A parallelized network login cracker capable of brute-force attacks on many common protocols
+    items:
+      - name: ffuf 
+        type: CLI
+        description: A fest web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records) and GET and POST parameter fuzzing.
+      
+      - name: gobuster 
+        type: CLI
+        description: A tool to brute-force URIs including directories and files as well as DNS subdomains (simpler version than ffuf)
+      
+      - name: hydra 
+        type: CLI
+        description: A parallelized network login cracker capable of brute-force attacks on many common protocols
 
-    - name: zaproxy (OWASP ZAP)
-      type: Application
-      description: A web application security scanner, useful for identifying vulnerabilities in a web app.
+      - name: zaproxy (OWASP ZAP)
+        type: Application
+        description: A web application security scanner, useful for identifying vulnerabilities in a web app.
 
-    - name: sqlmap 
-      type: CLI
-      description: Automates the process of detecting and exploiting SQL injection flaws and taking over database servers.
+      - name: sqlmap 
+        type: CLI
+        description: Automates the process of detecting and exploiting SQL injection flaws and taking over database servers.
 
-    - name: hashcat 
-      type: CLI
-      description: A password cracking tool with lots of optimisations and functionality for brute-force attacks and password cracking.
+      - name: hashcat 
+        type: CLI
+        description: A password cracking tool with lots of optimisations and functionality for brute-force attacks and password cracking.
 
   - category: analysis-and-exploitation
-    - name: radare2 
-      type: CLI
-      description: Framework designed for reverse-engineering and analysing binaries, contains a collection of utility modules.
+    items:
+      - name: radare2 
+        type: CLI
+        description: Framework designed for reverse-engineering and analysing binaries, contains a collection of utility modules.
 
-    - name: metasploit-framework 
-      type: CLI
-      description: General penetration testing utility framework, an interface to work with vulnerable exploit code & malware creation.
+      - name: metasploit-framework 
+        type: CLI
+        description: General penetration testing utility framework, an interface to work with vulnerable exploit code & malware creation.
 
-    - name: OpenVAS
-      type: Application
-      description: The Open Vulnerability Assessment System is a suite of tools to test client computers for known exploits and weaknesses.
+      - name: OpenVAS
+        type: Application
+        description: The Open Vulnerability Assessment System is a suite of tools to test client computers for known exploits and weaknesses.
 
-    - name: spiderfoot 
-      type: Application
-      description: Automated OSINT tool.
+      - name: spiderfoot 
+        type: Application
+        description: Automated OSINT tool.
 
-    - name: crackmapexec 
-      type: CLI
-      description: This package is a swiss army knife for pentesting Windows/Active Directory environments. Enumerates logged on users, spiders SMB shares (shared resources/files), executing psexec style attacks (windows in-built remote command execution), auto-injecting Mimikatz/Shellcode/DLL’s into memory using Powershell, dumping the NTDS.dit and more. Also generates a database of credential information mapped to hosts.
-  
-    - name: exiftool 
-      type: CLI
-      description: A tool for reading, writing and editing meta data of files
+      - name: crackmapexec 
+        type: CLI
+        description: This package is a swiss army knife for pentesting Windows/Active Directory environments. Enumerates logged on users, spiders SMB shares (shared resources/files), executing psexec style attacks (windows in-built remote command execution), auto-injecting Mimikatz/Shellcode/DLL’s into memory using Powershell, dumping the NTDS.dit and more. Also generates a database of credential information mapped to hosts.
+    
+      - name: exiftool 
+        type: CLI
+        description: A tool for reading, writing and editing meta data of files
 
   - category: other
-    - name: python2.7 
-      type: CLI
-      description: Python 2.7 for tools developed on this version.
+    items:
+      - name: python2.7 
+        type: CLI
+        description: Python 2.7 for tools developed on this version.
 
-    - name: python3 
-      type: CLI
-      description: Python 3 for tools developed on this version.
+      - name: python3 
+        type: CLI
+        description: Python 3 for tools developed on this version.
 
-    - name: xfreerdp 
-      type: CLI
-      description: A remote desktop protocol (RDP) client.
+      - name: xfreerdp 
+        type: CLI
+        description: A remote desktop protocol (RDP) client.
 
-    - name: seclists 
-      type: Repo
-      description: A comprehensive set of lists that can be used with many tools. List types include usernames, passwords, URLs, sensitive data patterns, fuzzing payloads, web shells, and many more.
+      - name: seclists 
+        type: Repo
+        description: A comprehensive set of lists that can be used with many tools. List types include usernames, passwords, URLs, sensitive data patterns, fuzzing payloads, web shells, and many more.
 
-    - name: git 
-      type: CLI
-      description: A command-line tool for interacting with github.
+      - name: git 
+        type: CLI
+        description: A command-line tool for interacting with github.
 
-    - name: vim 
-      type: CLI
-      description: A command-line text editor, often included as `vi` in UNIX systems.
+      - name: vim 
+        type: CLI
+        description: A command-line text editor, often included as `vi` in UNIX systems.
 
-    - name: tilix 
-      type: Application
-      description: A tiling terminal emulator.
+      - name: tilix 
+        type: Application
+        description: A tiling terminal emulator.

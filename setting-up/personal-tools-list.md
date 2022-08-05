@@ -8,14 +8,17 @@ parent: Setting Up
 
 A comprehensive documentation for all the tools included in Kali-Linux can be found [here](https://www.kali.org/tools)
 
-Personal Essential Tools:
+## Personal Essential Tools:
 
 {% for tool_category in site.data.personal-tools-list-data.tools %}
-### {{ tool_category.category }}
+### {{ tool_category.category | capitalize }}
+
+{% assign tools = tool_category.items -%}
+{% assign tools = tools | sort:"name" -%}
 
 | Tool | Description | Type |
-| --- | --- | --- |
-{% for tool in tool_category -%}
-| {{ tool.name }} | {{ tool.description }} | {{ tool.type }} |
+| :---: | :---: | :---: |
+{% for tool in tools -%}
+| {{ tool.name | capitalize }} | {{ tool.description }} | {{ tool.type }} |
 {% endfor -%}
 {% endfor %}
