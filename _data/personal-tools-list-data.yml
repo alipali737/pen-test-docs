@@ -1,5 +1,5 @@
 tools:
-  - networks:
+  - category: networks
     - name: ncat 
       type: CLI
       description: An extension package to nmap (included as part of nmap). It provides a back-end tool to read and write data across a network using both TCP & UDP.
@@ -32,7 +32,7 @@ tools:
       type: CLI
       description: A tool that checks a server's service on any port for the support of TLS/SSL ciphers, protocols as well as recent cryptographic flaws and more.
 
-  - web-applications:
+  - category: web-applications
     - name: ffuf 
       type: CLI
       description: A fest web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records) and GET and POST parameter fuzzing.
@@ -57,7 +57,7 @@ tools:
       type: CLI
       description: A password cracking tool with lots of optimisations and functionality for brute-force attacks and password cracking.
 
-  - analysis-and-exploitation:
+  - category: analysis-and-exploitation
     - name: radare2 
       type: CLI
       description: Framework designed for reverse-engineering and analysing binaries, contains a collection of utility modules.
@@ -82,7 +82,7 @@ tools:
       type: CLI
       description: A tool for reading, writing and editing meta data of files
 
-  - other:
+  - category: other
     - name: python2.7 
       type: CLI
       description: Python 2.7 for tools developed on this version.

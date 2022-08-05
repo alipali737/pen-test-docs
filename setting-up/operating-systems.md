@@ -10,6 +10,7 @@ parent: Setting Up
 Most widely used OS for pen testing. Best to develop a certain standard for it that always leads to the same setup we are used to.
 
 ### Penetration Testing Distributions
+
 Personal preference depending on needs and desires.
 Some of the most popluar lnclude:
 - [ParrotOS](https://www.parrotsec.org/) (`Pwnbox`)
@@ -18,7 +19,9 @@ Some of the most popluar lnclude:
 - [BackBox](https://linux.backbox.org/)
 
 ### Setting Up Kali on VirtualBox
+
 [Official Documentation](https://www.kali.org/docs/virtualization/install-virtualbox-guest-vm/)
+
 **Installing:**
 1. Download the kali linux files
 2. Import the ova file into virtual box
@@ -39,7 +42,9 @@ $ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && su
 ```
 
 **Installing Additional Tools**
+
 It's important to have an up-to-date tools list to add too [personal tools list](https://alipali737.github.io/pen-test-docs/setting-up/personal-tools-list.html)
+
 - To install specific tools use:
 ```shell
 $ sudo apt install netcat ncat nmap ... -y
@@ -61,6 +66,7 @@ $ sudo apt install $(cat tools.list | tr "\n" " ") -y
 3. Take a new snapshot giving it a name and description
 
 ## Windows
+
 Having a windows system can be a great penetration testing platform.
 
 **Benefits:**
@@ -80,6 +86,7 @@ Having a windows system can be a great penetration testing platform.
 Since the purpose of this platform is to perform penetration test functions, it will require some changes made to the host's security settings. We need to ensure we isolate these tools off as `Windows Defender` will delete any detected files and applications, breaking our setup.
 
 ### Installing the Windows VM
+
 Windows 10 VMs can be found build as ISO files [here](https://www.microsoft.com/en-gb/software-download/windows10) but you need to take a screenshot of the VM once it has been configured.
 
 Windows 10 can get pretty intensive so it's recommended to give it `2 CPU cores` & `4Gb+ RAM` & `80Gb+ Storage`
