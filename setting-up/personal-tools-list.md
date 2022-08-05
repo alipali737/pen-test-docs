@@ -10,7 +10,7 @@ A comprehensive documentation for all the tools included in Kali-Linux can be fo
 
 Personal Essential Tools:
 
-{{% for tool_category in site.data.personal-tools-list-data.tools %}}
+{% for tool_category in site.data.personal-tools-list-data.tools %}
 ### {{ tool_category }}
 
 | Tool | Description | Type |
