@@ -2,6 +2,7 @@
 layout: page
 title: Personal Tools List
 nav_exclude: true
+parent: Setting Up
 ---
 netcat
 ncat

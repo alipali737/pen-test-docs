@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Operating Systems
+parent: Setting Up
 ---
 # Operating Systems
 ## Linux

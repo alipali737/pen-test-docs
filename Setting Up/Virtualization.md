@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Virtualization
+parent: Setting Up
 ---
 # Virtualization
 `Virtualization` is an abstraction of physicall computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components

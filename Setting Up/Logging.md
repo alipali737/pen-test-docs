@@ -1,6 +1,7 @@
 ---
 layout: page
 title: CLI Logging
+parent: Setting Up
 ---
 # Logging CLI Tools
 

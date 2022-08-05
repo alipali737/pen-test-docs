@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Virtual Private Servers
+parent: Setting Up
 ---
 # Virtual Private Servers
 A VPS is an isolated environment created on a physical server using virtualization technology. It can also be refered to as a **V**irtual **D**edicated **S**erver (**VDS**). They are an affordible model for offering a comprehensive range of functions at manageable prices.

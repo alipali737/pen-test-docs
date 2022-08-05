@@ -1,7 +1,10 @@
 ---
 layout: page
-title: SQL Injection Introduction
+title: Introduction
 nav_order: 0
+parent: SQL Injection
+grand_parent: Attacks
+has_children: true
 ---
 # Introduction
 User-supplied information can be used to construct database queries. 
