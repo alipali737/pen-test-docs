@@ -18,7 +18,7 @@ General environment setup can be found [here]({{ setting_up_page.url | relative_
 {% assign all_attack_pages = site.pages | where:"parent","Attacks" | sort -%}
 {% for topic in all_attack_pages %}
 - [{{ topic.title }}]({{ topic.url | relative_url }})
-{% assign all_topic_children = site.pages | where:"parent",{{ topic.title }} | sort -%}
+{% assign all_topic_children = site.pages | where:"parent",topic.title | sort -%}
 {%- for detail in all_topic_children -%}
     - [{{ detail.title }}]({{ detail.url | relative_url }})
 {%- endfor -%}
