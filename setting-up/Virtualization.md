@@ -16,7 +16,7 @@ In virtualization, we distinguish between:
 ### Hardware Virtualization
 enable hardware components to be made available independetly of their physical basis using [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) software. Best known example is the `virtual machine (VM)`. 
 
-![Hardware Virtualization Stack](/assets/setting-up/hardware-virtualization-stack.png)
+![Hardware Virtualization Stack]({{ site.baseurl }}/assets/images/setting-up/hardware-virtualization-stack.png)
 
 **Primary Benefits:**
 1. Applications and services of a VM do not interfere with each other

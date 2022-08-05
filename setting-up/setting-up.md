@@ -13,7 +13,7 @@ has_toc: false
 1. Install [Screenshotting](https://alipali737.github.io/pen-test-docs/setting-up/Screenshotting.html) tools
 2. Install [VirtualBox](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html#introduction-to-virtualbox) for VMs
 3. Install [Docker](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#docker) & [Vagrant](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#vagrant) for container images
-4. Download and setup a [Kali Linux](https://alipali737.github.io/pen-test-docs/setting-up/Operating%20Systems.html#setting-up-kali-on-virtualbox) VM
+4. Download and setup a [Kali Linux](https://alipali737.github.io/pen-test-docs/setting-up/operating-systems.html#setting-up-kali-on-virtualbox) VM
 
 ----
 
