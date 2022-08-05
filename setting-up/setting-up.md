@@ -7,7 +7,7 @@ has_children: true
 # Setting Up
 -----------------------------
 ### My Personal Setup Steps
-1. Install [Screenshotting]({% link /setting-up/screenshotting.html %}) tools
+1. Install [Screenshotting]({% link setting-up/screenshotting.html %}) tools
 2. Install [[Virtualization#Introduction to VirtualBox|VirtualBox]] for VMs
 3. Install [[Containers#Docker|Docker]] & [[Containers#Vagrant|Vagrant]] for container images
 4. Download and setup a [[Operating Systems#Installing Kali on VirtualBox|Kali Linux]] VM
