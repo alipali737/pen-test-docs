@@ -4,7 +4,7 @@ title: Virtualization
 parent: Setting Up
 ---
 # Virtualization
-`Virtualization` is an abstraction of physicall computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components
+`Virtualization` is an abstraction of physical computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components
 
 In virtualization, we distinguish between:
 -   Hardware virtualization
@@ -14,7 +14,7 @@ In virtualization, we distinguish between:
 -   Network virtualization
 
 ### Hardware Virtualization
-enable hardware components to be made available independetly of their physical basis using [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) software. Best known example is the `virtual machine (VM)`. 
+enable hardware components to be made available independently of their physical basis using [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) software. Best known example is the `virtual machine (VM)`. 
 
 ![Hardware Virtualization Stack]({{ site.baseurl }}/assets/images/setting-up/hardware-virtualization-stack.png)
 
