@@ -141,3 +141,67 @@ CREATE TABLE logins (
 	PRIMARY KEY (id)
 );
 ```
+
+## SQL
+- Case insensitive keyword-based language
+- Statements can be separated with a `;`
+- [Cheat Sheet](https://www.codecademy.com/learn/learn-sql/modules/learn-sql-manipulation/cheatsheet)
+
+### Syntax
+#### Manipulation
+- **CREATE DATABASE** - creates a new database
+- **ALTER DATABASE** - modifies a database
+- **CREATE TABLE** - creates a new table
+- **ALTER TABLE** - modifies a table
+- **DROP TABLE** - deletes a table
+- **CREATE INDEX** - creates an index (search key)
+- **DROP INDEX** - deletes an index
+- **UPDATE** - updates data in a database (`UPDATE {table} SET {column_1} = {value_1}, ... ;`)
+- **INSERT INTO** - inserts new data into a database (`INSERT INTO {table} ({column_1}, ... ) VALUES ({value_1, ... };)`)
+- **DELETE** - deletes data from a database
+##### Column Constaints
+- **PRIMARY KEY** - constraint can be used to uniquely identify the row
+- **UNIQUE** - columns have a different value for every row.
+- **NOT NULL** - columns must have a value.
+- **DEFAULT** - assigns a default value for the column when no value is specified.
+
+#### Queries
+- **SELECT** - Extracts data from a database
+- **FROM** - Name(s) of table(s) to retrieve from
+- **WHERE** - Filter the results
+	- Operators:
+		- `=` - Equals
+		- `>` - Greater than
+		- `<` - Less than
+		- `>=` - Greater or equal
+		- `<=` - Less or equal
+		- `<>` - Not equal
+		- `BETWEEN` - Range
+		- `LIKE` - Pattern
+			- **%** - wildcard that matches zero or more unspecified characters
+			- **_** - wildcard that matches a single unspecified character
+		- `IN` - Multiple possible values 
+		- `IS NULL` - Tests for if Null (can be `IS NOT NULL`)
+- **ORDER BY** - Sort the results (Sorts by ascending by default, `DESC` can be specified to reverse `ORDER BY ... ASC|DESC`)
+- **GROUP BY** - Group results by identical values
+- **DISTINCT** - Selects only distinct (unique) values `SELECT DISTINCT ... FROM ... ;`
+- **LIMIT** - limit the number of rows in a result set
+- **AND**
+- **OR**
+- **NOT**
+- **AS** - rename a column in the result set
+#### Aggregate Functions
+- **COUNT()** - Counts a column's number of records
+- **SUM()** - returns the sum of all a column's values
+- **MAX()** - returns the max value of a column
+- **MIN()** - returns the min value of a column
+- **AVG()** - returns the average value of a column
+- **HAVING** - extension of `GROUP BY` to further filter the results, often used to filter by an aggregate function
+- **ROUND()** - round a value to a specific number of places
+
+#### Multiple Tables
+- **LEFT JOIN** - joins two tables in a result set based on a condition
+- **WITH** - stores the result in a temporary table
+- **UNION** - combines results from multiple `SELECT` statements
+- **CROSS JOIN** - combines rows from each row in one table with each row in another table in the result set
+- **JOIN** - combine results from multiple tables based on a common column
