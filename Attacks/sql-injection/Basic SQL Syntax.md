@@ -146,7 +146,7 @@ PRIMARY KEY (id)
 ```
 
 Our final create table would then look like:
-```mysql
+```
 CREATE TABLE logins (
 	id INT NOT NULL AUTO_INCREMENT,
 	username VARCHAR(100) UNIQUE NOT NULL,
