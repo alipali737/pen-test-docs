@@ -4,7 +4,20 @@ title: Directory Enumeration Attack
 parent: Web Application
 grand_parent: Attacks
 ---
-# Directory Enumeration Attack
+# {{ page.title }}
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
+
 Brute-forces potential pages on a site by searching for a common page name from a wordlist. This can allow you to find potentially hidden or unsecure pages.
 
 ```shell

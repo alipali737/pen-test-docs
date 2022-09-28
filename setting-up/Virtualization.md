@@ -3,7 +3,20 @@ layout: page
 title: Virtualization
 parent: Setting Up
 ---
-# Virtualization
+# {{ page.title }}
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
+
 `Virtualization` is an abstraction of physical computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components
 
 In virtualization, we distinguish between:

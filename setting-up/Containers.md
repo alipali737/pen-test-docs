@@ -3,7 +3,20 @@ layout: page
 title: Containers
 parent: Setting Up
 ---
-# Containers
+# {{ page.title }}
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
+
 An isolated group of processes running on a single host that corresponds to a complete application, including its configuration and dependencies.
 
 A container isn't a VM as it **doesn't** contain its `operating system` or `kernel`. Therefore are not a virtualized operating system. They are also referred to as application virtualization in this context.

@@ -1,3 +1,7 @@
+$pink: #ff82b2;
+$lime-green: greenyellow;
+$pale-blue: #66baff;
+
 .main {
     max-width: none !important;
     @include mq(lg) {
@@ -17,5 +21,13 @@
 }
 
 .language-plaintext {
-    color: greenyellow;
+    color: $lime-green;
+}
+
+.nav-list .nav-list-item .nav-list-link.active {
+    color: $pink !important;
+}
+
+body strong {
+    color: $pink;
 }

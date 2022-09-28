@@ -4,7 +4,21 @@ title: Basic SQL Syntax
 parent: SQL Injection
 grand_parent: Attacks
 ---
-# Basic SQL Syntax
+
+# {{ page.title }}
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
+
 SQL syntax can differ between RDBMS but they all follow the [ISO Standard](https://en.wikipedia.org/wiki/ISO/IEC_9075).
 
 SQL can be used to perform the following actions:
@@ -15,7 +29,7 @@ SQL can be used to perform the following actions:
 - Add / remove users
 - Assign permissions to these users
 
-## MySQL
+## Database Interaction
 #### Authentication
 ```shell
 mqsql -u root -p
@@ -70,7 +84,7 @@ Databases store data in the form of tables, containing rows and columns with the
 Column datatypes define what value can be stored. Common types are `numbers`, `strings`, `date`, `time`, and `binary data`. Other datatypes can be specific to the DBMS. MySQL's full list of types can be found [here](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
 
 #### Creating a table
-```mysql
+```
 CREATE TABLE logins (
 	id INT,
 	username VARCHAR(100),
@@ -178,8 +192,8 @@ CREATE TABLE logins (
 		- `<>` - Not equal
 		- `BETWEEN` - Range
 		- `LIKE` - Pattern
-			- **%** - wildcard that matches zero or more unspecified characters
-			- **_** - wildcard that matches a single unspecified character
+			- `%` - wildcard that matches zero or more unspecified characters
+			- `_` - wildcard that matches a single unspecified character
 		- `IN` - Multiple possible values 
 		- `IS NULL` - Tests for if Null (can be `IS NOT NULL`)
 - **ORDER BY** - Sort the results (Sorts by ascending by default, `DESC` can be specified to reverse `ORDER BY ... ASC|DESC`)

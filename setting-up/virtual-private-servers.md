@@ -3,7 +3,20 @@ layout: page
 title: Virtual Private Servers
 parent: Setting Up
 ---
-# Virtual Private Servers
+# {{ page.title }}
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
+
 A VPS is an isolated environment created on a physical server using virtualization technology. It can also be refered to as a **V**irtual **D**edicated **S**erver (**VDS**). They are an affordible model for offering a comprehensive range of functions at manageable prices.
 
 **VPS Common use cases:**

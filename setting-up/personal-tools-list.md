@@ -5,6 +5,18 @@ nav_exclude: true
 parent: Setting Up
 ---
 # Personal tools to install in my environment
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
 
 A comprehensive documentation for all the tools included in Kali-Linux can be found [here](https://www.kali.org/tools)
 

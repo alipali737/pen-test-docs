@@ -5,9 +5,19 @@ nav_order: 1
 has_children: true
 has_toc: false
 ---
-# Setting Up
+# {{ page.title }}
+{: .no_toc }
 
-----
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
+---
 
 ### My Personal Setup Steps
 1. Install [Screenshotting](https://alipali737.github.io/pen-test-docs/setting-up/Screenshotting.html) tools
@@ -15,7 +25,7 @@ has_toc: false
 3. Install [Docker](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#docker) & [Vagrant](https://alipali737.github.io/pen-test-docs/setting-up/Containers.html#vagrant) for container images
 4. Download and setup a [Kali Linux](https://alipali737.github.io/pen-test-docs/setting-up/operating-systems.html#setting-up-kali-on-virtualbox) VM
 
-----
+---
 
 ## Documentation
 - [Logging](https://alipali737.github.io/pen-test-docs/setting-up/Logging.html)
