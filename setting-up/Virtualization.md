@@ -46,4 +46,13 @@ An excellent and free alternative to VMware Workstation is [VirtualBox](https://
 
 With VirtualBox, hard disks are emulated in container files, called Virtual Disk Images (`VDI`). Aside from VDI format, VirtualBox can also handle hard disk files from VMware virtualization products (`.vmdk`), the `Virtual Hard Disk` format (`.vhd`), and others. We can also convert these external formats using the VBoxManager command-line tool that is part of VirtualBox. We can install VirtualBox from the command line or download the installation file from the [official website](https://www.virtualbox.org/wiki/Downloads) and install it manually.
 
-Also, we have the possibility and function to `encrypt` the VM, which we should always use
+Also, we have the possibility and function to `encrypt` the VM, which we should always use.
+
+### Networking multiple VM's together
+Using VirtualBox multiple VM's can be added to the same network without losing access to the internet. This can be done via the following steps to create a custom **NAT Network**:
+
+1. To go `Tools > Preferences > Network`
+1. Create a new Network and give it a name & IP
+1. In the network settings for each VM select `NAT Network` as the adapter
+1. Select the custom network name
+1. Test the connections between the boxes using Ping or NMap

@@ -13,6 +13,21 @@ The site is split up into techniques and then individual skills & technologies r
 {% assign setting_up_page = site.pages | where:"title","Setting Up" -%}
 General environment setup can be found [here](https://alipali737.github.io/pen-test-docs/setting-up/setting-up.html)
 
+## Unstructured Labs to Practice on
+
+| Category | Link |
+| :---: | :--- |
+| General | [https://www.vulnhub.com/](https://www.vulnhub.com/) |
+| Web-hacking | [https://www.vulnhub.com/entry/damn-vulnerable-web-application-dvwa-107,43/](https://www.vulnhub.com/entry/damn-vulnerable-web-application-dvwa-107,43/) |
+| Web-hacking | [https://dvwa.co.uk/](https://dvwa.co.uk/) |
+| Web-hacking | [http://www.itsecgames.com/](http://www.itsecgames.com/) |
+| Web-hacking | [https://google-gruyere.appspot.com/part1](https://google-gruyere.appspot.com/part1) |
+| General | [https://www.offensive-security.com/labs/individual/](https://www.offensive-security.com/labs/individual/) |
+| General | [https://www.hackthebox.eu/](https://www.hackthebox.eu/) |
+| General | [https://overthewire.org/wargames/](https://overthewire.org/wargames/) |
+| General | [https://tryhackme.com](https://tryhackme.com) |
+
+
 ----
 
 ## Attacks
