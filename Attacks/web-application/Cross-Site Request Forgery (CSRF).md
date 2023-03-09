@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Directory Enumeration Attack
+title: Cross-Site Request Forgery (CSRF)
 parent: Web Application
 grand_parent: Attacks
 ---

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Directory Enumeration Attack
+title: Server Side Includes (SSI Framework) (.shtml)
 parent: Web Application
 grand_parent: Attacks
 ---
