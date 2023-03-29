@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Directory Enumeration Attack
-parent: Web Application
-grand_parent: Attacks
+title: 
+parent: 
+grand_parent: 
 ---
 # {{ page.title }}
 {: .no_toc }

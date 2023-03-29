@@ -4,7 +4,6 @@ title: Introduction
 nav_order: 0
 parent: SQL Injection
 grand_parent: Attacks
-has_children: true
 ---
 # {{ page.title }}
 {: .no_toc }
