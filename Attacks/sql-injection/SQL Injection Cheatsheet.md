@@ -17,6 +17,28 @@ grand_parent: Attacks
 </details>
 
 ---
+## Detecting SQL Injection Vulnerabilities
+Web scanner tools can be used for this purpose for quick and efficient detection but these can also be detected manually. This manual process consists of a systematic set of tests against every entry point in the application, these typically involve:
+- Submitting single quote character `'` and looking for errors or anomalies
+- Submitting SQL-specific syntax an observable chance could be evaluated
+- Submitting Boolean conditions and looking for differences `OR 1=1` and `OR 1=2`
+- Submitting payloads designed to trigger time delays when executed and observing response times
+- Performing [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) methods to trigger an out-of-band network interaction when executed within a SQL query
+
+## SQL Injection in Different Parts of the Query
+Generally, most SQLi vulnerabilities arise within the `WHERE` clause of a `SELECT` query. However, SQLi vulnerabilities can in principle occur at any location within the query, and within different query types. The most common other locations are:
+- In `UPDATE` statements, within the *updated values* or the `WHERE` clause.
+- In `INSERT` statements, within the *inserted values*.
+- In `SELECT` statements, within the table or column name.
+- In `SELECT` statements, within the `ORDER BY` clause.
+
+## SQL Injection Type Examples
+There are many SQLi vulnerabilities, attacks, and techniques, which all arise in different situations. Some more common ones include:
+- *Retrieving hidden data*, where you modify a SQL query to return additional results.
+- *Subverting application logic*, where you can change a query to interfere with the application's logic.
+- *UNION attacks*, where you can retrieve data from different database tables.
+- *Blind SQL injection*, where the results of a query you control are not returned in the application's responses.
+
 ## Basic SQL Statement 
 A large amount of SQL statements on something like a product search page will be structured similarly too:
 {% highlight sql %}

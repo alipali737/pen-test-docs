@@ -53,4 +53,4 @@ The main benefit of this method is to detect invisible (blind) vulnerabilities w
 
 ### Disadvantages
 - No scanner or testing method can ever be perfect, some vulnerabilities will be missed.
-- 
+- Like DAST, it only views the application in isolation.
