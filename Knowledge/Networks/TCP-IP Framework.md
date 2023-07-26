@@ -221,7 +221,7 @@ arp -a
 ? (9.140.101.127) at 88:66:5a:4d:e2:f4 on en0 ifscope permanent [ethernet]
 ? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
 ? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet]
-{% endhightlight %}
+{% endhighlight %}
 
 1. Pings on the broadcast address to all devices on the network asking if they have the IP address being queried
 2. The device with that address will respond with its MAC address
