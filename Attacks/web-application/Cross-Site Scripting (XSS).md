@@ -1,8 +1,8 @@
 ---
 layout: page
-title: 
-parent: 
-grand_parent: 
+title: Cross-Site Scripting (XSS)
+parent: Web Application
+grand_parent: Attacks
 ---
 # {{ page.title }}
 {: .no_toc }
