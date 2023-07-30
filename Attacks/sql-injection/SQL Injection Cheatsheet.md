@@ -36,8 +36,8 @@ Generally, most SQLi vulnerabilities arise within the `WHERE` clause of a `SELEC
 There are many SQLi vulnerabilities, attacks, and techniques, which all arise in different situations. Some more common ones include:
 - *Retrieving hidden data*, where you modify a SQL query to return additional results.
 - *Subverting application logic*, where you can change a query to interfere with the application's logic.
-- *UNION attacks*, where you can retrieve data from different database tables.
-- *Blind SQL injection*, where the results of a query you control are not returned in the application's responses.
+- *[UNION attacks](https://alipali737.github.io/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#union-attacks)*, where you can retrieve data from different database tables.
+- *[Blind SQL injection](https://alipali737.github.io/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#blind-sql-injection-vulnerabilities)*, where the results of a query you control are not returned in the application's responses.
 
 ## Basic SQL Statement 
 A large amount of SQL statements on something like a product search page will be structured similarly too:
@@ -119,3 +119,20 @@ SELECT banner FROM v$version WHERE banner LIKE ‘Oracle%’
 SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’
 SELECT version FROM v$instance
 {% endhighlight %}
+
+## Blind SQL Injection Vulnerabilities
+A blind SQL injection is where the application doesn't return the results of the query or the details of any database errors within its response. These vulnerabilities can still be exploited to access unauthorized data, however, techniques are generally more complicated and difficult to perform.
+
+Depending on the nature of the vulnerability, the following techniques can be used to exploit blind SQLi vulnerabilities:
+- You can change the logic of the query to trigger a detectable difference in the application's response depending on the truth of a single condition. This might involve injecting a new condition into some Boolean logic, or conditionally triggering an error such as a divide-by-zero.
+- You can conditionally trigger a time delay in the processing of the query, allowing you to infer the truth of the condition based on the response time.
+- You can trigger an out-of-band network interaction, using [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) techniques. Often you can directly exfiltrate data via the out-of-band channel eg. placing the data into a DNS lookup for a domain you control.
+
+## Second-order SQL Injection
+First-order SQL injection is where an application takes user input from an HTTP request and incorporates the input into an SQL query in an unsafe way.
+
+Second-order injections (also known as **stored SQL injection**), is where the application takes user input from an HTTP request and stores it for future use. This is usually done by placing the input into a database, but no vulnerability arises at the point where the data is stored. Later, when handling a different HTTP request, the application retrieves the stored data and incorporates it into an SQL query in an unsafe way.
+
+![Second-order SQL injection demo]({{ site.baseurl }}/assets/images/sql-injection/second-order-sql-injection.svg)
+
+Second-order SQL injection often arises when developers are aware of SQL injection vulnerabilities, so they safely handle the initial placement of input into the database. However, later when processing the data, which has been deemed to be safe, it is handled in an unsafe way, because the developer wrongly deems it to be trusted.
