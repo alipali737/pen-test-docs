@@ -19,7 +19,7 @@ General environment setup can be found [here](https://alipali737.github.io/pen-t
 | :---: | :--- |
 | General | [https://www.vulnhub.com/](https://www.vulnhub.com/) |
 | Web-hacking | [https://www.vulnhub.com/entry/damn-vulnerable-web-application-dvwa-107,43/](https://www.vulnhub.com/entry/damn-vulnerable-web-application-dvwa-107,43/) |
-| Web-hacking | [https://dvwa.co.uk/](https://dvwa.co.uk/) |
+| Web-hacking | [https://github.com/digininja/DVWA](https://github.com/digininja/DVWA) |
 | Web-hacking | [http://www.itsecgames.com/](http://www.itsecgames.com/) |
 | Web-hacking | [https://google-gruyere.appspot.com/part1](https://google-gruyere.appspot.com/part1) |
 | General | [https://www.offensive-security.com/labs/individual/](https://www.offensive-security.com/labs/individual/) |
