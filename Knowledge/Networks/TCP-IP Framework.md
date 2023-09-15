@@ -30,6 +30,25 @@ grand_parent: Knowledge
 +---+-------------+      +---+-------------+
 ```
 
+## OSI Model Simply Explained
+- **Layer 1**: Physical Layer - Responsible for the physical transportation of data as 0's & 1's.
+- **Layer 2**: Data Link Layer - Responsible for routing packets using MAC addresses.
+- **Layer 3**: Network Layer - Responsible for routing packets using IP addresses.
+- **Layer 4**: Transport Layer - Handles the protocol used for transport of the packet, controls what happens if a packet does make it for example.
+- **Layer 5**: Session Layer - Handles starting, closing and managing sesisons. Session auth etc is established here.
+- **Layer 6**: Presentation Layer - Converts the data into formats usable by the application.
+- **Layer 7**: Application Layer - This is the actual application and it decides how it then displays the information.
+
+## TCP/IP Model Simply Explained
+- **Layer 1**: Network Access Layer - This layer sends and recieves the data at the local network level.
+- **Layer 2**: Internet Layer - This is where IP addresses and routing occurs.
+- **Layer 3**: Transport Layer - TCP & UDP Protocols occur here.
+- **Layer 4**: Application Layer - This layer handles sessions, translating data, and the interaction of the content at the application level, eg. HTTP, FTP, or SMTP.
+
+### TCP vs UDP
+- **TCP** is a *connection-oriented* protocol, a much more rigorus acknowledgement between a sender and a receiver happens before any data is sent. This protocol includes flow control and error recovery, and should be used when important or large amounts of data is needed to be sent with timing being less of a concern.
+- **UDP** is a much more *lightweight* protocol that doesn't require a fixed channel between the parties. It is often for less important data that just needs to be sent quickly.
+
 ## Packet Inspection
 ### Stateless Inspection
 - Each packet is inspected one at a time, independently of any other packet knowledge
