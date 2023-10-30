@@ -1,6 +1,6 @@
 ---
 layout: default
-title: OverTheWire
+title: TryHackMe
 parent: Practice Labs
 has_children: true
 has_toc: true
