@@ -78,4 +78,11 @@ To link multiple tables using a key you need a `relational database management s
 
 Most common example of a NoSQL database is `MongoDB`
 
-
+## SQL Injection Prevention
+- Use prepared statements, these statements allow the structure of the command to be set in stone and cannot be modified by the user input
+- Sanitise user inputs through allow lists
+- Limit information exposed from requests, including errors
+  - Errors can give away a lot of information about the underlying DBMS & query structure
+- Limit database user permissions to the least privilege possible
+- Used stored procedures rather than generating queries in the application
+- Use Object-relational mapping (ORM) libraries to reduce direct SQL composition, however is used incorrectly it can still allow for SQL injections

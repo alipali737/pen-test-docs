@@ -62,7 +62,7 @@ The vulnerable webpage often includes JavaScript that reads data from the URL or
 
 ## Exploiting XSS
 When exploiting an XSS vulnerability, you need to understand how the application behaves towards specific payloads. The following checklist can be used before exploiting an XSS vulnerability:
-- Find the backlisted/filtered characters. XSS locations can be used for this: `'';! - "<XSS>=&{()}`
+- Find the backlisted/filtered characters. XSS locators can be used for this: `'';! - "<XSS>=&{()}`
 - Observe what tags are blocked by Web Application Firewall (WAF) and which keywords are allowed (`iframe`, `img`, `body` etc.)
 - Try character encoding ([URL encoding](https://www.w3schools.com/tags/ref_urlencode.ASP), [Double URL encoding](https://owasp.org/www-community/Double_Encoding), UTF-8 Unicode encoding, Long UTF-8 Unicode encoding, Hex encoding etc.)
 - Try [XSS using HTML quote encapsulation](https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html#xss-using-html-quote-encapsulation)
@@ -141,3 +141,24 @@ var userInput = ''-alert(1)-'';
 {% endhighlight %}
 
 So the payload would be `'-alert(1)-'`
+
+## Defending from XSS
+### Input Validation
+#### Allow Lists - Recommended
+- These lists reduce the input to a known attack surface
+- Most inputs can be limited to alphanumeric to prevent XSS
+- Special characters can be allowed on an exception basis
+
+#### Deny Lists - No Recommended
+- Only covers the known methods, could be exploited by creative attackers still
+
+#### Client Side input validation - Not Recommended
+- Can easily be bypassed by sending requests directly to the server
+- Only useful for application usability
+
+### Proven Validation and Encoding Functionality
+- Protect both the input through validation and output through encoding - "defence in depth" principle
+- Use proven, reputable libraries to protect the application
+  - Its easy to make mistakes or not cover some edge cases when you write the functionality yourself
+- Utilise a framework that has a central set of functionality that validates and encodes data
+  - Protects you from missing some areas in your code and leaving those places exposed
