@@ -1,8 +1,8 @@
 ---
 layout: page
-title: 
-parent: 
-grand_parent:
+title: OS Injection
+parent: Injection
+grand_parent: Attacks
 ---
 # {{ page.title }}
 {: .no_toc }
