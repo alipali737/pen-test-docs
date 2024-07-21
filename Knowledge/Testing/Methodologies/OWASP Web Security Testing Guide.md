@@ -311,3 +311,6 @@ Start with a "simple application" approach and look for:
   - Detailed knowledge of the underlying database is normally only available through a vulnerable surface (eg. poor exception handling, SQLi)
 
 Continue asking questions to build up the map, "what type?", "How is it configured?", "Could it be bypassed?"
+
+## [2. Configuration and Deployment Management Testing](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/README)
+### Test Network Infrastructure Configuration
