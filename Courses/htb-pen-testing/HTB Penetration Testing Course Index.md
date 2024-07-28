@@ -1,7 +1,6 @@
 ---
 layout: default
-title: Courses
+title: HTB Pen Testing Course
 has_children: true
 has_toc: true
-nav_order: 3
 ---

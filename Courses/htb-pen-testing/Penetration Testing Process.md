@@ -1,9 +1,9 @@
 ---
 layout: page
-title: 
-parent: 
-grand_parent: 
-nav_order: 
+title: Penetration Testing Process
+parent: HTB Pen Testing Course
+grand_parent: Courses
+nav_order: 1
 ---
 # {{ page.title }}
 {: .no_toc }
