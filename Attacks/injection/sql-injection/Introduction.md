@@ -3,7 +3,7 @@ layout: page
 title: Introduction
 nav_order: 0
 parent: SQL Injection
-grand_parent: Attacks
+grand_parent: Injection
 ---
 # {{ page.title }}
 {: .no_toc }

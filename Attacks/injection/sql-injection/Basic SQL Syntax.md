@@ -2,7 +2,7 @@
 layout: page
 title: Basic SQL Syntax
 parent: SQL Injection
-grand_parent: Attacks
+grand_parent: Injection
 ---
 
 # {{ page.title }}

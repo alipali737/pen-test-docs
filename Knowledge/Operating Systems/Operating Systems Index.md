@@ -1,9 +1,7 @@
 ---
 layout: default
-title: 
-parent: 
-grand_parent: 
+title: Operating Systems
+parent: Knowledge
 has_children: true
 has_toc: true
-nav_order:
 ---

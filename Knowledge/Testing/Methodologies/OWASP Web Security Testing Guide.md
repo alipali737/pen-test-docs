@@ -314,3 +314,208 @@ Continue asking questions to build up the map, "what type?", "How is it configur
 
 ## [2. Configuration and Deployment Management Testing](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/README)
 ### Test Network Infrastructure Configuration
+The following steps need to be taken to test the configuration management infrastructure:
+- Determine different elements that make up the infrastructure and understand how they interact & affect security
+- Review all elements for known vulnerabilities
+- Review administrative tools used to manage infrastructure
+- Review authentication systems
+- List the defined ports an application requires and keep under change control
+
+**Test Objectives:**
+- Review applications' configurations across the network
+- Validate frameworks & systems are secure and not susceptible to known vulnerabilities due to unmaintained software or default settings / credentials
+
+**Known Server Vulnerabilities**
+It can be difficult to test for known vulnerabilities as it requires knowing the server versions which aren't always accessible. Additionally, some vendors do not update version numbers when deploying security patches for known vulnerabilities so many automated tools can be tripped up by these (providing false positives), in addition if the server versions are available then a tool could report a false negative.
+
+Sometimes vulnerabilities aren't disclosed publicly either so tools may not be aware of the issues or lesser known products. A review is best done with internal information on the software used, including versions, releases used & patches applied.
+
+All vulnerabilities identified should be verified before reported.
+
+**Administrative Tools**
+Determine how each component of the system's architecture is managed (admin consoles, FTP servers etc):
+- Understand how access is controlled and their associated susceptibilities. Info may only be online.
+- Ensure default credentials aren't being used.
+
+### Test Application Platform Configuration
+**Test Objectives:**
+- Ensure defaults and known files have been removed
+- Validate no debugging code of extensions are left in prod
+- Review logging mechanisms in the application
+
+**Samples and Known Files and Directories**
+Ensure that no known vulnerabilities exist for the framework or technology being used that are in the default installation files (search online). Then check if the associated files are present and ensure that only files needed by the application are present. Use a CGI Scanner (Web vulnerability scanner) to quickly check for known files or directory samples. Only a manual review of the full contents of a web/app server can determine if they are related to the application or not.
+
+**Comment Review**
+Check the HTML for comments left behind that could leak information. Save copies of all the pages and search for comments.
+
+**System Configuration**
+Some tools can be used to aid in this process of checking system configurations:
+- [CIS-CAT Lite](https://www.cisecurity.org/blog/introducing-cis-cat-lite/)
+- [Microsoft’s Attack Surface Analyzer](https://github.com/microsoft/AttackSurfaceAnalyzer)
+- [NIST’s National Checklist Program](https://nvd.nist.gov/ncp/repository)
+
+**Configuration Review**
+It's hard to say what the config should be used generically but we are looking for common mistakes and insecurities for the specific application:
+- Only enabling modules in use if possible (reduce attack surface)
+- Custom error pages that doesn't leak information
+- Minimal privileges
+- Logs both legit access and failed attempts
+- Properly handles overloads and prevent DoS - properly performance-tuned
+- Non-admin users don't have access to admin config files (eg. `applicationHost.config`, `redirection.config`, `administration.config`)
+- Make sure admin config isn't shared on the network
+- No sensitive information in non-admin only files
+
+**Logging**
+Test and analyse the log contents for:
+- Sensitive information
+- Where are they stored?
+  - Storing logs on a dedicated server can help with performance for log analysis but also makes it more difficult for attackers to wipe logs using *Log Zapper* tools.
+- Could logs create a DoS?
+  - If stored on the same partition as the application writes too, an attacker could fill up the storage with logs and cause to application to fail to write and error, possibly causing a DoS
+  - Sending a sufficient and sustained number of requests can identify if they are all logged.
+  - Sometimes the QUERY_STRING params are logged in full and can be used to fill up the logs faster.
+- How are they rotated? Are they stored for long enough?
+  - Logs are kept for exactly the time in the security policy, no more no less
+  - Once rotated, logs are compressed
+  - File systems are the same (or stricter) for rotated logs
+  - Ensure an attacker cannot trigger a log rotation (eg. automatic rotate once a certain file size is reached)
+- How are they reviewed? Can they be used to detect targeted attacks?
+  - Make sure the access control is effective and correct
+  - Ensure that logs are being reviewed to analyse potential web server attacks (40x errors & 50x errors) could indicate vuln scanners or unintended functionality being attacked
+  - Log analysis shouldn't be stored on the same server that produces the logs as they reveal similar information as the logs themselves
+- Are backups preserved?
+- Is the data being validated prior to being logged?
+  - Min/max length, chars etc
+
+### Test File Extensions Handling for Sensitive Information
+**Test Objectives:**
+- Dirbust sensitive file extensions or extensions that contain raw data
+- Validate that no system framework bypasses exist on the rules set
+
+**Forced Browsing**
+Use forced browsing to possibly retrieve varying files by specifying the extensions eg. `.config`, `connection.inc`.
+
+Also look for things like `.pdf`, `.bak`, `.txt` etc.
+
+Scanners, spiders, manual inspection, and search engine queries can all be useful in this testing.
+
+### Review old Backup and Unreferenced Files for Sensitive Information
+It is easy to forget old backups or unreferenced files and sometimes these contain security threats. These threats could be source code visibility, credentials, or other information exposure. Backups could contain old vulnerable code that has been later patched but could still be exploited if the older files are revealed.
+
+**Test Objective:**
+- Find and analyse unreferenced files for information exposure
+
+**Infer naming conventions**
+Enumerating through the application could reveal naming conventions that could be crafted to locate unreferenced pages. eg. `/app/user` infers there may be `/app/admin` or `/app/manager`.
+
+**Other Clues**
+- Check source files for references that are only used under certain conditions
+- Comments in code
+- Robots.txt
+- Some directories might be misconfigured and show a directory listing
+- Publicly available information
+
+**Blind Guessing**
+Automated scripts can be used to guess directories and file names using HTTP requests. `HEAD` can be used instead of `GET` in some applications for faster results. Look out for interesting status codes as it could indicate further investigation is required.
+
+Blind guessing should be run against each directory identified (advanced techniques are to use specific file extensions for known areas of the application eg. html, jsp, jsx). For each file identified, create a word list from that filename with common extensions (including `~`, `bak`, `old`, `copy` etc).
+
+**Remediation**
+- Do no edit files directly on the server, its likely to generate backups or temporary files by the editors.
+- Be careful not to leave files behind if performing administration activities on the file system exposed by the webserver
+- Config management policies should help prevent obsolete and un-referenced files
+- Web apps should be designed not to create, or rely on files in the web directory trees served by the app. Store these files in directories that cannot be accessed by the web server itself
+- Prevent file system snapshots from being accessible via the web
+
+**Tools**
+- Vulnerability Assessment
+  - [Nessus](https://www.tenable.com/products/nessus)
+  - [Nikto2](https://cirt.net/Nikto2)
+- Web Spider tools
+  - [wget](https://www.gnu.org/software/wget/)
+  - [Wget for windows](http://www.interlog.com/~tcharron/wgetwin.html)
+  - [Sam spade](https://web.archive.org/web/20090926061558/http://preview.samspade.org/ssw/download.html)
+  - [Spike proxy includes a crawler](https://www.spikeproxy.com/)
+  - [xenu](http://home.snafu.de/tilman/xenulink.html)
+  - [curl](https://curl.haxx.se/)
+
+### Enumerate Infrastructure and Application Admin Interfaces
+**Test Objective:** Identify any hidden admin interfaces and functions
+
+- Directory and file enumeration
+- Forced browsing
+- Comments and links in source code
+- Reviewing server and app documentation
+- Publicly available information
+- Alternative server port
+- Parameter tampering
+
+**Tools**
+- [OWASP ZAP - Forced Browse](https://www.zaproxy.org/docs/desktop/addons/forced-browse/) is a currently maintained use of OWASP’s previous DirBuster project.
+- [THC-HYDRA](https://github.com/vanhauser-thc/thc-hydra) is a tool that allows brute-forcing of many interfaces, including form-based HTTP authentication.
+- A brute forcer is much better when it uses a good dictionary, for example the [netsparker](https://www.netsparker.com/blog/web-security/svn-digger-better-lists-for-forced-browsing/) dictionary.
+
+**Useful References**
+- [Cirt: Default Password list](https://cirt.net/passwords)
+- [FuzzDB can be used to do brute force browsing admin login path](https://github.com/fuzzdb-project/fuzzdb/blob/master/discovery/predictable-filepaths/login-file-locations/Logins.txt)
+- [Common admin or debugging parameters](https://github.com/fuzzdb-project/fuzzdb/blob/master/attack/business-logic/CommonDebugParamNames.txt)
+
+### Test HTTP Methods
+[Valid HTTP Methods](https://datatracker.ietf.org/doc/html/rfc7231#section-4.3):
+- `GET` : Retrieve an object
+- `HEAD` : Get without a body (lightweight)
+- `POST` : Send data to a server
+- `PUT` : Replace/Create an object on the server
+- `DELETE` : Delete an object
+- `CONNECT` : Establish a connection to a server
+- `OPTIONS` : Determine the communication options available
+- `TRACE` : Request the server to send the trace request back
+
+**Test Objectives:**
+- Enumerate supported HTTP methods
+- Test for access control bypass
+- Test XST vulnerabilities
+- Test HTTP method overriding techniques
+
+**Supported Methods**
+The `OPTIONS` method is a direct way to determine the supported methods but make sure to verify the response using requests with different methods. The nmap `http-methods` script can verify these automatically:
+```
+nmap -p <port> --script http-methods --script-args http-methods.url-path="<path>" <host>
+```
+*Test that all endpoints only accept the methods they require.*
+
+**Bypassing Access Control**
+If a page that has access control eg. redirects you to a login or denies access on a GET, it may be possible to get alternative behaviour using other methods or made up ones.
+
+**Cross-site Tracing Attacks (XST)**
+The `TRACE` method instructs the server to reflect the received message back to the client. Because of this fact, an XSS could send a TRACE request on a user's browser and receive back the cookie (bypassing the `HttpOnly` flag that prevents JS from accessing the cookie).
+
+`TRACE` calls are disabled for JS in browsers now but other methods have been found to perform this.
+
+**HTTP Method Overriding**
+Some web frameworks allow the actual HTTP method to be overridden in the request. The main purpose of this is to circumvent some middleware (eg. proxy, framework etc) that wouldn't allow the certain method. This can be done by adding a custom headers:
+- `X-HTTP-Method`
+- `X-HTTP-Method-Override`
+- `X-Method-Override`
+
+### Test HTTP Strict Transport Security (HSTS)
+The HSTS feature forces a browser to connect using only HTTPS. The header contains two directives:
+- `max-ages`: the number of seconds that the browser should automatically convert all HTTP requests to HTTPS
+- `includeSubDomains`: indicate that all related sub-domains should use HTTPS
+
+`Strict-Transport-Security: max-age=31536000; includeSubDomains`
+
+Test the header to find out if:
+- An attacker could sniff the network traffic and access information through an un-encrypted channel
+- An attacker can perform an manipulator in the middle attack because of accepting certificates that aren't trusted
+- Users can mistakenly enter HTTP instead of HTTPS and use the insecure HTTP protocol
+
+**How to Test**
+Check if the header is present on the website via a proxy or:
+```
+curl -s -D- <address> | grep -i strict
+```
+
+### Test Cross Domain Policy
+Check that CORS and any cross-domain headers are using the least privilege practice
