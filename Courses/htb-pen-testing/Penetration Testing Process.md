@@ -34,16 +34,6 @@ nav_order: 1
 - Main Commitments, tasks, scope, limitations, and related agreements are documented
 - Contracts & essential information are shared between testers and client
 - Next step is the Information Gathering
-#### Modules
-- [x] [Learning Process](https://academy.hackthebox.com/module/details/9)
-- [x] [Linux Fundamentals](https://academy.hackthebox.com/module/details/18)
-- [ ] [Windows Fundamentals](https://academy.hackthebox.com/module/details/49)
-- [ ] [Networking Intro](https://academy.hackthebox.com/module/details/34)
-- [ ] [Web Applications Intro](https://academy.hackthebox.com/module/details/75)
-- [ ] [Web Requests](https://academy.hackthebox.com/module/details/35)
-- [ ] [JavaScript De-obfuscation](https://academy.hackthebox.com/module/details/41)
-- [ ] [Active Directory](https://academy.hackthebox.com/module/details/74)
-- [ ] [Getting Started](https://academy.hackthebox.com/module/details/77)
 
 ### Information Gathering
 - Identify & gain overview of target(s) : Verify they are within scope
