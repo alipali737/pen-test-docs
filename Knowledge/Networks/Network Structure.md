@@ -1,4 +1,10 @@
 ```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
 ```
 ## Network Types
 ### Wide Area Network (WAN)
@@ -55,3 +61,10 @@ Penetration Testers will use reverse proxies on infected endpoints. The infected
 
 Another common use of reverse proxies is as a *Web Application Firewall (WAF)*. This will attempt to filter out malicious web traffic before it reaches the application.
 ![[reverse-proxy.png]]
+
+### Proxy Transparency
+Every proxy service acts either *transparently* or *non-transparently*.
+
+With a *transparent proxy*, the client doesn't know of its existence. The transparent proxy intercepts the client's request, and acts as a substitute instance making the request. To the outside, the proxy is the one making the actual request.
+
+A *non-transparent proxy* means that it is known. Configuration has to be explicitly set to route traffic through the proxy. Like a transparent proxy though, to the outside internet, it appears as if the proxy is the one making the communication.
