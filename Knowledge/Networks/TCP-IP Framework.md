@@ -6,20 +6,7 @@ maxLevel: 3 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
-
-``` 
-     OSI MODEL              TCP/IP Layers
-+---+-------------+      +---+-------------+
-| 7 | Application |      | - | ~~~~~~~~~~~ |
-| 6 | Presentation|      | 4 | Application |
-| 5 | Session     |      | - | ~~~~~~~~~~~ |
-| 4 | Transport   | <--> | 3 |  Transport  |
-| 3 | Network     | <--> | 2 |   Network   |
-| 2 | Data Link   | <--> | - |  -Network-  |
-| 1 | Physical    | <--> | 1 |  Interface  |
-+---+-------------+      +---+-------------+
-```
-
+![[tcp-vs-osi.png]]
 ## OSI Model Simply Explained
 - **Layer 1**: Physical Layer - Responsible for the physical transportation of data as 0's & 1's.
 - **Layer 2**: Data Link Layer - Responsible for routing packets using MAC addresses.
