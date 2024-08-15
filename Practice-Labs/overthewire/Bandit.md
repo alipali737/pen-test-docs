@@ -9,9 +9,9 @@ Find a file that has certain properties:
 - not executable
 
 Can use the find command following [this helpful doc](https://linuxize.com/post/how-to-find-files-in-linux-using-the-command-line/)
-{% highlight shell %}
+```shell
 find ./ -type f -size 1033c -perm /666
-{% endhighlight %}
+```
 
 `find ./` - specifies to look in the current dir and any subdirs
 `-type f` - specifies to look for files
@@ -25,9 +25,9 @@ Find a file somewhere on the server that has:
 - owner group `bandit6`
 - 33 bytes
 
-{% highlight shell %}
+```shell
 find / -type f -user bandit7 -group bandit6 -size 33c 2>/dev/null -exec cat {} +
-{% endhighlight %}
+```
 
 `-user bandit7 -group bandit6` - specifies the owners
 `2>/dev/null` - suppress any errors
@@ -36,6 +36,6 @@ find / -type f -user bandit7 -group bandit6 -size 33c 2>/dev/null -exec cat {} +
 ## Level 8
 
 Find unique lines in a file:
-{% highlight shell %}
+```shell
 cat [file] | sort | uniq -u
-{% endhighlight %}
+```

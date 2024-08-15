@@ -16,14 +16,14 @@ A VPS is an isolated environment created on a physical server using virtualizati
 1. Install a new OS to the VPS (recommended `Ubuntu`, `Debian` etc)
 2. SSH into the server
 3. Make sure that it is updated with:
-{% highlight shell %}
+```shell
 $ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
-{% endhighlight %}
+```
 4. Install any tools you might need:
-{% highlight shell %}
+```shell
 $ sudo apt install net-tools
 $ sudo apt install xrdp
-{% endhighlight %}
+```
 5. Make any users you need to, ideally a sudo and one without admin perms
 6. Setup any SSH keys needed (for windows you can use [this guide](https://www.chrisjhart.com/Windows-10-ssh-copy-id/) to copy the key to the server)
 

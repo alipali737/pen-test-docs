@@ -10,9 +10,9 @@ SQL can be used to perform the following actions:
 
 ## Database Interaction
 #### Authentication
-{% highlight shell %}
+```shell
 mqsql -u root -p
-{% endhighlight %}
+```
 ***Note:** we do not pass the `-p` with the password as the password could be stored in plain text in the bash_history file. Instead it will prompt us to securely enter the password.*
 ***Tip:** if a password is passed, there should be no space eg. `-p<password>`*
 
@@ -22,20 +22,20 @@ The default port for MySQL/MariaDB is (`3306`)
 
 #### Creating the DB
 Once authentiacted you can create a database with:
-{% highlight sql %}
+```sql
 CREATE DATABASE users;
 
 > Query OK, 1 row affected (0.02 sec)
-{% endhighlight %}
+```
 
 SQL expects all queries to end with a `;`
 
 #### Listing all DB's
-{% highlight sql %}
+```sql
 SHOW DATABASES;
-{% endhighlight %}
+```
 You will get a list of all the available databases
-{% highlight shell %}
+```shell
 +--------------------+
 | Database           |
 +--------------------+
@@ -45,14 +45,14 @@ You will get a list of all the available databases
 | sys                |
 | users              |
 +--------------------+
-{% endhighlight %}
+```
 
 #### Selecting a DB
-{% highlight sql %}
+```sql
 USE users;
 
 > Database changed
-{% endhighlight %}
+```
 
 SQL commands aren't case sensitive but the passed fields are
 
@@ -62,27 +62,27 @@ Databases store data in the form of tables, containing rows and columns with the
 Column datatypes define what value can be stored. Common types are `numbers`, `strings`, `date`, `time`, and `binary data`. Other datatypes can be specific to the DBMS. MySQL's full list of types can be found [here](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
 
 #### Creating a table
-{% highlight sql %}
+```sql
 CREATE TABLE logins (
 	id INT,
 	username VARCHAR(100),
 	password VARCHAR(100),
 	date_of_joining DATETIME
 );
-{% endhighlight %}
+```
 
 #### Listing all tables
-{% highlight sql %}
+```sql
 SHOW TABLES;
 +-----------------+
 | Tables_in_users |
 +-----------------+
 | logins          |
 +-----------------+
-{% endhighlight %}
+```
 
 DESCRIBE can also be used to get information on a table
-{% highlight sql %}
+```sql
 DESCRIBE logins;
 +-----------------+--------------+
 | Field           | Type         |
@@ -92,35 +92,35 @@ DESCRIBE logins;
 | password        | varchar(100) |
 | date_of_joining | date         |
 +-----------------+--------------+
-{% endhighlight %}
+```
 
 #### Table Properties
 There are lots of [properties](https://dev.mysql.com/doc/refman/8.0/en/create-table.html) that can be used when creating a table.
 
 eg. we can have the `id` field `AUTO_INCREMENT`
-{% highlight sql %}
+```sql
 id INT NOT NULL AUTO_INCREMENT,
-{% endhighlight %}
+```
 
 `NOT NULL` makes a field required (therefore never empty)
 `UNIQUE` also makes sure that its always a unique value being entered
-{% highlight sql %}
+```sql
 username VARCHAR(100) UNIQUE NOT NULL,
-{% endhighlight %}
+```
 
 `NOW()` gets the current datetime
 `DEFAULT` specifies the default value
-{% highlight sql %}
+```sql
 date_of_joining DATETIME DEFAULT NOW(),
-{% endhighlight %}
+```
 
 Finally we need to set a `PRIMARY KEY` for our table
-{% highlight sql %}
+```sql
 PRIMARY KEY (id)
-{% endhighlight %}
+```
 
 Our final create table would then look like:
-{% highlight sql %}
+```sql
 CREATE TABLE logins (
 	id INT NOT NULL AUTO_INCREMENT,
 	username VARCHAR(100) UNIQUE NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE logins (
 	date_of_joining DATETIME DEFAULT NOW(),
 	PRIMARY KEY (id)
 );
-{% endhighlight %}
+```
 
 ## SQL
 - Case insensitive keyword-based language

