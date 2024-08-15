@@ -1,22 +1,3 @@
----
-layout: page
-title: Pickle Rick CTF
-parent: tryhackme
-grand_parent: Practice Labs
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 link: https://tryhackme.com/room/picklerick
 
 Difficulty: Easy

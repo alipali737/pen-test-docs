@@ -1,22 +1,3 @@
----
-layout: page
-title: TCP/IP Framework
-parent: Networks
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ``` 
      OSI MODEL              TCP/IP Layers
 +---+-------------+      +---+-------------+

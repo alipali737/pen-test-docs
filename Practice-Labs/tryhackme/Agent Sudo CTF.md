@@ -1,22 +1,3 @@
----
-layout: page
-title: Agent Sudo CTF
-parent: tryhackme
-grand_parent: Practice Labs
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 Starting off with a normal scan: `nmap -sCV -v -oN` gives us information on 3 ports:
 
 | Port   | Service               | Version       | Description                                        |

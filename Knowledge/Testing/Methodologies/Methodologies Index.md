@@ -1,12 +1,3 @@
----
-layout: default
-title: Methodologies
-parent: Testing
-has_children: true
-has_toc: true
----
-# Penetration Testing Methodologies
-
 ## OWASP Testing Guides
 OWASP maintains a series of technical guides for a range of penetration testing applications:
 - [Web Security Testing Guide (WSTG)](https://owasp.org/www-project-web-security-testing-guide/)

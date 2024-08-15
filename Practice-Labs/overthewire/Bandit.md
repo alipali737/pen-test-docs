@@ -1,11 +1,3 @@
----
-layout: page
-title: Bandit Lab
-parent: OverTheWire
-grand_parent: Practice Labs
----
-
-# Bandit Practice Game
 
 [Lab Link](https://overthewire.org/wargames/bandit/)
 

@@ -1,35 +1,16 @@
----
-layout: page
-title: Virtualization
-parent: Setting Up
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 `Virtualization` is an abstraction of physical computing resources. Both hardware and software components can be abstracted. Virtualization involves the abstraction of physical computing resources such as hardware, software, storage, and network components
 
 In virtualization, we distinguish between:
--   Hardware virtualization
--   Application virtualization
--   Storage virtualization
--   Data virtualization
--   Network virtualization
+- Hardware virtualization
+- Application virtualization
+- Storage virtualization
+- Data virtualization
+- Network virtualization
 
 ### Hardware Virtualization
 enable hardware components to be made available independently of their physical basis using [hypervisor](https://en.wikipedia.org/wiki/Hypervisor) software. Best known example is the `virtual machine (VM)`. 
 
-![Hardware Virtualization Stack]({{ site.baseurl }}/assets/images/setting-up/hardware-virtualization-stack.png)
+![Hardware Virtualization Stack](../assets/images/setting-up/hardware-virtualization-stack.png)
 
 **Primary Benefits:**
 1. Applications and services of a VM do not interfere with each other

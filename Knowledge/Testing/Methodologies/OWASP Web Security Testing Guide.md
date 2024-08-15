@@ -1,22 +1,3 @@
----
-layout: page
-title: OWASP Web Security Testing Guide
-parent: Methodologies
-grand_parent: Testing
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 https://owasp.org/www-project-web-security-testing-guide/
 
 The OWASP Web Security Testing Guide is a project to help people understand the *what, why, when, where,* and *how* of testing web applications.
@@ -65,7 +46,6 @@ Gathering information about the target, its architecture, tech stack, surroundin
 ---
 
 # Web Application Testing
-
 Throughout a test, it is important to gather all the destinations, URLs, access points, and understood knowledge of the system as the test is conducted.
 
 ## [1. Information Gathering](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)

@@ -1,22 +1,3 @@
----
-layout: page
-title: Session Security
-parent: Web
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ## Cookie Session Management
 
 Cookies can be used to automatically send a session ID on every HTTP request from a client. The `localStorage` or `sessionStorage` could also be used but they adhere to different behaviours:

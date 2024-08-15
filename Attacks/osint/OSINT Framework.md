@@ -1,22 +1,3 @@
----
-layout: page
-title: OSINT Framework
-parent: Open-source Intelligence
-grand_parent: Attacks
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ## Manual OSINT
 The [OSINT Framework website](https://osintframework.com/) provides links of many services that collect data about individuals from open-sources. Analysing this information and particularly what platform they have accounts on can give insight into their hobbies and/or background.
 

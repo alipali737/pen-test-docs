@@ -1,24 +1,3 @@
----
-layout: page
-title: Basic SQL Syntax
-parent: SQL Injection
-grand_parent: Injection
----
-
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 SQL syntax can differ between RDBMS but they all follow the [ISO Standard](https://en.wikipedia.org/wiki/ISO/IEC_9075).
 
 SQL can be used to perform the following actions:

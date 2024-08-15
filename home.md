@@ -1,11 +1,3 @@
----
-layout: page
-title: Home
-permalink: /
-nav_order: 0
----
-
-# Home Page
 
 This site is a collection of penetration testing and cyber security related materials, guides and resources.
 

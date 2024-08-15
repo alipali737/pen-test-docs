@@ -1,22 +1,3 @@
----
-layout: page
-title: OhSINT CTF
-parent: tryhackme
-grand_parent: Practice Labs
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 Lab link: https://tryhackme.com/room/ohsint#
 Difficulty: Easy
 

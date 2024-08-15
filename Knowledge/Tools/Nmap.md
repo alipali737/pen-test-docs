@@ -1,22 +1,3 @@
----
-layout: page
-title: Nmap
-parent: Tools
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ## The Scanning Phase
 A security test follows the Hacking Process:
 1. Reconnaissance

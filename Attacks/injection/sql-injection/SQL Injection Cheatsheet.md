@@ -1,22 +1,3 @@
----
-layout: page
-title: SQL Injection Cheatsheet
-parent: SQL Injection
-grand_parent: Injection
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ## Detecting SQL Injection Vulnerabilities
 Web scanner tools can be used for this purpose for quick and efficient detection but these can also be detected manually. This manual process consists of a systematic set of tests against every entry point in the application, these typically involve:
 - Submitting single quote character `'` and looking for errors or anomalies

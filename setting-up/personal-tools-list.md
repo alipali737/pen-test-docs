@@ -1,9 +1,3 @@
----
-layout: page
-title: Personal Tools List
-nav_exclude: true
-parent: Setting Up
----
 # Personal tools to install in my environment
 {: .no_toc }
 

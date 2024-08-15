@@ -1,23 +1,5 @@
----
-layout: page
-title: Network Structure
-parent: Networks
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
+```table-of-contents
+```
 ## Network Types
 ### Wide Area Network (WAN)
 - eg. The internet
@@ -55,3 +37,21 @@ grand_parent: Knowledge
 - Adhoc data (eg. Mobile roaming data)
 - Can also be Wireless (WPAN) eg. Bluetooth or Wireless USBs.
 - Usually only a few meters
+
+## Proxies
+A proxy is a device that sits in the middle of a connection as a *mediator*. A mediator is able to inspect the contents of traffic, without this feature, it is just a gateway.
+
+Tools like *Burp Suite* are a swiss army knife of HTTP proxies for security testers, allowing you to configure it to be any type of proxy.
+### Dedicated Proxy / Forward Proxy
+A forward proxy is when a client makes a request to a computer, and the computer then carries out the request (filtering outgoing requests). Eg. a sensitive device in a company may use a forward proxy to not have direct access to the internet, allowing for better malware protection and/or web filtering.
+
+Lots of malware aren't *proxy aware* meaning that they won't detect they are on a proxy instead of their intended target. Adding a proxy allows for more traffic monitoring and could catch malware much easier.
+![[forward-proxy.png]]
+
+### Reverse Proxy
+The reverse of a forward proxy, it filters the incoming requests. Most commonly it is used to listen on an address and forward traffic to a closed-off network. Many organisations use *Cloudflare* as a reverse proxy and filter the traffic to their web-exposed applications.
+
+Penetration Testers will use reverse proxies on infected endpoints. The infected endpoint will listen on a port and send any client that connects to the port back to the attacher through the endpoint. This allows the evasion of logging techniques and bypassing firewalls. If an attacker gains access to an organisation over SSH, a reverse proxy can send web requests through the SSH tunnel and evade the *IDS*.
+
+Another common use of reverse proxies is as a *Web Application Firewall (WAF)*. This will attempt to filter out malicious web traffic before it reaches the application.
+![[reverse-proxy.png]]

@@ -1,23 +1,3 @@
----
-layout: page
-title: Personal Web App Testing Approach
-parent: Methodologies
-grand_parent: Testing
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 ## Pre-Engagement
 Legal contract between tester & client, including:
 - NDAs

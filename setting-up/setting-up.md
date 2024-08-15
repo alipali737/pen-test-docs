@@ -1,24 +1,3 @@
----
-layout: page
-title: Setting Up
-nav_order: 1
-has_children: true
-has_toc: false
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 ### My Personal Setup Steps
 1. Install [Screenshotting](https://alipali737.github.io/pen-test-docs/setting-up/Screenshotting.html) tools
 2. Install [VirtualBox](https://alipali737.github.io/pen-test-docs/setting-up/Virtualization.html#introduction-to-virtualbox) for VMs

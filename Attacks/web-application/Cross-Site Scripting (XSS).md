@@ -1,22 +1,3 @@
----
-layout: page
-title: Cross-Site Scripting (XSS)
-parent: Web Application
-grand_parent: Attacks
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 Cross-Site Scripting is a type of injection where JavaScript code can be injected into a website. A XSS attack is where an attacker has embedded malicious code, often in the form of a browser-side script that is then sent to an unsuspecting user when they request the webpage.
 
 These attacks can occur anywhere a web application uses input from a user within the output it generates without validating or encoding it. The malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site. These scripts can even rewrite the content of the HTML page.

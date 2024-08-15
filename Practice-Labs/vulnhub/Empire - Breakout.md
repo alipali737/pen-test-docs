@@ -1,22 +1,3 @@
----
-layout: page
-title: "Empire: Breakout CTF"
-parent: VulnHub
-grand_parent: Practice Labs
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 Box Link: https://www.vulnhub.com/entry/empire-breakout,751/
 
 Difficulty: Easy

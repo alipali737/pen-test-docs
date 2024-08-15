@@ -1,22 +1,3 @@
----
-layout: page
-title: Application Security Testing Methods
-parent: Testing
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 A combination of this methods is necessary for effective testing of an application, no one method can cover everything or every possible context. A mix of DAST & IAST is often very common.
 
 ## Static Application Security Testing (SAST)

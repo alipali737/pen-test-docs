@@ -1,8 +1,6 @@
 # pen-test-docs
-Comprehensive documentation and notes for penetration testing.
+Personal notes and learning for Penetration Testing.
 
-[Site link](https://alipali737.github.io/pen-test-docs/)
-
-Source using Jekyll Just-The-Docs theme.
+Now designed to be used with a markdown notes application (eg. Obsidian, Zettlr) - 15/08/2024
 
 

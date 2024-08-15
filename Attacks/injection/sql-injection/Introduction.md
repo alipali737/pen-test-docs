@@ -1,23 +1,3 @@
----
-layout: page
-title: Introduction
-nav_order: 0
-parent: SQL Injection
-grand_parent: Injection
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 User-supplied information can be used to construct database queries. 
 
 User <--> Tier 1 (Front-end Website) <--> Tier 2 (Application Server) <--> DataBase Management System

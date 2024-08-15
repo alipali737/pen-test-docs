@@ -1,22 +1,3 @@
----
-layout: page
-title: Operating Systems
-parent: Setting Up
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 ## Linux
 Most widely used OS for pen testing. Best to develop a certain standard for it that always leads to the same setup we are used to.
 

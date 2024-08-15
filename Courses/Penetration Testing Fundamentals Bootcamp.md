@@ -1,8 +1,3 @@
----
-layout: page
-title: Penetration Testing Fundamentals Bootcamp
-parent: Courses
----
 
 # Penetration Testing Fundamentals Bootcamp
 {: .no_toc}

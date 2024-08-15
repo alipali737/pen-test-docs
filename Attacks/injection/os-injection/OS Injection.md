@@ -1,23 +1,3 @@
----
-layout: page
-title: OS Injection
-parent: OS Injection
-grand_parent: Injection
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 OS injection vulnerabilities allow an attacker to execute OS level commands on the system that the application is running on. These vulnerabilities are most often caused by a lack of input sanitisation.
 
 ## Attack Motivation

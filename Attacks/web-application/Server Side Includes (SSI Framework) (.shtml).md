@@ -1,23 +1,3 @@
----
-layout: page
-title: Server Side Includes (SSI Framework) (.shtml)
-parent: Web Application
-grand_parent: Attacks
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-<summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
-
 SSI is a simple interpreted **server-side scripting language**. Most useful for including the contents of one or more files into a webpage on a webser, using its `#includes` directive.
 
 #### Supported on:

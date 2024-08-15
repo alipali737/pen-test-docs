@@ -1,22 +1,3 @@
----
-layout: page
-title: Types of Penetration Tests
-parent: Testing
-grand_parent: Knowledge
----
-# {{ page.title }}
-{: .no_toc }
-
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-- TOC
-{:toc}
-</details>
-
----
 ## Network/Infrastructure Penetration Testing
 **Target:** The design, implementation, and maintenance of a network's infrastructure.
 
