@@ -86,7 +86,7 @@ First, work out which Octet can change:
 
 If you had /27 then we know we are looking at the 4th octet.
 
-If you do */27 % 8* 
+If you do */27 % 8* then you get the number of bits in that Octet reserved for the network, in this case 3 bits, leaving 5 for the host.
 
 ## Local Area Networks
 ### Network Addressing
