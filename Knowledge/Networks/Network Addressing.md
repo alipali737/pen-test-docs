@@ -20,11 +20,34 @@ debugInConsole: false # Print debug info in Obsidian console
 ## IPv4 Addresses
 - Consist of 4 bytes ranging 0-255
 - Divided into host & network parts
+- Networks used to use a Class System (A-E) but now we use *Classless Inter-Domain Routing (CIDR)* which is the `0.0.0.0/x` part of the address, it defines how many bits of the address belong to the network.
+
+| Class | Network Address | First Address | Last Address    | Subnet Mask   | Subnets   | CIDR | IPs           |
+| ----- | --------------- | ------------- | --------------- | ------------- | --------- | ---- | ------------- |
+| A     | 1.0.0.0         | 1.0.0.1       | 127.255.255.255 | 255.0.0.0     | 127       | /8   | 16,77,214 + 2 |
+| B     | 128.0.0.0       | 128.0.0.1     | 191.255.255.255 | 255.255.0.0   | 16,384    | /16  | 65,534 + 2    |
+| C     | 192.0.0.0       | 192.0.0.1     | 223.255.255.255 | 255.255.255.0 | 2,097,152 | /24  | 254 + 2       |
 
 ### Subnet Mask
-- Describes which parts of an IP address is the *host part* & *network part*
-- 
+- Describes which parts of an IP address is the *host part* (the actual network) & *network part* (the specific device)
+- Class A : H.N.N.N : Mask = 255.0.0.0
+- Class B : H.H.N.N : Mask = 255.255.0.0
+- Class C : H.H.H.N : Mask = 255.255.255.0
 
+### Network Address
+This is the first IPv4 Address of a network. It isn't assigned to anything but identifies the network eg. `192.0.0.0`
+
+### Default Gateway
+This is the address of the network's router, usually the first or last *assignable* address of a network eg. `192.0.0.1` or `223.255.255.254`
+
+### Broadcast Address
+This address sends a packet to *ALL* addresses on the network. This is the last IPv4 Address eg. `223.255.255.255`
+
+```
+IP(b): 1100 0000 . 1010 0000 . 0000 0001 . 1011 0101
+IP(d):    192    .    168    .     1     .    181
+Subnet:   255    .    255    .    255    .     0
+```
 ## Local Area Networks
 ### Network Addressing
 - Layer 2 : Data Link Layer
