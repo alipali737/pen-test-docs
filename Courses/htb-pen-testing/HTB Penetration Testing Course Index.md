@@ -6,10 +6,10 @@
 ## Fundamentals
 - [Linux Fundamentals](/Knowledge/Operating%20Systems/Linux.md)
 - [Windows Fundamentals](/Knowledge/Operating%20Systems/Windows.md)
-- [Intro to Networking]()
+- [[Network Structure|Intro to Networking]]
 - [Intro to Web Applications]()
 - [Web Requests]()
-- [JavaScript Deobfuscation]()
+- [[JavaScript Obfuscation|JavaScript Deobfuscation]]
 - [Intro to Active Directory]()
 - [Getting Started]()
 

@@ -26,5 +26,5 @@ Can be undone by *Beautifying* the code (eg. Pretty Printing) and can often be d
 ## Deobfuscation
 For something that has been *packed*, tools like [UnPacker](https://matthewfl.com/unPacker.html) can be very helpful. Alternatively, if you can identify the *return* statement, you can `console.log()` it instead of executing it and it will return a more readable version of the unpacked code.
 
-Text encoding is often used in obfuscation and can be spotted and decoded with a variety of tools. Techniques such as Base64 *(only alphanumeric and `=` for padding as they need to be in multiples of 4. Decoded with `base64 -d`)*, Hex *(0-9 a-f, decoded with `xxd -p -r`)*, or sometimes Ceaser/Rot13 are used which shift the charact
+Text encoding is often used in obfuscation and can be spotted and decoded with a variety of tools. Techniques such as Base64 *(only alphanumeric and `=` for padding as they need to be in multiples of 4. Decoded with `base64 -d`)*, Hex *(0-9 a-f, decoded with `xxd -p -r`)*, or sometimes Ceaser/Rot13 are used which shift the characters *(rot13 shifts by 13, manually decoded with the `tr` tool)*. Tools like [Cipher Identifier](https://www.boxentriq.com/code-breaking/cipher-identifier) can be used to identify which cipher has been used.
 
