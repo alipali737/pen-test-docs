@@ -17,6 +17,13 @@ debugInConsole: false # Print debug info in Obsidian console
 - **Dynamic** address translation (Dynamic NAT) : Maps unregistered IP addresses to registered IP addresses from a pool of registered IP addresses.
 - **Overloading** : Maps multiple unregistered IP addresses to a single registered address (many to one) using different ports (information is added in the Layer 4 data). This method is also known as Port Address Translation (PAT). By using overloading, thousands of users can be connected to the Internet by using only one real global IP address. Also requires the network to keep a database of the mappings.
 
+## IPv4 Addresses
+- Consist of 4 bytes ranging 0-255
+- Divided into host & network parts
+
+### Subnet Mask
+- Describes which parts of an IP address is the *host part* & *network part*
+- 
 
 ## Local Area Networks
 ### Network Addressing
