@@ -2,7 +2,7 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 4 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
@@ -17,12 +17,20 @@ debugInConsole: false # Print debug info in Obsidian console
 - **Dynamic** address translation (Dynamic NAT) : Maps unregistered IP addresses to registered IP addresses from a pool of registered IP addresses.
 - **Overloading** : Maps multiple unregistered IP addresses to a single registered address (many to one) using different ports (information is added in the Layer 4 data). This method is also known as Port Address Translation (PAT). By using overloading, thousands of users can be connected to the Internet by using only one real global IP address. Also requires the network to keep a database of the mappings.
 
+
 ## Local Area Networks
 ### Network Addressing
 - Layer 2 : Data Link Layer
 	- Uses MAC addresses
 - Layer 3 : Network Layer
 	- Uses IP addresses
+	- Most used protocols:
+		- IPv4 / IPv6
+		- IPsec
+		- ICMP
+		- IGMP
+		- RIP
+		- OSPF
 
 1. Data is encapsulated within a packet header
 2. Then the header is encapsulated within another header
