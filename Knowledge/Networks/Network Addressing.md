@@ -19,7 +19,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## IPv4 Addresses
 - Consist of 4 bytes ranging 0-255
-- Divided into host & network parts
+- Divided into network & host parts
 - Networks used to use a Class System (A-E) but now we use *Classless Inter-Domain Routing (CIDR)* which is the `0.0.0.0/x` part of the address, it defines how many bits of the address belong to the network.
 
 | Class | Network Address | First Address | Last Address    | Subnet Mask   | Subnets   | CIDR | IPs           |
@@ -29,13 +29,13 @@ debugInConsole: false # Print debug info in Obsidian console
 | C     | 192.0.0.0       | 192.0.0.1     | 223.255.255.255 | 255.255.255.0 | 2,097,152 | /24  | 254 + 2       |
 
 ### Subnet Mask
-- Describes which parts of an IP address is the *host part* (the actual network) & *network part* (the specific device)
-- Class A : H.N.N.N : Mask = 255.0.0.0
-- Class B : H.H.N.N : Mask = 255.255.0.0
-- Class C : H.H.H.N : Mask = 255.255.255.0
+- Describes which parts of an IP address is the *network part* (the actual network) & *host part* (the specific device)
+- Class A : N.H.H.H : Mask = 255.0.0.0 : CIDR /8
+- Class B : N.N.H.H : Mask = 255.255.0.0 : CIDR /16
+- Class C : N.N.N.H : Mask = 255.255.255.0 : CIDR /24
 
 ### Network Address
-This is the first IPv4 Address of a network. It isn't assigned to anything but identifies the network eg. `192.0.0.0`
+This is the first IPv4 Address of a network. It isn't assigned to anything but identifies the network eg. `192.0.0.0`. If a packet has the same network address for the source and destination, it is sent within the same subnet. If they differ, the packet must go out through the default gateway.
 
 ### Default Gateway
 This is the address of the network's router, usually the first or last *assignable* address of a network eg. `192.0.0.1` or `223.255.255.254`
@@ -47,7 +47,47 @@ This address sends a packet to *ALL* addresses on the network. This is the last 
 IP(b): 1100 0000 . 1010 0000 . 0000 0001 . 1011 0101
 IP(d):    192    .    168    .     1     .    181
 Subnet:   255    .    255    .    255    .     0
+IP + CIDR: 192.168.1.181/24
 ```
+
+## Subnetting
+If we take an example such as:
+```
+IPv4 Address: 192.168.12.160
+Subnet Mask: 255.255.255.192
+CIDR : 192.168.12.160/26
+```
+
+This means the first 26-bits are for the network and CANNOT be changed. This leaves 6-bits for the host.
+
+In the example our network address & broadcast would be:
+```
+NA : 192.168.12.128/26
+BA : 192.168.12.191/26
+```
+
+With this we can tell that this subnet gives us *64 - 2* IPv4 addresses to assign.
+
+If we then wanted 4 additional subnets within this subnet, we could take *64 / 4* = *2^2 bits* so the subnet mask would be increase by 2 bits from */26* to */28*. Each subnet is then given 16 possible addresses.
+
+| Subnet No. | Net Addr       | First Host     | Last Host      | Broad Addr     | CIDR              |
+| ---------- | -------------- | -------------- | -------------- | -------------- | ----------------- |
+| 1          | 192.168.12.128 | 192.168.12.129 | 192.168.12.142 | 192.168.12.143 | 192.168.12.128/28 |
+| 2          | 192.168.12.144 | 192.168.12.145 | 192.168.12.158 | 192.168.12.159 | 192.168.12.144/28 |
+| 3          | 192.168.12.160 | 192.168.12.161 | 192.168.12.174 | 192.168.12.175 | 192.168.12.160/28 |
+| 4          | 192.168.12.176 | 192.168.12.177 | 192.168.12.190 | 192.168.12.191 | 192.168.12.176/28 |
+
+**Calculating Host Bits**
+First, work out which Octet can change:
+- 1st Octet = /8
+- 2nd Octet = /16
+- 3rd Octet = /24
+- 4th Octet = /32
+
+If you had /27 then we know we are looking at the 4th octet.
+
+If you do */27 % 8* 
+
 ## Local Area Networks
 ### Network Addressing
 - Layer 2 : Data Link Layer
