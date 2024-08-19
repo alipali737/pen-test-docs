@@ -164,7 +164,30 @@ Suggest short, medium, and long-term remediations which can be used to guide the
 eg. Short term would be to patch the system, long-term would be to review their patch and vulnerability management processes to address any gaps that would prevent the issue from appearing again.
 
 ### Findings
-Show off our work here, display the risks to their environment, help technical teams validate, diagnose & fix issues. 'Stock' findings can be written up but should always be tweaked to fit the client's context
+Show off our work here, display the risks to their environment, help technical teams validate, diagnose & fix issues. 'Stock' findings can be written up but should always be tweaked to fit the client's context.
+
+A finding should include at minimum:
+- The description of the finding and what platform(s) the vulnerability affects
+- Impact of the finding if left unresolved
+- Affected systems, networks, environments, or applications
+- Recommendations for how to address the problem
+- Reference links with additional information about the finding and resolving it
+- Steps to reproduce the issue and the evidence that you collected
+
+Additional options include:
+- CVE
+- OWASP, MITRE IDs
+- CVSS or similar score
+- Ease of exploitation and probability of attack
+- Any other information that might help learn about and mitigate the attack
+
+#### Showing the Steps
+- Break each step into its own figure, make it clear what happened
+- If setup is required (eg. Metasploit modules), capture the full configuration so the reader can see what the exploit config should look like, and a second figure for running the exploit.
+- Write a narrative between figures describing what is happening and what the tester is thinking.
+- Add alternative toolkits if possible (just mention the tool and reference, don't exploit twice)
+
+![[Pasted image 20240819151757.png]]
 
 ### Appendices
 Some must appear, some are more dynamic. Make sure they don't unnecessarily bloat the report.
