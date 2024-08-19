@@ -164,7 +164,7 @@ Suggest short, medium, and long-term remediations which can be used to guide the
 eg. Short term would be to patch the system, long-term would be to review their patch and vulnerability management processes to address any gaps that would prevent the issue from appearing again.
 
 ### Findings
-Show off our work here, display the risks to their environment, help technical teams validate, diagnose & fix issues.
+Show off our work here, display the risks to their environment, help technical teams validate, diagnose & fix issues. 'Stock' findings can be written up but should always be tweaked to fit the client's context
 
 ### Appendices
 Some must appear, some are more dynamic. Make sure they don't unnecessarily bloat the report.
