@@ -116,3 +116,45 @@ Credentials & PII should be redacted from screenshots and anything else that is 
 If you discover a vulnerability that is directly exploitable, exposed to the internet and results in unauthenticated RCE, sensitive data exposure, or leverage weak/default credentials for the same. Its important to notify the client as they may want to issues an emergency fix.  Generally reporting any critical (or maybe high severity too) vulnerabilites is a good idea as the client may want to fix them before the assessment has finished.
 
 ## Components of a Report
+### Writing an Attack Chain
+This is the place where we walk through the steps taken to gain a foothold, move laterally, and compromise the domain. Add a summary and then the detailed steps.
+- Summary
+	- What were the results
+	- The attack intent
+	- The benefit of this walkthrough
+- Detailed Walkthrough
+	- What was done
+	- What tools were used
+	- What was the result
+- Detailed Reproduction Steps
+	- Show evidence (logs, screenshots etc)
+	- Explain each step more
+
+### Writing a Strong Executive Summary
+One of the most important parts of the report. This report is potentially reviewed by a variety of stakeholders which can have direct consequences. Therefore it needs to have content for non-technical readers.
+
+This summary is fighting for the technical people that fix & maintain this stuff. Its a chance for them to benefit in these areas (maybe secure more funding or resources).
+
+**Key Assumptions (that may or may not be true)**
+- It should be written for someone completely non-technical
+- They aren't used to this language potentially and don't know concepts
+- This may be their first time reading a penetration test report
+- Their attention span is small
+- Make sure they don't have to google things
+
+**Do's**
+- When talking about metrics, be as specific as possible
+- It's a summary
+- Describe the types of things you managed to access *(not "Domain Admin" but an account that could access HR docs, banking systems etc)*
+- Describe the general things that need to improve to mitigate the risks discovered
+- If possible (brave & experienced maybe) suggest a general expectation of how much effort would be necessary to fix some of this
+
+**Do Not**
+- Name or recommend specific vendors
+- Use acronyms
+- Waste time on non-impactful issues
+- Use uncommon words and create distractions
+- Reference a more technical section of the report
+
+#### Anatomy of the Executive Summary
+1. Categorise the nature of each of the findings and look for patterns (or lack of certain categories eg. missing patches) this can also be used to praise certain efforts that are effective
