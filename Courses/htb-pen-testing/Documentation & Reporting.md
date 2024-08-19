@@ -208,3 +208,20 @@ Some must appear, some are more dynamic. Make sure they don't unnecessarily bloa
 - Some elements such as Attack Chain may not be included if compromise wasn't achieved
 - External may focus on information gathering, OSINT, exposed services etc
 - Some appendices may not be required.
+
+## Tips / Tricks
+- Tell a story with the report, why does something matter, what is the impact?
+- Write as you go, don't leave the report to the end
+- Stay organised
+- Show as much evidence as possible without being overly verbose
+- Clearly show what is being presented in screenshots (eg. [Greenshot](https://getgreenshot.org/) can add arrows/coloured boxes)
+- Redact sensitive data wherever possible
+- Redact tool outputs where possible to remove unprofessional terms (eg. `Pwn3d!` from CrackMapExec)
+- Check grammar, spelling, and formatting (spell out acronyms the first time they are used)
+- Make sure screenshots are clear
+- Use raw command outputs where possible
+- Keep it professional looking
+- Establish a QA process
+- Establish a style guide
+- Use autosave
+- Script and automate wherever possible
