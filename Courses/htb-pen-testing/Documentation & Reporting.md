@@ -109,4 +109,10 @@ Credentials & PII should be redacted from screenshots and anything else that is 
 - Consider colour code highlighting for important parts.
 
 ## What Not to Archive
-- 
+- Any sensitive information - often just screenshotting the dir with the files in is enough
+- We aren't there to do any harm and this is included in what we collect
+
+## Emergency Vulnerability Notifications
+If you discover a vulnerability that is directly exploitable, exposed to the internet and results in unauthenticated RCE, sensitive data exposure, or leverage weak/default credentials for the same. Its important to notify the client as they may want to issues an emergency fix.  Generally reporting any critical (or maybe high severity too) vulnerabilites is a good idea as the client may want to fix them before the assessment has finished.
+
+## Components of a Report
