@@ -156,5 +156,32 @@ This summary is fighting for the technical people that fix & maintain this stuff
 - Use uncommon words and create distractions
 - Reference a more technical section of the report
 
-#### Anatomy of the Executive Summary
-1. Categorise the nature of each of the findings and look for patterns (or lack of certain categories eg. missing patches) this can also be used to praise certain efforts that are effective
+Categorise the nature of each of the findings and look for patterns (or lack of certain categories eg. missing patches) this can also be used to praise certain efforts that are effective
+
+### Summary of Recommendations
+Suggest short, medium, and long-term remediations which can be used to guide the client on what to fix and how long it might take. The client will often have input here and each recommendation should ideally tie back to a finding.
+
+eg. Short term would be to patch the system, long-term would be to review their patch and vulnerability management processes to address any gaps that would prevent the issue from appearing again.
+
+### Findings
+Show off our work here, display the risks to their environment, help technical teams validate, diagnose & fix issues.
+
+### Appendices
+Some must appear, some are more dynamic. Make sure they don't unnecessarily bloat the report.
+
+- **Scope** : show the assessment scope (URLs, Network ranges, etc)
+- **Methodology** : Explain the repeatable process you followed to ensure assessment thoroughness and consistency
+- **Severity Ratings** : If your severity doesn't map directly to a CVSS score or similar, this explains the criteria for your definitions. Needs to be defendable.
+- **Biographies** : sometimes the client needs to prove that the tester was competent and qualified, it also gives piece of mind to the client.
+
+- **Exploitation Attempts and Payloads** : what did you do and did you leave anything behind
+- **Compromised credentials** : List accounts compromised
+- **Configuration Changes** : what did you change and where
+- **Additional Affected Scope** : If a list of hosts is too long then having in an appendix could help
+- **Information Gathering** : Any *valuable* information you discovered that would be useful for them to know (this might be a supplementary spreadsheet)
+- **Domain Password Analysis** : if you get a password database, it might be useful to reverse the hashed passwords, and use a tool like DPAT to get statistics to include about passwords.
+
+## Report differences
+- Some elements such as Attack Chain may not be included if compromise wasn't achieved
+- External may focus on information gathering, OSINT, exposed services etc
+- Some appendices may not be required.
