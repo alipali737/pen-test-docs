@@ -9,13 +9,47 @@
 ## Penetration Testing Process
 ![Penetration Testing Process Diagram](./penetration-testing-process.png)
 
-### Pre-Engagement
-- Main Commitments, tasks, scope, limitations, and related agreements are documented
+### 1. Pre-Engagement
+- Main Commitments, NDAs, goals, scope, limitations, rules of engagement, and related agreements are documented
 - Contracts & essential information are shared between testers and client
 - Next step is the Information Gathering
 
-### Information Gathering
+### 2. Information Gathering
 - Identify & gain overview of target(s) : Verify they are within scope
+- Looking for potential gaps that we could maybe use for a foothold
+
+### 3. Vulnerability Assessment
+- Analyse the results from our *information gathering*, looking for known vulnerabilities in the systems, apps, and versions to discover possible attack vectors.
+- Uses manual and automated assessment methods to determine the threat level and susceptibility of a company's asset.
+
+### 4. Exploitation
+- Use the results to test attacks against the potential vectors and execute them to gain initial access
+
+### 5. Post-Exploitation
+- We already have gained access to the exploited machine, ensuring we retain access if modifications and changes are made (Persistence)
+- Try to escalate privileges and hunt for sensitive data like credentials or other protected information (pillaging)
+- Can be used to demonstrate impact to a client or used as input for lateral movement
+
+### 6. Lateral Movement
+- Movement within the internal network of our target to access additional hosts. Often an iterative process with post-exploitation to reach our goal.
+
+### 7. Proof-of-Concept
+- Document, step-by-step, how we compromised the network or some level of access.
+- Aim to show how multiple weaknesses together let us reach our goal.
+- Lets them understand how each vulnerability fits in and help prioritise their remediation efforts.
+- Ideally we could create automation to help the client reproduce the steps.
+
+### 8. Post-Engagement
+- Prepare deliverable report
+- Clean up all traces of our actions
+- Review meetings with the client (sometimes presenting to stakeholders)
+- Archive our testing data per contractual & company policies
+
+### Example
+1. We get all the necessary contract and agreements from the client for a test (including the scope)
+2. We gather information on the target and identify potential footholds
+3. We use automated scanners and manual investigation to identify potential attack vectors
+4. We deploy our attacks to exploit these vectors gaining a level control
 
 ## Types of Penetration Testing
 ### External Test
