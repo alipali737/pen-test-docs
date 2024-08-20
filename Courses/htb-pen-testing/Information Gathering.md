@@ -15,4 +15,10 @@ This stage is all about discovering targets and potential footholds. Information
 - Service Enumeration
 - Host Enumeration
 
-## Open-Source Intelligence
+## Infrastructure Enumeration
+Utilise OSINT to understand their infrastructure setup, services like DNS can be utilised to discover name servers, mail servers, cloud instances, and more. We can create a map of servers and hosts to develop more of an understanding of the target infrastructure.
+
+Make a list of hosts & IP addresses and compare them to the scope to see if they are included. 
+
+Its also important to try to determine the company's security measures, the more detailed the information is, the easier it will be to evade detection. Identifying firewalls can give us excellent understanding of what techniques could trigger an alarm.
+
