@@ -30,24 +30,24 @@ debugInConsole: false # Print debug info in Obsidian console
 - Analyse the results from our *information gathering*, looking for known vulnerabilities in the systems, apps, and versions to discover possible attack vectors.
 - Uses manual and automated assessment methods to determine the threat level and susceptibility of a company's asset.
 
-### 4. Exploitation
+### 4. [[Exploitation]]
 - Use the results to test attacks against the potential vectors and execute them to gain initial access
 
-### 5. Post-Exploitation
+### 5. [[Post-Exploitation]]
 - We already have gained access to the exploited machine, ensuring we retain access if modifications and changes are made (Persistence)
 - Try to escalate privileges and hunt for sensitive data like credentials or other protected information (pillaging)
 - Can be used to demonstrate impact to a client or used as input for lateral movement
 
-### 6. Lateral Movement
+### 6. [[Lateral Movement]]
 - Movement within the internal network of our target to access additional hosts. Often an iterative process with post-exploitation to reach our goal.
 
-### 7. Proof-of-Concept
+### 7. [[Proof-of-Concept]]
 - Document, step-by-step, how we compromised the network or some level of access.
 - Aim to show how multiple weaknesses together let us reach our goal.
 - Lets them understand how each vulnerability fits in and help prioritise their remediation efforts.
 - Ideally we could create automation to help the client reproduce the steps.
 
-### 8. Post-Engagement
+### 8. [[Post-Engagement]]
 - Prepare deliverable report
 - Clean up all traces of our actions
 - Review meetings with the client (sometimes presenting to stakeholders)
