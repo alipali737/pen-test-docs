@@ -1,3 +1,11 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
 ## Ethical and Legal Considerations
 - Performing OSINT on a target only via public databases is legal
 - Performing ANY scanning or activities that interact with ANY of an organization's systems without explicit written consent in the form of a Scope of Work (including a detailed scope of testing, contract, and rules of engagement) signed by both parties is against the law and could lead to legal and even criminal action being taken against us.
@@ -49,7 +57,11 @@
 1. We get all the necessary contract and agreements from the client for a test (including the scope)
 2. We gather information on the target and identify potential footholds
 3. We use automated scanners and manual investigation to identify potential attack vectors
-4. We deploy our attacks to exploit these vectors gaining a level control
+4. We deploy our attacks to exploit these vectors gaining a level of access to a system
+5. We persist this access and attempt to escalate our privileges & pillage for sensitive data
+6. We use this position to move throughout the internal network attempting to pillage & gain more privileges, repeating until we achieve our goal
+7. We document all the steps taken to achieve our goal and develop a PoC (walkthrough or automation ideally)
+8. We prepare and deliver the report, and any presentations & meetings needed. Additionally we archive the testing data and clean up the traces on the system
 
 ## Types of Penetration Testing
 ### External Test

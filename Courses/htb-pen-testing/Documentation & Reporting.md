@@ -187,7 +187,7 @@ Additional options include:
 - Write a narrative between figures describing what is happening and what the tester is thinking.
 - Add alternative toolkits if possible (just mention the tool and reference, don't exploit twice)
 
-![[Pasted image 20240819151757.png]]
+![[sample-finding-writeup.png]]
 
 ### Appendices
 Some must appear, some are more dynamic. Make sure they don't unnecessarily bloat the report.
