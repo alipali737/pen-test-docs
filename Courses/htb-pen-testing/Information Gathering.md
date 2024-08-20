@@ -15,3 +15,4 @@ This stage is all about discovering targets and potential footholds. Information
 - Service Enumeration
 - Host Enumeration
 
+## Open-Source Intelligence
