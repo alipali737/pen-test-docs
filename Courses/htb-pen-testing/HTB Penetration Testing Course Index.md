@@ -1,7 +1,7 @@
 
 
 ## Pre-Engagement
-- [Penetration Testing Process](./Penetration%20Testing%20Process.md)
+- [Penetration Testing Process](Penetration%20Testing%20Process.md)
 
 ## Fundamentals
 - [Linux Fundamentals](/Knowledge/Operating%20Systems/Linux.md)

@@ -15,18 +15,18 @@ debugInConsole: false # Print debug info in Obsidian console
 - `Do no harm` and make sure to consider the consequences of that action : gain additional approval if in doubt.
 
 ## Penetration Testing Process
-![Penetration Testing Process Diagram](./penetration-testing-process.png)
+![Penetration Testing Process Diagram](penetration-testing-process.png)
 
-### 1. Pre-Engagement
+### 1. [[Pre-Engagement]]
 - Main Commitments, NDAs, goals, scope, limitations, rules of engagement, and related agreements are documented
 - Contracts & essential information are shared between testers and client
 - Next step is the Information Gathering
 
-### 2. Information Gathering
+### 2. [[Information Gathering]]
 - Identify & gain overview of target(s) : Verify they are within scope
 - Looking for potential gaps that we could maybe use for a foothold
 
-### 3. Vulnerability Assessment
+### 3. [[Vulnerability Assessment]]
 - Analyse the results from our *information gathering*, looking for known vulnerabilities in the systems, apps, and versions to discover possible attack vectors.
 - Uses manual and automated assessment methods to determine the threat level and susceptibility of a company's asset.
 
