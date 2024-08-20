@@ -24,11 +24,11 @@ It is also **critical to consider who is contracting the penetration test**, as 
 | Document                                              | Purpose                                                    | Timing for Creation                                 |
 | ----------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------- |
 | NDA                                                   | Protect confidentiality of the test systems and knowledge  | *After* initial contact                             |
-| Scoping Questionnaire                                 |                                                            | *Before* the Pre-engagement meeting                 |
+| Scoping Questionnaire                                 | Get an idea of what the client is looking for              | *Before* the Pre-engagement meeting                 |
 | Scoping Document                                      | The agreed scope for the test                              | *During* the Pre-engagement meeting                 |
 | Penetration Testing Proposal (Contract/Scope of Work) | The actual contract for the test and what will be involved | *During* the Pre-engagement meeting                 |
 | Rules of Engagement (RoE)                             | What rules must be followed                                | *Before* the Kick-off meeting                       |
-| Contractors Agreement (Physical assessments)          |                                                            | *Before* the Kick-off meeting                       |
+| Contractors Agreement (Physical assessments)          | A contract to protect physical intrusion and testing       | *Before* the Kick-off meeting                       |
 | Reports                                               | Deliverable reports for the client                         | *During* and *after* the conducted penetration test |
 ## Scoping Questionnaire
 - We would typically send this questionnaire to better understand what they want
@@ -43,3 +43,11 @@ It is also **critical to consider who is contracting the penetration test**, as 
 - Based on all this information we will create the *Scoping Document*
 
 ## Pre-engagement Meeting
+This is where the contract (A.K.A Scope of Work) is set out as well as the Rules of Engagement (RoE). It is important to walk through with the client exactly what they are after and make sure they are happy and write consent for the test.
+
+## Kick-Off Meeting
+This is where the client and the penetration testers have signed all the contractual documents and now go over the nature of the test and how it will take place. This is where procedures (eg. vulnerability notification) will be covered, what would stop testing activities (eg. unresponsive, discovery of illegal content or a threat actor).
+
+Inform the client of the risks during a test (log entries and alarms, locked user accounts from brute-forcing potentially etc). Make sure the client notifies the team if it negatively impacts their network.
+
+It explains and reassures non-technical people of the process and our expertise. We must adapt to exactly the wished of the client and not deviate.
