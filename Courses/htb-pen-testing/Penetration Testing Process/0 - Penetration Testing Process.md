@@ -17,28 +17,28 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Penetration Testing Process
 ![Penetration Testing Process Diagram](penetration-testing-process.png)
 
-### 1. [[Pre-Engagement]]
+### 1. [[1 - Pre-Engagement]]
 - Main Commitments, NDAs, goals, scope, limitations, rules of engagement, and related agreements are documented
 - Contracts & essential information are shared between testers and client
 - Next step is the Information Gathering
 
-### 2. [[Information Gathering]]
+### 2. [[2 - Information Gathering]]
 - Identify & gain overview of target(s) : Verify they are within scope
 - Looking for potential gaps that we could maybe use for a foothold
 
-### 3. [[Vulnerability Assessment]]
+### 3. [[3 - Vulnerability Assessment]]
 - Analyse the results from our *information gathering*, looking for known vulnerabilities in the systems, apps, and versions to discover possible attack vectors.
 - Uses manual and automated assessment methods to determine the threat level and susceptibility of a company's asset.
 
-### 4. [[Exploitation]]
+### 4. [[4 - Exploitation]]
 - Use the results to test attacks against the potential vectors and execute them to gain initial access
 
-### 5. [[Post-Exploitation]]
+### 5. [[5 - Post-Exploitation]]
 - We already have gained access to the exploited machine, ensuring we retain access if modifications and changes are made (Persistence)
 - Try to escalate privileges and hunt for sensitive data like credentials or other protected information (pillaging)
 - Can be used to demonstrate impact to a client or used as input for lateral movement
 
-### 6. [[Lateral Movement]]
+### 6. [[6 - Lateral Movement]]
 - Movement within the internal network of our target to access additional hosts. Often an iterative process with post-exploitation to reach our goal.
 
 ### 7. [[Proof-of-Concept]]
