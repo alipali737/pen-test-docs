@@ -66,7 +66,7 @@ set -g @plugin 'tmux-plugins/tmux-logging'
 # Initialize TMUX plugin manager (keep at bottom)
 run '~/.tmux/plugins/tpm/tpm'
 ```
-4. Start a new tmux session `tmux new -s setup`
+4. Start a new tmux session `tmux new -s <session-name>`
 5. Press `[Ctrl] + [B]` then `[Shift] + [I]` to install the plugin
 6. Start the logging with `[Ctrl] + [B]` and `[Shift] + [P]`
 7. Stop the logging with `[Shift] + [P]` or `exit` (kills the session)
