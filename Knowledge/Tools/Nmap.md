@@ -68,12 +68,14 @@ nmap {Scan Type(s)} {options} [target]
 ```
 
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
+
 ### Ping Sweeping
 ```shell
 nmap -sn [target range]
 ```
+> Run as `sudo` for MAC addresses
 
-A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an *Internet Control Message Protocol (ICMP)* packet. It is a discovery scan.
+A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an *Internet Control Message Protocol (ICMP)* packet. It is a discovery scan. 
 
 ### TCP Connect Scan
 ```shell

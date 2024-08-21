@@ -37,5 +37,10 @@ Once we have gathered an extensive list of the infrastructure, we need to examin
 **Internal Enumeration**
 - Look for sensitive files, local services, scripts, applications, and information that could aid *Post-Exploitation*.
 
+**Host discovery**
+```
+nmap -sL [ip range]
+```
+
 ## Pillaging
 This is done as part of the *Post-exploitation* stage, and is focused on collecting information that can project us further in the network. This could be names, data, credentials etc.
