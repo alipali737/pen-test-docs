@@ -77,6 +77,11 @@ nmap -sn [target range]
 
 A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an *Internet Control Message Protocol (ICMP)* packet. It is a discovery scan. 
 
+### OS Detection
+```
+nmap -O [target]
+```
+
 ### TCP Connect Scan
 ```shell
 nmap -sT [target]
