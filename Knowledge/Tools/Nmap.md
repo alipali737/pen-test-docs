@@ -1,3 +1,12 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
 ## The Scanning Phase
 A security test follows the Hacking Process:
 1. Reconnaissance
@@ -66,29 +75,6 @@ nmap -sn [target range]
 
 A ping sweep can be used to scan a network for available hosts, it does this by iterating through a range of addresses sending an *Internet Control Message Protocol (ICMP)* packet. It is a discovery scan.
 
-<details>
-	<summary>Example Ping Sweep</summary>
-	```shell
-	$ nmap -sn 192.168.1.1-254  
-	Starting Nmap 7.70 ( https://nmap.org ) at 2022-06-01 13:01 EST  
-	Nmap scan report for 192.168.1.96  
-	Host is up (0.064s latency).  
-	Nmap scan report for 192.168.1.118  
-	Host is up (0.029s latency).  
-	Nmap scan report for 192.168.1.128  
-	Host is up (1.18s latency).  
-	Nmap scan report for 192.168.1.171  
-	Host is up (0.0094s latency).  
-	Nmap scan report for 192.168.1.179  
-	Host is up (0.064s latency).  
-	Nmap scan report for 192.168.1.210  
-	Host is up (0.0066 latency).  
-	Nmap scan report for 192.168.1.253  
-	Host is up (0.0049 latency).  
-	Nmap done: 254 IP addresses (7 hosts up) scanned in 7.90 seconds
-	```
-</details>
-
 ### TCP Connect Scan
 ```shell
 nmap -sT [target]
@@ -103,6 +89,14 @@ TCP establishes a 3-way handshake. Nmap uses this handshake to determine if a po
 | ACK (Connection Established) | --> ||
 || <-- | Data: SSH banner message |
 | RST (Kill Connection) | --> ||
+### TCP Service Scan
+```shell
+# Scan standard ports (0-1023)
+nmap -Pn -sT -sV [Target]
+
+# Scan all ports (0-65535) - much longer
+nmap -Pn -sT -sV -p- [Target]
+```
 
 ### TCP SYN Scan (Stealthy alternative)
 ```shell
