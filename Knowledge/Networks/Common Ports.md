@@ -6,6 +6,7 @@
 | 25 (TCP)      | SMTP            | Email transfer                                                            |
 | 80 (TCP)      | HTTP            | Plain-text http                                                           |
 | 88 (UDP)      | Kerberos        | Key distribution server                                                   |
+| 139 (TCP)     | NetBIOS         | windows name resolution (used with 445 for file & printer sharing)        |
 | 161 (TCP/UDP) | SNMP            | Simple Network Management Protocol, communication between network devices |
 | 389 (TCP/UDP) | LDAP            | Directory access control                                                  |
 | 443 (TCP)     | SSL/TLS (HTTPS) | Encrypted http                                                            |
