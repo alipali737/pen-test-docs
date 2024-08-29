@@ -1,3 +1,10 @@
+## Ports
+Ports are between 0-65,535.
+
+- **Ports 0 - 1023** (aka *Well-Known Ports*): Assigned to universal TCP/IP application protocols. Most common examples: HTTPS, SSH, FTP, DNS, etc. They are registered to these protocols by a global authority.
+- **Ports 1024 - 49,151** (aka *Registered Ports*): Reserved for application protocols that are not specified as universal.
+- **Ports 49,152 - 65,535** (aka *Private/Dynamic Ports*): These ports may be used for any process without registering the port with the global assigning authority.
+
 | Port(s)       | Protocol        | Purpose                                                                   |
 | ------------- | --------------- | ------------------------------------------------------------------------- |
 | 20/21 (TCP)   | FTP             | File sharing                                                              |
