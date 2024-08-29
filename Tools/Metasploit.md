@@ -40,4 +40,16 @@ use [path/to/module]
 ### Configuring a module
 ```
 show options
+
+set [OPTION] [value]
+set RHOSTS 10.0.9.4
+```
+
+### Running an exploit
+```
+run
+
+check (used to check if the target is vulnerable before exploiting)
+
+exploit
 ```
