@@ -51,7 +51,11 @@ nmap -sS [target]
 ```
 This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server.
 
-
+### Automatic banner grabbing
+This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
+```
+nmap 
+```
 
 ---
 ## Creating Scripts in Lua
