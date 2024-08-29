@@ -10,7 +10,12 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 
 
+## Installation
+```
+
+```
+
 ## Documentation
-**Link:** 
+**Cheatsheet:** 
 **Website:** 
 ## Usage
