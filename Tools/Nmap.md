@@ -54,7 +54,7 @@ This scan type only performs a partial 3-way handshake, unlike the TCP Connect S
 ### Automatic banner grabbing
 This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
 ```
-nmap 
+nmap -sV --script=banner [target range]
 ```
 
 ---

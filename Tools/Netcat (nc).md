@@ -26,6 +26,8 @@ nc -vn [target] [port]
 ```
 This aids us in confirming the service running on a particular port.
 
+We can also use `curl -IL [url]` for banner grabbing web server headers.
+
 ### Create a simple reverse shell
 In many versions of netcat, the *-e* flag doesn't exist so this method isn't all reliable
 ```shell
