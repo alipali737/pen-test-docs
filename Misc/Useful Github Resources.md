@@ -9,4 +9,12 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Payloads
 -  [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
-- 
+
+## PrivEsc Enumeration
+- [Privilege Escalation Awesome Scripts SUITE (PEASS)](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite)
+### Linux Specific
+ - [LinEnum](https://github.com/rebootuser/LinEnum.git)
+ - [linuxprivchecker](https://github.com/sleventyeleven/linuxprivchecker)
+### Windows Specific
+- [Seatbelt](https://github.com/GhostPack/Seatbelt)
+- [JAWS](https://github.com/411Hall/JAWS)

