@@ -14,4 +14,18 @@ Its useful to have checklists to follow through for this process. [HackTricks](h
 
 ## Enumeration Scripts
 Many privilege exploits can be automated and scripts can enumerate through possibilities. These can be very noisy so sometimes manual investigation is better for more evasive intentions.
-![[]]
+![[Useful Resources#PrivEsc Enumeration]]
+
+## Kernel Exploits
+If the server is using an old OS version, then there are potentially kernel exploits available for PE. We can find this version out from `uname -a`. *These can have major consequences on the system's stability*, so care should be taken to try these in a lab first then (with client permission if its a prod environment) run it on the real system.
+
+## Vulnerable Software
+Exploring the packages & software installed on the system could give some valuable vectors for PE:
+- Linux : `dpkg -l`
+- Windows : `C:\Program Files`
+
+## User privileges
+We should check what permissions we actually have to start with and whether they can be abused. Some common ways:
+- Sudo : `sudo -l`
+- SUID
+- Windows Token Privileges
