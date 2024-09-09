@@ -30,6 +30,8 @@ nmap {Scan Type(s)} {options} [target]
 ```
 
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
+
+## Host Discovery
 ### Basic Network Scan (Ping Sweeping)
 ```
 nmap -sn [target range]
@@ -38,19 +40,6 @@ nmap -sn [target range]
 > `-sn` disables port scanning on each target
 
 A ping sweep is for target discovery, it sends ICMP packets to each address in the range and checks for responses.
-
-### Target Service Scan
-```
-nmap -sV -sC -O -p- [target]
-```
-This will scan for service information and versions, run the default scripts, and try to guess the OS version, whilst scanning all ports 0-65535.
-
-### TCP SYN Scan (Stealthier TCP alternative)
-```
-nmap -sS [target]
-```
-This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server. This is also faster than `-sT`.
-
 ### Scan a specific list of hosts
 By creating a file containing a list of IPs:
 ```
@@ -63,19 +52,13 @@ $ cat hosts.lst
 ```
 We can use the `-iL hosts.lst` flag to only scan those targets.
 
-### Automatic banner grabbing
-This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
-```
-nmap -sV --script=banner [target range]
-```
-
 ### ARP & ICMP
 When running with `-sn` to ping scan, by default Nmap will determine if a host is alive by an ARP reply:
 ```shell-session
 SENT (0.0074s) ARP who-has 10.129.2.18 tell 10.10.14.2
 RCVD (0.0309s) ARP reply 10.129.2.18 is-at DE:AD:00:00:BE:EF
 ```
-This can be viewed by setting `--packet-trace`. If we also want to send an ICMP echo request we can use the `-PE`. The `-Pn` disables 
+This can be viewed by setting `--packet-trace`. If we also want to send an ICMP echo request we can use the `-PE`. The `-Pn` disables ICMP echo requests and presumes a host is alive.
 
 If we just want to use ICMP we can use `--disable-arp-ping`. The information displayed in the response can give away information about the system. Many operating systems have different TTL values for ICMP echo responses. eg. in this we can see that the response received most likely came from a Windows machine (default of 128 TTL).
 ```shell-session
@@ -91,6 +74,28 @@ RCVD (0.0152s) ICMP [10.129.2.18 > 10.10.14.2 Echo reply (type=0/code=0) id=1360
 - Windows : 128
 - Linux & MacOS : 64
 - Network Devices : 255
+## Host & Port Scanning
+### Target Service Scan
+```
+nmap -sV -sC -O -p- [target]
+```
+This will scan for service information and versions, run the default scripts, and try to guess the OS version, whilst scanning all ports 0-65535.
+
+### TCP SYN Scan (Stealthier TCP alternative)
+```
+nmap -sS [target]
+```
+This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server. This is also faster than `-sT`.
+
+
+
+### Automatic banner grabbing
+This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
+```
+nmap -sV --script=banner [target range]
+```
+
+
 
 ---
 ## Creating Scripts in Lua
