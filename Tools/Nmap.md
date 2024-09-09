@@ -32,6 +32,7 @@ nmap {Scan Type(s)} {options} [target]
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
 
 ## Host Discovery
+**Objective:** Determine what hosts are alive on a network that can be further enumerated
 ### Basic Network Scan (Ping Sweeping)
 ```
 nmap -sn [target range]
@@ -74,17 +75,40 @@ RCVD (0.0152s) ICMP [10.129.2.18 > 10.10.14.2 Echo reply (type=0/code=0) id=1360
 - Linux & MacOS : 64
 - Network Devices : 255
 ## Host & Port Scanning
+**Objectives:**
+- Determine open ports and its services
+- Service versions
+- Information that each service provides
+- Operating System & version
+
+### Possible Port Responses
+| State              | Description                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- |
+| open               | A connection (TCP, UDP, or SCTP) has been established with the port                                             |
+| closed             | The returned TCP packet contains an `RST`(reset) flag, indicating the port is closed                            |
+| filtered           | Cannot determine state, either no response was returned or an error returned                                    |
+| unfiltered         | Only occurs with a TCP-ACK (`-sT`) scan meaning its accessible but cannot be determined if its open or closed   |
+| open \| filtered   | No response was returned at all (possibly a firewall or filter protecting)                                      |
+| closed \| filtered | Only occurs with a *IP ID idle* scan and it was impossible to determine if its closed or filtered by a firewall |
+### Scan Types
+#### TCP Scan
+```
+nmap -sT [target]
+```
+**Default for non-root scans**, attempts to perform a full TCP handshake to determine if it is open or closed.
+#### TCP SYN Scan (Stealthier TCP alternative)
+```
+nmap -sS [target]
+```
+**Default when running as root**, this scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN-ACK response from the server. This is also faster than `-sT`. Considers a response with `SYN-ACK` as open, and `RST` as closed.
+
 ### Target Service Scan
 ```
 nmap -sV -sC -O -p- [target]
 ```
 This will scan for service information and versions, run the default scripts, and try to guess the OS version, whilst scanning all ports 0-65535.
 
-### TCP SYN Scan (Stealthier TCP alternative)
-```
-nmap -sS [target]
-```
-This scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN/ACK response from the server. This is also faster than `-sT`.
+
 
 
 
