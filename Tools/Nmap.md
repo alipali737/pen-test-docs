@@ -22,7 +22,7 @@ sudo apt install nmap
 
 ## Documentation
 **Cheatsheet:** [[Nmap Module Cheat Sheet.pdf]]
-**Website:** 
+**Website:** [https://nmap.org/](https://nmap.org/)
 ## Usage
 A basic scan uses the following format:
 ```shell
@@ -135,6 +135,7 @@ nmap -sV --script=banner [target range]
 
 ---
 ## Nmap Scripting Engine
+[https://nmap.org/nsedoc/index.html](https://nmap.org/nsedoc/index.html)
 Scripts can be divided into 14 categories:
 
 | Category  | Description                                                                            |
@@ -161,7 +162,7 @@ sudo nmap <target> -sC
 sudo nmap <target> --script <category>
 
 # Specific scripts
-sudo nmap <target> --script <category>
+sudo nmap <target> --script <script-name>,<script-name>,...
 ```
 
 ### Creating Scripts in Lua
