@@ -31,6 +31,8 @@ nmap {Scan Type(s)} {options} [target]
 
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
 
+> For xml output (`-oX`), you can use `xsltproc target.xml -o target.html` to create a webpage of the results.
+
 ## Most Useful Commands
 ```
 # Host Discovery
@@ -117,16 +119,12 @@ nmap -sS [target]
 ```
 nmap -sU [target]
 ```
+A UDP is much slower as it has a longer timeout. UDP is stateless so no handshake is performed and we receive no acknowledgement
 ### Target Service Scan
 ```
 nmap -sV -sC -O -p- [target]
 ```
 This will scan for service information and versions, run the default scripts, and try to guess the OS version, whilst scanning all ports 0-65535.
-
-
-
-
-
 ### Automatic banner grabbing
 This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
 ```
@@ -136,7 +134,37 @@ nmap -sV --script=banner [target range]
 
 
 ---
-## Creating Scripts in Lua
+## Nmap Scripting Engine
+Scripts can be divided into 14 categories:
+
+| Category  | Description                                                                            |
+| :-------: | -------------------------------------------------------------------------------------- |
+|   auth    | Determination of auth credentials                                                      |
+| broadcast | Host discovery by broadcasting and adding discovered hosts to remaining scans          |
+|   brute   | Try to login to services by brute-force                                                |
+|  default  | Default scripts with the `-sC` option                                                  |
+| discovery | Evaluation of accessible services                                                      |
+|    dos    | Check for denial of service vulns - **Harms services!**                                |
+|  exploit  | Try to exploit known vulns for the scanned port                                        |
+| external  | Use external services for further processing                                           |
+|  fuzzer   | Identify vulns and unexpected packet handling by sending different fields (takes time) |
+| intrusive | Intrusive scripts that could negatively affect the target                              |
+|  malware  | Check is some malware infects the target                                               |
+|   safe    | Defensive scripts that do not perform intrusive and destructive access                 |
+|  version  | Extension for service detection                                                        |
+|   vuln    | Identification for specific vulns                                                      |
+```shell
+# Default scripts
+sudo nmap <target> -sC
+
+# Specific category
+sudo nmap <target> --script <category>
+
+# Specific scripts
+sudo nmap <target> --script <category>
+```
+
+### Creating Scripts in Lua
 
 The anatomy of an NSE Script:
 ```lua
