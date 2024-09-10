@@ -134,10 +134,26 @@ nmap -sV --script=banner [target range]
 ## Scanning Performance
 In extensive networks or low network bandwidth environments, it is critical that we optimise our scans.
 ### Timeouts
-The `Round-Trip-Time` (RTT) is the time it takes to receive a response.
-- `--min-RTT-timeout` : 
-- `--max-RTT-timeout` : 
-- `--initial-RTT-timeout` : 
+The `Round-Trip-Time` (RTT) is the time it takes to receive a response. These params allow for configuring the timeout window for packets. In a network that has high latency, nmap will automatically increase it's timeout (within the bounds) but this will mean that scans will take longer and could miss certain slow hosts.
+- `--min-RTT-timeout`
+- `--max-RTT-timeout`
+- `--initial-RTT-timeout`
+
+### Max Retries
+`--max-retries` indicates how many times nmap could request a port if no response is received. Default is 10.
+
+### Rates
+We can modify the `--min-rate` to send multiple packets simultaneously, drastically speeding up our scans.
+
+### Timing Templates
+As it can be difficult to optimise manually, esp in black box situations. There are 6 templates (`-T <0-5>`) for the aggressiveness of the scan. If we are too aggressive, it could negatively affect the scan, systems, or security measures.
+- `-T 0` / `-T paranoid`
+- `-T 1` / `-T sneaky`
+- `-T 2` / `-T polite`
+- `-T 3` / `-T normal` (Default)
+- `-T 4` / `-T aggressive`
+- `-T 5` / `-T insane
+[https://nmap.org/book/performance-timing-templates.html](https://nmap.org/book/performance-timing-templates.html)
 
 ---
 ## Nmap Scripting Engine
