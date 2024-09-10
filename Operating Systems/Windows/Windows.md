@@ -69,7 +69,7 @@ For this to work, remote access must be [enabled](https://learn.microsoft.com/en
 **Connecting from Linux**
 `xfreerdp` is a useful tool that can be run from the command line, initiating a RDP session to a windows target. This tool also allows copy pasting and drive redirection for file transfer.
 
-```shell-session
+```shell
 xfreerdp /v:<targetIp> /u:<username> /p:<password>
 ```
 

@@ -69,7 +69,7 @@ We can use the `-iL hosts.lst` flag to only scan those targets.
 
 ### ARP & ICMP
 When running with `-sn` to ping scan, by default Nmap will determine if a host is alive by an ARP reply:
-```shell-session
+```shell
 SENT (0.0074s) ARP who-has 10.129.2.18 tell 10.10.14.2
 RCVD (0.0309s) ARP reply 10.129.2.18 is-at DE:AD:00:00:BE:EF
 ```

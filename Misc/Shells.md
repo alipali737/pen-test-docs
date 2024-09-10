@@ -53,12 +53,12 @@ powershell -NoP -NonI -W Hidden -Exec Bypass -Command $listener = [System.Net.So
 To give us more terminal features (eg. a mouse, history, etc) we need to upgrade the TTY.
 There are multiple methods to do this. For our purposes, we will use the `python/stty` method. In our `netcat` shell, we will use the following command to use python to upgrade the type of our shell to a full TTY:
 
-```shell-session
+```shell
 alipali737@htb[/htb]$ python -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
 After we run this command, we will hit `ctrl+z` to background our shell and get back on our local terminal, and input the following `stty` command:
-```shell-session
+```shell
 www-data@remotehost$ ^Z
 
 alipali737@htb[/htb]$ stty raw -echo
@@ -73,13 +73,13 @@ Once we hit `fg`, it will bring back our `netcat` shell to the foreground. At
 
 We may notice that our shell does not cover the entire terminal. To fix this, we need to figure out a few variables. We can open another terminal window on our system, maximize the windows or use any size we want, and then input the following commands to get our variables:
 
-```shell-session
+```shell
 alipali737@htb[/htb]$ echo $TERM
 
 xterm-256color
 ```
 
-```shell-session
+```shell
 alipali737@htb[/htb]$ stty size
 
 67 318
@@ -87,7 +87,7 @@ alipali737@htb[/htb]$ stty size
 
 The first command showed us the `TERM` variable, and the second shows us the values for `rows` and `columns`, respectively. Now that we have our variables, we can go back to our `netcat` shell and use the following command to correct them:
 
-```shell-session
+```shell
 www-data@remotehost$ export TERM=xterm-256color
 
 www-data@remotehost$ stty rows 67 columns 318
