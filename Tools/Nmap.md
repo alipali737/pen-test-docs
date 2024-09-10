@@ -76,7 +76,7 @@ RCVD (0.0309s) ARP reply 10.129.2.18 is-at DE:AD:00:00:BE:EF
 This can be viewed by setting `--packet-trace`. If we also want to send an ICMP echo request we can use the `-PE`. The `-Pn` disables ICMP echo requests and presumes a host is alive.
 
 If we just want to use ICMP we can use `--disable-arp-ping`. The information displayed in the response can give away information about the system. Many operating systems have different TTL values for ICMP echo responses. eg. in this we can see that the response received most likely came from a Windows machine (default of 128 TTL).
-```shell-session
+```shell
 sudo nmap 10.129.2.18 -sn -PE --packet-trace --disable-arp-ping 
 
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 00:12 CEST
@@ -106,28 +106,28 @@ RCVD (0.0152s) ICMP [10.129.2.18 > 10.10.14.2 Echo reply (type=0/code=0) id=1360
 | closed \| filtered | Only occurs with a *IP ID idle* scan and it was impossible to determine if its closed or filtered by a firewall |
 ### Scan Types
 #### TCP Scan
-```
+```shell
 nmap -sT [target]
 ```
 **Default for non-root scans**, attempts to perform a full TCP handshake to determine if it is open or closed. This is more stealthy as it doesn't leave unfinished connections or unsent packets on the target which could alert detection systems.
 #### TCP SYN Scan
-```
+```shell
 nmap -sS [target]
 ```
 **Default when running as root**, this scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN-ACK response from the server. This is also faster than `-sT`. Considers a response with `SYN-ACK` as open, and `RST` as closed.
 #### UDP Scan
-```
+```shell
 nmap -sU [target]
 ```
 A UDP is much slower as it has a longer timeout. UDP is stateless so no handshake is performed and we receive no acknowledgement
 ### Target Service Scan
-```
+```shell
 nmap -sV -sC -O -p- [target]
 ```
 This will scan for service information and versions, run the default scripts, and try to guess the OS version, whilst scanning all ports 0-65535.
 ### Automatic banner grabbing
 This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Grabbing|Netcat Banner Grabbing]].
-```
+```shell
 nmap -sV --script=banner [target range]
 ```
 
