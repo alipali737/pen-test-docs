@@ -21,7 +21,7 @@ sudo apt install nmap
 ```
 
 ## Documentation
-**Cheatsheet:** 
+**Cheatsheet:** [[Nmap Module Cheat Sheet.pdf]]
 **Website:** 
 ## Usage
 A basic scan uses the following format:
@@ -30,6 +30,18 @@ nmap {Scan Type(s)} {options} [target]
 ```
 
 Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
+
+## Most Useful Commands
+```
+# Host Discovery
+sudo nmap [targets] -sn -oA [saveFileName]
+
+# Port Enumeration without ARP, ICMP, or DNS resolution
+sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sT -oA [saveFileName]
+
+# Faster (but potentially less accurate & noiser) alternative
+sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sS -oA [saveFileName]
+```
 
 ## Host Discovery
 **Objective:** Determine what hosts are alive on a network that can be further enumerated
@@ -95,13 +107,16 @@ RCVD (0.0152s) ICMP [10.129.2.18 > 10.10.14.2 Echo reply (type=0/code=0) id=1360
 ```
 nmap -sT [target]
 ```
-**Default for non-root scans**, attempts to perform a full TCP handshake to determine if it is open or closed.
-#### TCP SYN Scan (Stealthier TCP alternative)
+**Default for non-root scans**, attempts to perform a full TCP handshake to determine if it is open or closed. This is more stealthy as it doesn't leave unfinished connections or unsent packets on the target which could alert detection systems.
+#### TCP SYN Scan
 ```
 nmap -sS [target]
 ```
 **Default when running as root**, this scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN-ACK response from the server. This is also faster than `-sT`. Considers a response with `SYN-ACK` as open, and `RST` as closed.
-
+#### UDP Scan
+```
+nmap -sU [target]
+```
 ### Target Service Scan
 ```
 nmap -sV -sC -O -p- [target]
