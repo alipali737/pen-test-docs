@@ -131,7 +131,13 @@ This is an automated way of performing a similar grab to [[Netcat (nc)#Banner Gr
 nmap -sV --script=banner [target range]
 ```
 
-
+## Scanning Performance
+In extensive networks or low network bandwidth environments, it is critical that we optimise our scans.
+### Timeouts
+The `Round-Trip-Time` (RTT) is the time it takes to receive a response.
+- `--min-RTT-timeout` : 
+- `--max-RTT-timeout` : 
+- `--initial-RTT-timeout` : 
 
 ---
 ## Nmap Scripting Engine
