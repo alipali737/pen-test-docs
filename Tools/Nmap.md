@@ -155,6 +155,18 @@ As it can be difficult to optimise manually, esp in black box situations. There 
 - `-T 5` / `-T insane
 [https://nmap.org/book/performance-timing-templates.html](https://nmap.org/book/performance-timing-templates.html)
 
+## Firewall and IDS/IPS Evasion
+### Firewalls
+When a packet is blocked by a firewall it can contain different ICMP error codes or nothing at all, some examples are:
+- Net Unreachable
+- Net Prohibited
+- Host Unreachable
+- Host Prohibited
+- Port Unreachable
+- Proto Unreachable
+
+ The nmap TCP ACK scan (`-sA`) is much harder to filter with a firewall or IDS/IPS than other types. Because only the ACK 
+
 ---
 ## Nmap Scripting Engine
 [https://nmap.org/nsedoc/index.html](https://nmap.org/nsedoc/index.html)
