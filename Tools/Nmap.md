@@ -165,7 +165,7 @@ When a packet is blocked by a firewall it can contain different ICMP error codes
 - Port Unreachable
 - Proto Unreachable
 
- The nmap TCP ACK scan (`-sA`) is much harder to filter with a firewall or IDS/IPS than other types. Because only the ACK 
+ The nmap TCP ACK scan (`-sA`) is much harder to filter with a firewall or IDS/IPS than other types. Because only the ACK flag is sent, the host must respond with an RST regardless of the port state. Usually all incoming connection attempts (SYN flag) are blocked, however with an ACK packet, it is very hard to determine if there was an established connection already so it often passes through.
 
 ---
 ## Nmap Scripting Engine
