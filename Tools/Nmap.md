@@ -167,6 +167,12 @@ When a packet is blocked by a firewall it can contain different ICMP error codes
 
  The nmap TCP ACK scan (`-sA`) is much harder to filter with a firewall or IDS/IPS than other types. Because only the ACK flag is sent, the host must respond with an RST regardless of the port state. Usually all incoming connection attempts (SYN flag) are blocked, however with an ACK packet, it is very hard to determine if there was an established connection already so it often passes through.
 
+### Detecting IDS/IPS Systems
+Having multiple VPS's with their own IPs is key as if an IPS/IDS is alerted, we will likely be blocked from accessing the network on that IP.
+- By aggressively scanning a particular port and service, we can monitor whether any security actions are taken, suggesting the presence of a monitoring application (IDS).
+- If we perform all scans from a single host and it suddenly gets blocked, we can also determine that some alert & action has been triggered.
+All this means that we need to the carry on quieter and disguise our interactions.
+
 ---
 ## Nmap Scripting Engine
 [https://nmap.org/nsedoc/index.html](https://nmap.org/nsedoc/index.html)
