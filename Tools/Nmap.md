@@ -173,6 +173,9 @@ Having multiple VPS's with their own IPs is key as if an IPS/IDS is alerted, we 
 - If we perform all scans from a single host and it suddenly gets blocked, we can also determine that some alert & action has been triggered.
 All this means that we need to the carry on quieter and disguise our interactions.
 
+### Decoys
+
+
 ---
 ## Nmap Scripting Engine
 [https://nmap.org/nsedoc/index.html](https://nmap.org/nsedoc/index.html)
