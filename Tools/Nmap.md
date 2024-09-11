@@ -174,7 +174,10 @@ Having multiple VPS's with their own IPs is key as if an IPS/IDS is alerted, we 
 All this means that we need to the carry on quieter and disguise our interactions.
 
 ### Decoys
+Using the decoy method (`-D RND:5`) we can specify a random number (eg. 5) of IP addresses to be added to the IP header alongside our actual IP address.
 
+### DNS Proxying
+Sometimes using an internal DNS (`--dns-server <ns>,<ns>...`) can be more trusted on an internal network than an external one. Additionally, DNS queries tend to be done over port 53 on TCP & UDP so using this port as the `--source-port` could give us gain us more trust if the IDS/IPS is misconfigured.
 
 ---
 ## Nmap Scripting Engine
