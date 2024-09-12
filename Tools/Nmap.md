@@ -34,15 +34,18 @@ Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
 > For xml output (`-oX`), you can use `xsltproc target.xml -o target.html` to create a webpage of the results.
 
 ## Most Useful Commands
-```
+```shell
 # Host Discovery
-sudo nmap [targets] -sn -oA [saveFileName]
+sudo nmap [targets] -sn
 
 # Port Enumeration without ARP, ICMP, or DNS resolution
-sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sT -oA [saveFileName]
+sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sT
 
 # Faster (but potentially less accurate & noiser) alternative
-sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sS -oA [saveFileName]
+sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sS
+
+# Quieter port enumeration through a firewall & disguise as DNS p53
+sudo nmap [target] -p- --disable-arp-ping -Pn -n -sA --source-port 53
 ```
 
 ## Host Discovery
@@ -112,9 +115,14 @@ nmap -sT [target]
 **Default for non-root scans**, attempts to perform a full TCP handshake to determine if it is open or closed. This is more stealthy as it doesn't leave unfinished connections or unsent packets on the target which could alert detection systems.
 #### TCP SYN Scan
 ```shell
-nmap -sS [target]
+sudo nmap -sS [target]
 ```
 **Default when running as root**, this scan type only performs a partial 3-way handshake, unlike the TCP Connect Scan. It does this by never sending the final ACK packet upon receipt of the SYN-ACK response from the server. This is also faster than `-sT`. Considers a response with `SYN-ACK` as open, and `RST` as closed.
+#### TCP ACK Scan
+```shell
+sudo nmap -sA [target]
+```
+**Requires root**, only sends the final ACK packet (which is much more likely to get through firewall or IPS/IDS if they are misconfigured) meaning a port regardless of its state has to respond with a `RST` flag. This is useful for determining which ports are filtered and unfiltered.
 #### UDP Scan
 ```shell
 nmap -sU [target]
