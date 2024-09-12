@@ -47,7 +47,51 @@ We can ask several questions to understand what we may be facing:
 There are three main categories: *Infrastructure-based Enumeration*, *Host-based Enumeration*, and *OS-based Enumeration*. This model is more of the general topics rather than specific instructions.
 > Often there is a 'soft spot in the wall' that will allow us to progress further and gain more information, rarely do we actually need to force our way through.
 
-1. **Internet Presence**
-2. **Gateway**
-3. **Accessible Services**
-4. **Processes**
+> Layers 1 & 2 are primarily for external test situations and do not apply as thoroughly for internal test scenarios.
+
+> OSINT could also be added as part of the Internet Presence layer
+1. **Internet Presence** : Internet presence of the client and externally accessible infrastructure. *Find all possible target systems and interfaces we can test*
+	1. Domains
+	2. Sub-domains
+	3. vHosts
+	4. ASN
+	5. Netblocks (blocks of IP addresses assigned to an organisation)
+	6. IP Addresses
+	7. Cloud Instances
+	8. Security Measures
+2. **Gateway** : Possible security measures to protect the company's external and internal infrastructure. *What are we dealing with, and what do we need to be careful of*
+	1. Firewalls
+	2. DMZ
+	3. IPS/IDS
+	4. Endpoint Detection & Response systems (EDRs)
+	5. Proxies
+	6. Network Access Control (NAC)
+	7. Network Segmentation
+	8. VPN
+	9. Cloudflare
+3. **Accessible Services** : Accessible interfaces and services that are hosted externally or internally. *Understand the reason and functionality of the target, and gain the necessary knowledge to communicate with it and exploit it for our purposes effectively*
+	1. Service Type
+	2. Functionality
+	3. Configuration
+	4. Port
+	5. Version
+	6. Interface
+4. **Processes** : Internal processes, sources, and destinations associated with the services. *Understand the different processes, their tasks, data, source, and target. Understand the dependencies between them.*
+	1. PID
+	2. Processed Data
+	3. Tasks
+	4. Source
+	5. Destination
+5. **Privileges** : Internal permissions and privileges to the accessible services. *Identify permissions that have been overlooked, understand what is and is not possible.*
+	1. Groups
+	2. Users
+	3. Permissions
+	4. Restrictions
+	5. Environment
+6. **OS Setup** : Internal components and systems setup. *How the admins manage the systems and what sensitive data can be collect*
+	1. OS Type
+	2. Patch Level
+	3. Network Config
+	4. OS Environment
+	5. Configuration Files
+	6. Sensitive Private Files
