@@ -7,10 +7,11 @@ includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
 ## Summary
-[Netcat](https://linux.die.net/man/1/nc), *ncat*, or *nc* is a network utility for interacting with TCP/UDP ports.
+[Netcat](https://linux.die.net/man/1/nc) or *nc* is a network utility for interacting with TCP/UDP ports.
 > [PowerCat](https://github.com/besimorhino/powercat) is the PowerShell equivalent of Netcat.
 > [[Socat]] is a similar tool to netcat but offers additional features including full TTY reverse shells
 
+> ncat is the Nmap version of netcat, they are different and have different features.
 ## Installation
 ```
 sudo apt install netcat
