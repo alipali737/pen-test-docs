@@ -95,3 +95,17 @@ There are three main categories: *Infrastructure-based Enumeration*, *Host-based
 	4. OS Environment
 	5. Configuration Files
 	6. Sensitive Private Files
+
+## Infrastructure-based Enumeration
+### Domain Information
+- *Passive information gathering* to explore the internet presence of the client.
+- Looking to gain any information on *technology stacks* or structures.
+- *Company websites and services*, as well as *third-party recon tools*.
+- *Understand the services offered* by the company and what we can see as a 'customer'.
+#### SSL Certificates
+- Potentially reveal sub-domains or DNS alt names
+- Tools like [crt.sh](https://crt.sh/) can give us certificate logs that can reveal more information
+```shell
+curl -s https://crt.sh/?q=example.com&output=json | jq '.[].common_name' | uniq
+```
+
