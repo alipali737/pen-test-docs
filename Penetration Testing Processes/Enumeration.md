@@ -117,7 +117,26 @@ We can then run these IP addresses through a tool like [Shodan](https://www.shod
 Additionally we can use a tool like `dig` to search DNS records for a domain.
 ```shell
 dig any target.com
-
-<SNIP>
-
 ```
+
+There are many types of records we could get but a few common ones:
+- `A` : *IP address records* (likely these will already be known from prev steps)
+- `MX` : *Mail server records*, can could gain valuable insights into the company's email service provider
+- `NS` : *Name server records*, can be used to identify the hosting provider as most use their own name servers
+- `TXT` : *Text records*, often contain verification keys for third-parties, and other security aspects of DNS ([SPF](https://datatracker.ietf.org/doc/html/rfc7208), [DMARC](https://datatracker.ietf.org/doc/html/rfc7489), and [DKIM](https://datatracker.ietf.org/doc/html/rfc6376)).
+
+### Cloud Resources
+- Cloud storage resources are often misconfigured and require no auth
+	- *S3 Buckets* (AWS), *blobs* (Azure), *Cloud storage* (GCP)
+- We might discover these resources if they are in the DNS entries, alternatively we could use google Dorks `inurl:` and `intext:`.
+	- `intext: mycompany inurl: amazonaws.com`
+	- `intext: mycompany inurl: blob.core.windows.net`
+- We can also find addresses in web page source code too
+- [domain.glass](https://domain.glass/) can show us a lot about a company's infrastructure like this.
+- [GrayHatWarfare](https://buckets.grayhatwarfare.com/) is useful after we have found some links as this will search to find the resources stored.
+- We also want to check for abbreviations of the company name, a lot of IT uses the abbreviations instead.
+
+### Company Staff
+- Examining employees and their online presences can reveal lots of information (use business networks like [LinkedIn](https://www.linkedin.com/) or [Xing](https://www.xing.de/))
+- Look at job posts as they could show their infrastructure stack
+- Look for what skills the company is employing and what it is d
