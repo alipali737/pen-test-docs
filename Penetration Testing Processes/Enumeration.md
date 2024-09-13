@@ -108,4 +108,16 @@ There are three main categories: *Infrastructure-based Enumeration*, *Host-based
 ```shell
 curl -s https://crt.sh/?q=example.com&output=json | jq '.[].common_name' | uniq
 ```
+It is important that we collect the IP addresses and ensure they are on our scope list. We can use the `host` command for this:
+```shell
+for i in $(cat subdomainlist); do host $i | grep "has address" | grep target.com | cut -d" " -f1,4; done
+```
+We can then run these IP addresses through a tool like [Shodan](https://www.shodan.io/) to find devices and services.
 
+Additionally we can use a tool like `dig` to search DNS records for a domain.
+```shell
+dig any target.com
+
+<SNIP>
+
+```
