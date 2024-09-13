@@ -139,4 +139,5 @@ There are many types of records we could get but a few common ones:
 ### Company Staff
 - Examining employees and their online presences can reveal lots of information (use business networks like [LinkedIn](https://www.linkedin.com/) or [Xing](https://www.xing.de/))
 - Look at job posts as they could show their infrastructure stack
-- Look for what skills the company is employing and what it is d
+- Look for what skills the company is employing and what it is working with
+- Search github for the employees.
