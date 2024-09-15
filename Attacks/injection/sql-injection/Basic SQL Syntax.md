@@ -39,9 +39,9 @@ You will get a list of all the available databases
 +--------------------+
 | Database           |
 +--------------------+
-| information_schema |
-| mysql              |
-| performance_schema |
+| information_schema | <-- Default
+| mysql              | <-- Default
+| performance_schema | <-- Default
 | sys                |
 | users              |
 +--------------------+
