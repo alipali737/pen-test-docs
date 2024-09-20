@@ -43,6 +43,7 @@ FTP can also potential offer *anonymous* FTP, which doesn't require the user to 
 | Try anonymous connection                   | ftp anonymous@[target]                                                     |                                            |
 | Exploits for version                       | searchsploit [version]<br><br>google [version]                             |                                            |
 | FTP Brute force                            | nmap [IP] -n -Pn -p[PORT] --script ftp-brute.nse<br><br>hydra              |                                            |
+| List All                                   | LIST -R                                                                    |                                            |
 | Get/Put files                              | get/mget<br>put/mput                                                       | /etc/passwd<br>/etc/sudoers<br>/etc/shadow |
 | Download all files                         | wget -m --no-passive ftp://[user]:[pass]@[IP]                              |                                            |
 | Search for config files for other services |                                                                            |                                            |

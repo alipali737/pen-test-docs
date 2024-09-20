@@ -219,6 +219,11 @@ sudo nmap <target> --script <category>
 sudo nmap <target> --script <script-name>,<script-name>,...
 ```
 
+### Update Scripts Database
+```shell
+sudo nmap --script-updatedb
+```
+
 ### Creating Scripts in Lua
 
 The anatomy of an NSE Script:
