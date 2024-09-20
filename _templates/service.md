@@ -17,6 +17,9 @@ debugInConsole: false # Print debug info in Obsidian console
 | service name | releases link | notes |
 | ------------ | ------------- | ----- |
 |              |               |       |
+## How it works
+
+
 ## Potential Capabilities
 - 
 
