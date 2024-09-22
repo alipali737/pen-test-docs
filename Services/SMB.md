@@ -80,9 +80,30 @@ We can run an enumeration attack like:
 ```shell
 for i in $(seq 500 1100);do rpcclient -N -U "" 10.129.14.128 -c "queryuser 0x$(printf '%x\n' $i)" | grep "User Name\|user_rid\|group_rid" && echo "";done
 ```
-which will use RPC to query for users by enumerating through RIDs.
+which will use RPC to query for users by enumerating through RIDs. This can also be done with tools like [samrdump.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py).
+
+Additionally, the [SMBMap](https://github.com/ShawnDEvans/smbmap) and [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) tools are also widely used and helpful for the enumeration of SMB services.
+```shell
+smbmap -H [Target]
+
+crackmapexec smb [Target] --shares -u '' -p ''
+```
+
+Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used to gather a range of different information
+```shell
+./enum4linux-ng.py [Target] -A
+```
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                      | Command(s)                                                                                                                                          | Refs |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                   |      |
+| Enumerate Hostname        | nmblookup -A [target]                                                                                                                               |      |
+| List shares               | smbmap -H [target]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]                           |      |
+| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient \\\\\\\\[target]\\\\[share name] |      |
+| Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                     |      |
+| Overall Scan              | enum4linux -a [target]                                                                                                                              |      |
+| Groups via SMB            | nmap --script=smb-enum-group                                                                                                                        |      |
+| Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv                             |      |
+| Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                             |      |
+| OS discovery              | nmap [target] --script=smb-os-discovery.nse                                                                                                         |      |
