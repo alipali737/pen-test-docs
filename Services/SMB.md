@@ -25,6 +25,7 @@ Each host in a network is part of a *workgroup*, this is used to identify a coll
 | service name | releases link | notes                 |
 | ------------ | ------------- | --------------------- |
 | Samba        |               | */etc/samba/smb.conf* |
+| Microsoft-ds |               |                       |
 ## How it works
 A client must establish a connection with an SMB server application before any access can be provided, this is done with a TCP handshake.
 
