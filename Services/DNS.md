@@ -13,6 +13,7 @@ debugInConsole: false # Print debug info in Obsidian console
 SecurityTrails provides a short [list](https://securitytrails.com/blog/most-popular-types-dns-attacks) of the most popular attacks on DNS servers
 
 **Standard Port:** 
+- Zone transfers typically : *53/tcp*
 
 **Version Names:** 
 
@@ -85,6 +86,9 @@ A *reverse name resolution zone file* eg. `/etc/bind/db.10.0.9` must exist to be
 7    IN    MX     mail.domain.com
 ```
 
+### Zone Transfers
+Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to *Asynchronous Full Transfer Zone* (*AXFR*).
+
 ## Potential Capabilities
 - Link computer names & IP addresses
 - Determine services associated with a domain
@@ -92,9 +96,10 @@ A *reverse name resolution zone file* eg. `/etc/bind/db.10.0.9` must exist to be
 
 ## Enumeration Checklist
 
-| Goal                              | Command(s)                              | Refs |
-| --------------------------------- | --------------------------------------- | ---- |
-| Discover nameservers for a domain | dig ns [domain] @[target DNS server IP] |      |
-|                                   |                                         |      |
+| Goal                                                     | Command(s)                                                         | Refs |
+| -------------------------------------------------------- | ------------------------------------------------------------------ | ---- |
+| Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain] |      |
+| Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                       |      |
+| Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                           |      |
 ### Nmap Scripts
 - 
