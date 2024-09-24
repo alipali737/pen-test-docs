@@ -8,7 +8,17 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-*Domain Name System* (*DNS*) converts readable names (domains) to IP addresses. There are several types of DNS servers used worldwide for the globally distributed DNS:
+*Domain Name System* (*DNS*) converts readable names (domains) to IP addresses. It is mainly unencrypted therefore devices on the local WLAN and ISPs can spy on DNS queries. *DNS over TLS* (*DoT*) or *DNS over HTTPS* (*DoH*) can be used for encryption. Alternatively the *DNSCrypt* protocol can encrypt traffic between the client and name server.
+
+**Standard Port:** 
+
+**Version Names:** 
+
+| service name | releases link | notes |
+| ------------ | ------------- | ----- |
+|              |               |       |
+## How it works
+There are several types of DNS servers used worldwide for the globally distributed DNS:
 
 - *DNS Root Server* : Responsible for top-level domains (TLDs). Only requested if name server doesn't respond. `ICANN` coordinates the work of the root name servers.
 - *Authoritative Nameserver* : They hold authority for a particular zone, only answering queries from their area. If it cannot answer a query, the root name server takes over.
@@ -28,21 +38,22 @@ Example Flow:
 - A *forwarding server* may be used to pass the query to an upstream resolver.
 - A *non-authoritative nameserver* may respond from cache if it has the needed information.
 
-**Standard Port:** 
-
-**Version Names:** 
-
-| service name | releases link | notes |
-| ------------ | ------------- | ----- |
-|              |               |       |
-## How it works
-
-
+There are several types of DNS records:
+- *A* : returns an IPv4 address
+- *AAAA* : returns an IPv6 address
+- *MX* : returns the responsible mail server
+- *NS* : returns the DNS servers (nameservers)
+- *TXT* : all-router can contain various information
+- *CNAME* : alias for another domain name
+- *PTR* : reverse lookup (converts IP to domain name)
+- *SOA* : information about DNS zone and email address for admin contact
 ## Configuration
 
 
 ## Potential Capabilities
-- 
+- Link computer names & IP addresses
+- Determine services associated with a domain
+- Identify which computer serves a particular service by examining DNS queries (eg. email server)
 
 ## Enumeration Checklist
 
