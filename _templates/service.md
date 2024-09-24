@@ -20,6 +20,9 @@ debugInConsole: false # Print debug info in Obsidian console
 ## How it works
 
 
+## Configuration
+
+
 ## Potential Capabilities
 - 
 
