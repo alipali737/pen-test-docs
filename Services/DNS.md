@@ -10,13 +10,15 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 *Domain Name System* (*DNS*) converts readable names (domains) to IP addresses. It is mainly unencrypted therefore devices on the local WLAN and ISPs can spy on DNS queries. *DNS over TLS* (*DoT*) or *DNS over HTTPS* (*DoH*) can be used for encryption. Alternatively the *DNSCrypt* protocol can encrypt traffic between the client and name server.
 
+SecurityTrails provides a short [list](https://securitytrails.com/blog/most-popular-types-dns-attacks) of the most popular attacks on DNS servers
+
 **Standard Port:** 
 
 **Version Names:** 
 
-| service name | releases link | notes |
-| ------------ | ------------- | ----- |
-|              |               |       |
+| service name | releases link                      | notes                                                                                                     |
+| ------------ | ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Bind9        | [Bind9](https://www.isc.org/bind/) | Common Linux DNS server - [CVEdetails](https://www.cvedetails.com/product/144/ISC-Bind.html?vendor_id=64) |
 ## How it works
 There are several types of DNS servers used worldwide for the globally distributed DNS:
 
@@ -46,9 +48,42 @@ There are several types of DNS records:
 - *TXT* : all-router can contain various information
 - *CNAME* : alias for another domain name
 - *PTR* : reverse lookup (converts IP to domain name)
-- *SOA* : information about DNS zone and email address for admin contact
+- *SOA* : information about DNS zone and email address for admin contact (it will return as `name.domain` so you should replace the `.` with an `@`)
 ## Configuration
+All DNS servers work with three different types of configuration files:
+1. local DNS configuration files
+2. zone files
+3. reverse name resolution files
 
+[Bind9](https://www.isc.org/bind/) is a often used Linux-based DNS server. `named.conf` is its local configuration:
+- `named.conf.local` : zone entries for the individual domains
+- `named.conf.options` : general settings
+- `named.conf.log`
+
+```shell
+$ cat /etc/bind/named.conf.local
+
+zone "domain.com" {
+	type master;
+	file "/etc/bind/db.domain.com";
+	allow-update { key rndc-key };
+};
+```
+
+A *zone file* is a text file that describes a DNS zone with the BIND file format. Typically a zone is for one domain only (exceptions are ISP and public DNS servers). Each zone has its own file. It must contain exactly one *SOA* record and at least one *NS* record. If there is a syntax error, a DNS server will respond with *SERVFAIL* and considers the zone to not exist.
+```BIND
+server1    IN    A    10.0.9.5
+server2    IN    A    10.0.9.7
+
+ftp        IN    CNAME    server1
+mail       IN    CNAME    server2
+```
+
+A *reverse name resolution zone file* eg. `/etc/bind/db.10.0.9` must exist to be able to obtain an IP from a *FQDN*. This file maps the final octet of an IP to a respective host using the PTR record.
+```BIND
+5    IN    PTR    server1.domain.com
+7    IN    MX     mail.domain.com
+```
 
 ## Potential Capabilities
 - Link computer names & IP addresses
@@ -57,8 +92,9 @@ There are several types of DNS records:
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                              | Command(s)                              | Refs |
+| --------------------------------- | --------------------------------------- | ---- |
+| Discover nameservers for a domain | dig ns [domain] @[target DNS server IP] |      |
+|                                   |                                         |      |
 ### Nmap Scripts
 - 
