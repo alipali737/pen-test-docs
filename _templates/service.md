@@ -31,3 +31,5 @@ debugInConsole: false # Print debug info in Obsidian console
 | Goal | Command(s) | Refs |
 | ---- | ---------- | ---- |
 |      |            |      |
+### Nmap Scripts
+- 

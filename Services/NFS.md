@@ -12,6 +12,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 **Standard Port:** 
 - *NFSv4* : 2049/(udp or tcp)
+- *ONC-RPC* : 111/(udp or tcp)
 
 **Version Names:** 
 
@@ -41,6 +42,7 @@ cat /etc/exports
 ```
 
 Format: *{ directory_path } { ...hostname/subnet(permissions) }*
+[Exports file manual](https://linux.die.net/man/5/exports)
 ### Permissions
 - *rw* : read and write
 - *ro* : read only
@@ -50,6 +52,7 @@ Format: *{ directory_path } { ...hostname/subnet(permissions) }*
 - *insecure* : ports over 1024 will be used
 - *no_subtree_check* : disables checking of subdirectory trees
 - *root_squash* : prevents `root` from accessing files by changing all UID/GID 0 to `anonymous`
+- *nohide* : by default if you export two resources and one is also mounted under the other, it will hide the resource unless both are mounted. This option prevents this and an authorised user can freely move between the two resources.
 ### Example
 ```shell
 $ echo '/mnt/nfs 10.0.9.0/24(rw,sync,secure,root_squash)' >> /etc/exports
@@ -60,10 +63,21 @@ $ exportfs
 ```
 
 ## Potential Capabilities
-- 
+- Access to sensitive information if located in a file share
+- File transfer via RPC
+- Create usernames & group names on the local system to gain access to NFS files (Priv Esc)
+- Upload a shell to escalate privileges
+	- If we have SSH access and we want to read files from another folder, we can upload a shell to the NFS share that has the SUID of the target user and run it via our SSH user.
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                                    | Command(s)                                                                                          | Refs |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------- | ---- |
+| Check service ports for service running | sudo nmap [target] -p111,2049 -sV --script nfs*                                                     |      |
+| Check for mountable NFS shares          | nmap [target] -sV --script=nfs-showmount<br><br>showmount -e [target]                               |      |
+| Mount a share                           | mkdir target-NFS && sudo mount -t nfs [target]:/ ./target-NFS/ -o nolock && cd target-NFS && tree . |      |
+### Nmap Scripts
+- `nfs*`
+- `rpcinfo` : list all currently running RPC services
+- `nfs-showmount` : shows mounts available
+- `nfs-statfs` : show stats of mounts
