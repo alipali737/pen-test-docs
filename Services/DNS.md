@@ -8,8 +8,9 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-*Domain Name System* (*DNS*) converts readable names (domains) to IP addresses. There are several types of DNS servers.
-- *DNS Root Server* : 
+*Domain Name System* (*DNS*) converts readable names (domains) to IP addresses. There are several types of DNS servers used worldwide for the globally distributed DNS:
+- *DNS Root Server* : Responsible for top-level domains (TLDs). Only requested if name server doesn't respond. `ICANN` coordinates the work of the root name servers.
+- *Authoritative Nameserver* : 
 
 **Standard Port:** 
 
