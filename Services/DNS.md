@@ -109,13 +109,17 @@ This can also be automated with tools like [DNSenum](https://github.com/fwaeyten
 
 | Goal                                                     | Command(s)                                                                                                                                                  | Refs |
 | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
-| Nmap DNS host name lookup                                | nmap -F --dns-server [DNS ip] [target ip range]                                                                                                             |      |
+| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]                                                                    |      |
+| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |      |
 | Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain]                                                                                          |      |
 | DNS IP lookups                                           | dig a [domain] @[nameserver]                                                                                                                                |      |
 | DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |      |
-| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]                                                                    |      |
 | Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |      |
 | Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |      |
-| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |      |
+### General steps
+1. Find all zones using:
+	1. `axfr` (Zone Transfer) on the domain (if it is allowed)
+	2. brute force if ZT isn't allowed (`dnsenum`)
+2. Repeat 
 ### Nmap Scripts
 - 
