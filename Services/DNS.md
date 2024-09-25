@@ -119,7 +119,9 @@ This can also be automated with tools like [DNSenum](https://github.com/fwaeyten
 ### General steps
 1. Find all zones using:
 	1. `axfr` (Zone Transfer) on the domain (if it is allowed)
-	2. brute force if ZT isn't allowed (`dnsenum`)
-2. Repeat 
+	3. brute force if ZT isn't allowed (`dnsenum`)
+2. `dig` or `dnsenum` any zones you find (for `dig` look for authority section with same name)
+
+Sometimes a zone has an `allow-transfer` setting meaning it will only allow a transfer from a specific host, so we have to brute force instead.
 ### Nmap Scripts
 - 
