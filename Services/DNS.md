@@ -87,7 +87,18 @@ A *reverse name resolution zone file* eg. `/etc/bind/db.10.0.9` must exist to be
 ```
 
 ### Zone Transfers
-Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to *Asynchronous Full Transfer Zone* (*AXFR*).
+Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to *Asynchronous Full Transfer Zone* (*AXFR*). Zone files are usually stored over multiple servers for redundancy (with a master and slaves). The process to keep all these files in sync is zone transfer, and it uses the `rndc-key` for secure communication.
+
+There is a *primary* & multiple *secondary* name servers. Modifications are made to the primary which then gets replicated to the secondary servers. The secondaries (at certain intervals) fetch the `SOA` record from the primary and compare serial numbers.
+```shell
+dig axfr [domain] @[ip]
+```
+### Brute-forcing Subdomains
+We can brute force `A` records to detect subdomains:
+```shell
+for sub in $(cat [wordlist]);do dig $sub.inlanefreight.htb @10.129.14.128 | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
+```
+This can also be automated with tools like [DNSenum](https://github.com/fwaeytens/dnsenum).
 
 ## Potential Capabilities
 - Link computer names & IP addresses
@@ -98,7 +109,9 @@ Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to
 
 | Goal                                                     | Command(s)                                                         | Refs |
 | -------------------------------------------------------- | ------------------------------------------------------------------ | ---- |
+| Nmap DNS host name lookup                                | nmap -F --dns-server [DNS ip] [target ip range]                    |      |
 | Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain] |      |
+| DNS IP lookups                                           | dig a [domain] @[nameserver]                                       |      |
 | Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                       |      |
 | Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                           |      |
 ### Nmap Scripts
