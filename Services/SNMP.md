@@ -49,7 +49,7 @@ MIB files are written in *Abstract Syntax Notation One* (*ASN.1*) (an ASCII base
 An *Object Identifier* represents a node in a hierarchical namespace. OIDs consist of integers and are concatenated by dot notation (eg. `1.2.3`). Many nodes in the OID tree only serve as reference to the items below them (eg. `1.2.3` is the only node that can explain `1.2.3.4`)
 
 ### Community Strings
-They are like passwords that can determine whether the requested information can be viewed or not (kinda password + access control). Many organisations use *SNMPv2* as transitioning to *SNMPv3* is very complex. This means that 
+They are like passwords that can determine whether the requested information can be viewed or not (kinda password + access control). Many organisations use *SNMPv2* as transitioning to *SNMPv3* is very complex. This means that a lack of knowledge can cause misconfigurations & the lack of encryption on the transmission of the string can cause it to be intercepted.
 
 ## Configuration
 
