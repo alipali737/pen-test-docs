@@ -74,11 +74,13 @@ As it is often unknown where the emails will come from that we trust, sometimes 
 
 ## Enumeration Checklist
 
-| Goal                                | Command(s)                  | Refs |
-| ----------------------------------- | --------------------------- | ---- |
-| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25 |      |
-| Connect via telnet to send commands | telnet [ip] [port]          |      |
+| Goal                                | Command(s)                  | Refs                                                            |
+| ----------------------------------- | --------------------------- | --------------------------------------------------------------- |
+| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25 |                                                                 |
+| Connect via telnet to send commands | telnet [ip] [port]          |                                                                 |
+| Enumerate users                     | smtp-user-enum              | https://pentestmonkey.net/tools/user-enumeration/smtp-user-enum |
 
 ### Nmap Scripts
 - smtp-commands : tries sending smtp commands (*default script*)
 - smtp-open-relay : tries to identify the target as an open relay
+- smtp-enum-users : enum users with `RCPT`
