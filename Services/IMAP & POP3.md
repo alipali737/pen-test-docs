@@ -46,11 +46,12 @@ debugInConsole: false # Print debug info in Obsidian console
 - `1 LSUB "" *` : Returns an array of *subscribed* or *active* mailboxes
 - `1 SELECT INBOX`
 - `1 UNSELECT INBOX`
-- `1 FETCH <ID> all` : Get all data associated with a message in the mailbox
+- `1 STATUS INBOX` : Get the number of messages in the mailbox & other stats
+- `1 FETCH <ID> (FLAGS)` : Get data associated with a message in the mailbox
 - `1 FETCH 1:* (FLAGS)` : Get all messages
 	- Flags:
-		- `all`
-		- ``
+		- `all` : gets the envelope data
+		- `body[text]` : gets the text content of the email
 - `1 CLOSE` : Removes all messages with the *Deleted* flag set
 - `1 LOGOUT`
 ### POP3 Useful Commands
