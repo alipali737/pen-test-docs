@@ -31,7 +31,7 @@ debugInConsole: false # Print debug info in Obsidian console
 1. Communication is established to the server via port *143*/tcp.
 2. Text commands are sent, each has a unique identifier so responses from the server don't need to be waited for as they will be linked to each identifier when they are returned.
 3. The user is authenticated with username & password to access the mailbox
-4. SMTP sends emails and they are copied into an IMAP folder, accessible by all clients.
+4. [[SMTP]] sends emails and they are copied into an IMAP folder, accessible by all clients.
 
 *IMAP* is unencrypted by default for all communications (incl passwords). Typically SSL/TLS are mandated by mail servers for additional security.
 
@@ -47,6 +47,10 @@ debugInConsole: false # Print debug info in Obsidian console
 - `1 SELECT INBOX`
 - `1 UNSELECT INBOX`
 - `1 FETCH <ID> all` : Get all data associated with a message in the mailbox
+- `1 FETCH 1:* (FLAGS)` : Get all messages
+	- Flags:
+		- `all`
+		- ``
 - `1 CLOSE` : Removes all messages with the *Deleted* flag set
 - `1 LOGOUT`
 ### POP3 Useful Commands
@@ -74,10 +78,11 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Enumeration Checklist
 
-| Goal                        | Command(s)                                                                       | Refs |
-| --------------------------- | -------------------------------------------------------------------------------- | ---- |
-| Scan ports and services     | sudo nmap [target] -p110,143,993,995 -sC -sV                                     |      |
-| Gain connection information | curl -k 'imaps://[ip]' --user user:password -v                                   |      |
-| TLS Interactions            | openssl s_client -connect [ip]:pop3s<br><br>openssl s_client -connect [ip]:imaps |      |
+| Goal                                                  | Command(s)                                                                       | Refs |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------- | ---- |
+| Scan ports and services                               | sudo nmap [target] -p110,143,993,995 -sC -sV                                     |      |
+| Gain connection information                           | curl -k 'imaps://[ip]' --user user:password -v                                   |      |
+| TLS Interactions                                      | openssl s_client -connect [ip]:pop3s<br><br>openssl s_client -connect [ip]:imaps |      |
+| Enumerate through server and gather email information | [[IMAP & POP3#IMAP Useful Commands\|IMAP or POP3 commands]]                      |      |
 ### Nmap Scripts
 - 

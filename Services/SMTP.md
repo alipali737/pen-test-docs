@@ -50,10 +50,10 @@ Two key issues with the protocol:
 - *Mail Transfer Agent* (*MTA*) : Finds the next server in the delivery chain, may use `MX` DNS records. Checks email for size & spam.
 - *Mail Delivery Agent* (*MDA*) : Receives emails from MTAs and stores them in the recipient's email inbox
 
-| Client | Submission Agent | Open Relay | Mail Delivery Agent |   Mailbox   |
-| :----: | :--------------: | :--------: | :-----------------: | :---------: |
-| *MUA*  |      *MSA*       |   *MTA*    |        *MDA*        | *POP3/IMAP* |
-| Step 1 |      Step 2      |   Step 3   |       Step 4        |   Step 5    |
+| Client | Submission Agent | Open Relay | Mail Delivery Agent |           Mailbox            |
+| :----: | :--------------: | :--------: | :-----------------: | :--------------------------: |
+| *MUA*  |      *MSA*       |   *MTA*    |        *MDA*        | *[[IMAP & POP3\|POP3/IMAP]]* |
+| Step 1 |      Step 2      |   Step 3   |       Step 4        |            Step 5            |
 > *Mail User Agent* (*MUA*) : The email client
 
 ### ESMTP
