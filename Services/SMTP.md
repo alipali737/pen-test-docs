@@ -71,6 +71,7 @@ cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 As it is often unknown where the emails will come from that we trust, sometimes the `mynetworks` config setting is set to `0.0.0.0/0`. This allows the sending of fake emails.
 ## Potential Capabilities
 - Sometimes we can check the validity of users with the `VRFY` command as it may be configured to output a `252` code if a user exists. (Not reliable so check with dummy user).
+- 
 
 ## Enumeration Checklist
 
