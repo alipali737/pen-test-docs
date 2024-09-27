@@ -52,15 +52,24 @@ An *Object Identifier* represents a node in a hierarchical namespace. OIDs consi
 They are like passwords that can determine whether the requested information can be viewed or not (kinda password + access control). Many organisations use *SNMPv2* as transitioning to *SNMPv3* is very complex. This means that a lack of knowledge can cause misconfigurations & the lack of encryption on the transmission of the string can cause it to be intercepted.
 
 ## Configuration
+Configured by */etc/snmp/snmpd.conf* - [manpage](http://www.net-snmp.org/docs/man/snmpd.conf.html)
+Contains IPs, ports, MIBs, OIDs, authentication, and community strings
 
+### Dangerous Settings
+- `rwuser noauth` : provides full access to the OID tree without authentication
+- `rwcommunity <community string> <IPv4 address>` : Provides full OID tree access regardless of where the requests are sent from.
+- `rwcommunity6 <community string> <IPv6 address>` : Same as above but uses IPv6
 
 ## Potential Capabilities
-- 
+- Gain information about a device's configuration settings
+- Modify the configuration of a device
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                      | Command(s)                                                                                                            | Refs |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---- |
+| SNMP enumeration commands | snmpcheck -t [ip] -c [community string (default: public)]<br><br>snmpwalk -c public -v2c [ip]<br><br>snmpenum -t [ip] |      |
+| Enum community string     | onsixtyone -c [wordlist] [ip]                                                                                         |      |
+| Brute force OIDs          | braa [community string]@[ip]:.1.2.3.*                                                                                 |      |
 ### Nmap Scripts
 - 
