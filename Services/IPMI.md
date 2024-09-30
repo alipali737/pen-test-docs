@@ -33,7 +33,7 @@ To function, an IPMI requires the following:
 - *IPMI Memory* - Memory unit for the system (logs, repo data etc)
 - *Communications Interfaces* - Local system interfaces, serial and LAN interfaces, ICMB and PCI Management Bus
 
-The [flaw](http://fish2.com/ipmi/remote-pw-cracking.html) in
+The [flaw](http://fish2.com/ipmi/remote-pw-cracking.html) in the RAKP protocol in IPMI 2.0 means that before authentication takes place a salted hash (SHA1 or MD5) is sent to the client. This can be cracked and used to obtain the password for any user on the BMC. This "flaw" is a critical component of the IPMI specification so there is no direct fix. Using long, complex passwords or network segmentation can restrict access to the BMC. 
 
 ## Configuration
 Systems that use the IPMI protocol are BMCs. These are typically embedded as ARM systems running Linux and are connected directly to the host's motherboard. Many motherboards have BMCs built in, but can also be added through PCI.
@@ -52,10 +52,10 @@ Systems that use the IPMI protocol are BMCs. These are typically embedded as ARM
 
 ## Enumeration Checklist
 
-| Goal                    | Command(s)                                                                                                                                 | Refs |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---- |
-| Version scan            | sudo nmap -sU --script=ipmi-version -p623                                                                                                  |      |
-| Metasploit info scanner | [IPMI Information Discovery (auxiliary/scanner/ipmi/ipmi_version)](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_version/) |      |
-|                         |                                                                                                                                            |      |
+| Goal               | Command(s)                                                                                                                                 | Refs |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ---- |
+| Version scan       | sudo nmap -sU --script=ipmi-version -p623                                                                                                  |      |
+| msf info scanner   | [IPMI Information Discovery (auxiliary/scanner/ipmi/ipmi_version)](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_version/) |      |
+| msf Dumping hashes | [IPMI 2.0 RAKP Remote SHA1 Password Hash Retrieval](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_dumphashes/)             |      |
 ### Nmap Scripts
 - ipmi-version
