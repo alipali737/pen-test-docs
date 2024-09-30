@@ -25,7 +25,11 @@ Can also monitor system diagnostics (temps, speeds, power etc), additionally it 
 | ------------ | ------------- | ----- |
 |              |               |       |
 ## How it works
-
+To function, an IPMI requires the following:
+- *Baseboard Management Controller* (*BMC*) - A micro-controller.
+- *Intelligent Chassis Management Bus* (*ICMB*) - An interface that permits communication from one chassis to another.
+- *Intelligent Platform Management Bus* (*IPMB*) - Extends the BMC
+- *IPMI Memory* - 
 
 ## Configuration
 
