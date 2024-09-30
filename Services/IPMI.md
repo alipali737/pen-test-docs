@@ -18,6 +18,7 @@ Manage and monitor systems even if they are off or unresponsive. Acts as a direc
 Can also monitor system diagnostics (temps, speeds, power etc), additionally it can query information, hardware logs, and alerting using SNMP. The host can be powered off but the IPMI module needs power and a LAN connection.
 
 **Standard Port:** 
+- 623/udp
 
 **Version Names:** 
 
@@ -29,10 +30,11 @@ To function, an IPMI requires the following:
 - *Baseboard Management Controller* (*BMC*) - A micro-controller.
 - *Intelligent Chassis Management Bus* (*ICMB*) - An interface that permits communication from one chassis to another.
 - *Intelligent Platform Management Bus* (*IPMB*) - Extends the BMC
-- *IPMI Memory* - 
+- *IPMI Memory* - Memory unit for the system (logs, repo data etc)
+- *Communications Interfaces* - Local system interfaces, serial and LAN interfaces, ICMB and PCI Management Bus
 
 ## Configuration
-
+Systems that use the IPMI protocol are BMCs. These are typically embedded as ARM systems running Linux and are connected directly to the host's motherboard. Many motherboards have BMCs built in, but can also be added through PCI.
 
 ## Potential Capabilities
 - 
