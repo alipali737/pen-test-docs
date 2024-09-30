@@ -33,16 +33,29 @@ To function, an IPMI requires the following:
 - *IPMI Memory* - Memory unit for the system (logs, repo data etc)
 - *Communications Interfaces* - Local system interfaces, serial and LAN interfaces, ICMB and PCI Management Bus
 
+The [flaw](http://fish2.com/ipmi/remote-pw-cracking.html) in
+
 ## Configuration
 Systems that use the IPMI protocol are BMCs. These are typically embedded as ARM systems running Linux and are connected directly to the host's motherboard. Many motherboards have BMCs built in, but can also be added through PCI.
 
+### Default Passwords
+
+| Product         | User          | Pass                                                |
+| --------------- | ------------- | --------------------------------------------------- |
+| Dell iDRAC      | root          | calvin                                              |
+| HP iLO          | Administrator | random 8-char string of numbers & uppercase letters |
+| Supermicro IPMI | ADMIN         | ADMIN                                               |
+> HP iLO : `hashcat -m 7300 ipmi.txt -a 3 ?1?1?1?1?1?1?1?1 -1 ?d?u` tries all combinations.
 ## Potential Capabilities
-- 
+- Gain physical-like capabilities over the system's motherboard (monitor, power, modify BIOS, reinstall OS etc)
+- Many BMCs expose a web-based console, a CLI remote access protocol (eg. telnet or SSH), and port 623/udp for the IPMI protocol.
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                    | Command(s)                                                                                                                                 | Refs |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---- |
+| Version scan            | sudo nmap -sU --script=ipmi-version -p623                                                                                                  |      |
+| Metasploit info scanner | [IPMI Information Discovery (auxiliary/scanner/ipmi/ipmi_version)](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_version/) |      |
+|                         |                                                                                                                                            |      |
 ### Nmap Scripts
-- 
+- ipmi-version
