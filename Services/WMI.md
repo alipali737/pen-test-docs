@@ -10,10 +10,11 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 *Windows Management Infrastructure* (*WMI*) is the Microsoft implementation and extension of the *Common Information Model* (*CIM*), and core functionality of the *Standardised Web-Based Enterprise Management* (*WBEM*) for Windows.
 
-WMI allows read and write access to almost all set
+WMI allows read and write access to almost all settings on Windows systems. It is a collection of programs and databases (A.K.A repositories). It can be access via *PowerShell*, *VBScript*, or the *Windows Management Instrumentation Console* (*WMIC*).
 
 **Standard Port:** 
-- 
+- 135/tcp : initial communication
+- After connection, communication is moved to a random port
 
 | service name | releases link | notes |
 | ------------ | ------------- | ----- |
@@ -25,12 +26,13 @@ WMI allows read and write access to almost all set
 
 
 ## Potential Capabilities
-- 
+- Read and write most windows settings
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                | Command(s)                               | Refs                                                                                     |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Connect via wmiexec | wmiexec.py [user]:[pass]@[ip] "hostname" | [wmiexec.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py) |
+
 ### Nmap Scripts
 - 
