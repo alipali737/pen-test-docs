@@ -27,12 +27,17 @@ debugInConsole: false # Print debug info in Obsidian console
 
 
 ## Potential Capabilities
-- 
+- Remote GUI access to a windows target
 
 ## Enumeration Checklist
 
-| Goal                | Command(s)                                  | Refs |
-| ------------------- | ------------------------------------------- | ---- |
-| General Information | sudo nmap [ip] -sV -sC -p3389 --script rdp* |      |
+| Goal                | Command(s)                                  | Refs                                                                 |
+| ------------------- | ------------------------------------------- | -------------------------------------------------------------------- |
+| General Information | sudo nmap [ip] -sV -sC -p3389 --script rdp* |                                                                      |
+| RDP security check  | sudo cpan<br>rdp-sec-check.pl [ip]<br>      | [rdp-sec-check.pl](https://github.com/CiscoCXSecurity/rdp-sec-check) |
+| Connect to an RDP   | xfreerdp /u:[user] /p:[pass] /v:[ip]        |                                                                      |
+> Nmap uses the cookie `mstshash=nmap` on RDP connections. This can be identified by threat hunters or EDRs that could result in us getting blocked.
 ### Nmap Scripts
-- 
+- rdp-*
+- rdp-enum-encryption
+- rdp-ntlm-info
