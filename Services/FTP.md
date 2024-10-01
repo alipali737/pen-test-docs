@@ -31,6 +31,7 @@ FTP can also potential offer *anonymous* FTP, which doesn't require the user to 
 | service name | releases link                            | notes                                                                                                                                                                                                                  |
 | ------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | vsFTPd       | https://security.appspot.com/vsftpd.html | *very secure FTP daemon*, for Unix-like systems (linux). Can be secured by SSL/TLS.<br>- Default config: */etc/vsftpd.conf*<br>- Users: */etc/ftpusers*<br>*hide_ids=YES* config setting can mask uid & gids for files |
+| ProFTPD      | https://github.com/proftpd/proftpd       |                                                                                                                                                                                                                        |
 ## Potential Capabilities
 - Upload payloads or malicious files / tools
 - Download sensitive data
