@@ -57,6 +57,6 @@ Systems that use the IPMI protocol are BMCs. These are typically embedded as ARM
 | Version scan       | sudo nmap -sU --script=ipmi-version -p623                                                                                                                               |      |
 | msf info scanner   | [IPMI Information Discovery (auxiliary/scanner/ipmi/ipmi_version)](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_version/)                              |      |
 | msf Dumping hashes | [IPMI 2.0 RAKP Remote SHA1 Password Hash Retrieval (auxiliary/scanner/ipmi/ipmi_dumphashes)](https://www.rapid7.com/db/modules/auxiliary/scanner/ipmi/ipmi_dumphashes/) |      |
-| Passcracking       | hashcat -a 0 -m 7300 --username [hashes] [wordlist]                                                                                                                     |      |
+| Password cracking  | hashcat -a 0 -m 7300 --username [hashes] [wordlist]                                                                                                                     |      |
 ### Nmap Scripts
 - ipmi-version
