@@ -23,6 +23,7 @@ Useful for backups or mirroring. Looks at file size & last modified time to iden
 
 ## Configuration
 - Can be configured to use SSH
+- Find the config file with : `find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)`
 
 ## Potential Capabilities
 - [Hack Tricks](https://book.hacktricks.xyz/network-services-pentesting/873-pentesting-rsync)
@@ -31,7 +32,11 @@ Useful for backups or mirroring. Looks at file size & last modified time to iden
 
 | Goal                     | Command(s)                                                                                                                                          | Refs                                                                                                         |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Banner grabbing          | nc -vn [ip] 873<br><br>                                                                                                                             | https://book.hacktricks.xyz/network-services-pentesting/873-pentesting-rsync#banner-and-manual-communication |
+| Banner grabbing          | ```<br>nc -vn [ip] 873<br>#list<br>```<br>                                                                                                          | https://book.hacktricks.xyz/network-services-pentesting/873-pentesting-rsync#banner-and-manual-communication |
 | Enumerate shared folders | sudo nmap [ip] -sV --script "rsync-list-modules" -p873<br><br>auxiliary/scanner/rsync/modules_list<br><br>rsync -av --list-only rsync://[ip]:[port] |                                                                                                              |
+| List a shared folder     | rsync -av --list-only rsync://[ip]:[port]/[share-name]                                                                                              |                                                                                                              |
+| Copy files from a share  | rsync -av rsync://[ip]:[port]/[share-name] ./rsync-shared<br><br>rsync -e "ssh -p2222" -av rsync://[ip]:[port]/[share-name] ./rsync-shared          | [rsync over ssh guide](https://phoenixnap.com/kb/how-to-rsync-over-ssh)                                      |
+| Upload files             | rsync -av [local file] rsync://[ip]:[port]/[location]                                                                                               |                                                                                                              |
+> To authenticate with `rsync` you can use `rsync://[username]@[ip]:[port]/...` and this will prompt for the password.
 ### Nmap Scripts
 - 
