@@ -29,8 +29,9 @@ Useful for backups or mirroring. Looks at file size & last modified time to iden
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                     | Command(s)                                                                                                                                          | Refs                                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Banner grabbing          | nc -vn [ip] 873<br><br>                                                                                                                             | https://book.hacktricks.xyz/network-services-pentesting/873-pentesting-rsync#banner-and-manual-communication |
+| Enumerate shared folders | sudo nmap [ip] -sV --script "rsync-list-modules" -p873<br><br>auxiliary/scanner/rsync/modules_list<br><br>rsync -av --list-only rsync://[ip]:[port] |                                                                                                              |
 ### Nmap Scripts
 - 
