@@ -37,6 +37,6 @@ Services like remote sessions using PowerShell and event log merging require *Wi
 | Goal                    | Command(s)                                                                         | Refs |
 | ----------------------- | ---------------------------------------------------------------------------------- | ---- |
 | Footprinting            | nmap [ip] -sV -sC -p5985,5986                                                      |      |
-| Test a WinRM connection | *(powershell)* Test-WsMan <br><br>*(linux)* evil-winrm -i [ip] -u [user] -p [pass] |      |
+| Test a WinRM connection | *(powershell)* Test-WSMan <br><br>*(linux)* evil-winrm -i [ip] -u [user] -p [pass] |      |
 ### Nmap Scripts
 - 

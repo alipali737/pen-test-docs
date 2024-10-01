@@ -75,7 +75,7 @@ $ exportfs
 | --------------------------------------- | --------------------------------------------------------------------------------------------------- | ---- |
 | Check service ports for service running | sudo nmap [target] -p111,2049 -sV --script nfs*                                                     |      |
 | Check for mountable NFS shares          | nmap [target] -sV --script=nfs-showmount<br><br>showmount -e [target]                               |      |
-| Mount a share                           | mkdir target-NFS && sudo mount -t nfs [target]:/ ./target-NFS/ -o nolock && cd target-NFS && tree . |      |
+| Mount a share                           | mkdir target-NFS<br>sudo mount -t nfs [target]:/ ./target-NFS/ -o nolock<br>cd target-NFS<br>tree . |      |
 ### Nmap Scripts
 - `nfs*`
 - `rpcinfo` : list all currently running RPC services
