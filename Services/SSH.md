@@ -20,23 +20,38 @@ An encrypted direct connection that allows a shell to be created on a remote mac
 | OpenSSH      | [OpenBSD SSH](https://www.openssh.com/) |       |
 ## How it works
 ### OpenSSH Auth Methods
-- **Password** : A password for the user is given
+- **Password** : A password is requested from the client.
 - **Public-key** : Server sends cert to client to verify (prevents MITM), server creates a cryptographic problem with the public-key and the client decrypts it and returns the solution. 
-- **Host-based**
-- **Keyboard**
-- **Challenge-response**
-- **GSSAPI**
+- **Host-based** : Public-key but also only allows specific hosts to connect.
+- **Keyboard** & **Challenge-response** : Like password by default but can be configured to have multiple challenges (eg. could also include 1-time pass etc)
+- **GSSAPI** : Single sign on. Requires Windows AD or an IPA Server (Identity, Policy, and Authentication - linux equivalent to AD)
 
 ## Configuration
+- */etc/ssh/sshd_config*
+- [SSH Hardening Guide](https://www.ssh-audit.com/hardening_guides.html)
 
-
+### Dangerous Settings
+- `PasswordAuthentication yes`
+- `PermitEmptyPasswords yes`
+- `PermitRootLogin yes`
+- `Protocol 1` : uses outdated version of encryption
+- `X11Forwarding yes` : allows X11 forwarding for GUI applications (RDP basically)
+- `AllowTcpForwarding yes` : allow forwarding of TCP ports
+- `PermitTunnel` : allows tunnelling
+- `DebianBanner yes` : displays a specific banner when logging in (info disclosure)
 ## Potential Capabilities
-- 
+- Gain access to a remote system via a shell
+- Priv escalation & footholding
 
 ## Enumeration Checklist
 
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
+| Goal                                                    | Command(s)                                            | Refs                                             |
+| ------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------ |
+| Identify configurations, general info, encryption algos | ssh-audit.py [ip]                                     | [ssh-audit](https://github.com/jtesta/ssh-audit) |
+| View authentication methods                             | ssh -v [user]@[ip]                                    |                                                  |
+| Password brute force                                    | hydra -L [logins.txt] -P [passwords.txt] [target] ssh |                                                  |
+| Shell Shock Exploit                                     | ssh -i bob bob@[ip] '() { :;}; /bin/bash'<br>         |                                                  |
 ### Nmap Scripts
-- 
+- ssh-auth-methods
+- ssh2-enum-alogs
+- ssh-brute
