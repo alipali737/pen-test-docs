@@ -69,7 +69,7 @@ Contains IPs, ports, MIBs, OIDs, authentication, and community strings
 | Goal                      | Command(s)                                                                                                            | Refs |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---- |
 | SNMP enumeration commands | snmpwalk -c public -v2c [ip]<br><br>snmpcheck -t [ip] -c [community string (default: public)]<br><br>snmpenum -t [ip] |      |
-| Enum community string     | onsixtyone -c [wordlist] [ip]                                                                                         |      |
+| Enum community string     | onesixtyone -c [wordlist] [ip]                                                                                        |      |
 | Brute force OIDs          | braa [community string]@[ip]:.1.2.3.*                                                                                 |      |
 ### Nmap Scripts
 - 
