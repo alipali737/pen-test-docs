@@ -17,10 +17,10 @@ debugInConsole: false # Print debug info in Obsidian console
 
 
 **Standard Port:** 
-- IMAP : 143/tcp
-- IMAP : 993/tcp : alternative port sometimes used in SSL/TLS
-- POP3 : 110/tcp
-- POP3 : 995/tcp : SSL/TLS port
+- *IMAP* : 143/tcp
+- *IMAP* : 993/tcp : alternative port sometimes used in SSL/TLS
+- *POP3* : 110/tcp
+- *POP3* : 995/tcp : SSL/TLS port
 
 **Version Names:** 
 
@@ -79,11 +79,12 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Enumeration Checklist
 
-| Goal                                                  | Command(s)                                                                       | Refs |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------- | ---- |
-| Scan ports and services                               | sudo nmap [target] -p110,143,993,995 -sC -sV                                     |      |
-| Gain connection information                           | curl -k 'imaps://[ip]' --user user:password -v                                   |      |
-| TLS Interactions                                      | openssl s_client -connect [ip]:pop3s<br><br>openssl s_client -connect [ip]:imaps |      |
-| Enumerate through server and gather email information | [[IMAP & POP3#IMAP Useful Commands\|IMAP or POP3 commands]]                      |      |
+| Goal                                                  | Command(s)                                                                         | Refs |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------- | ---- |
+| Scan ports and services                               | sudo nmap [target] -p110,143,993,995 -sC -sV                                       |      |
+| Banner Grabbing                                       | nc -nv [IP] [110/143]<br><br>openssl s_client -connect [IP]:[993/995 -crlf] -quiet |      |
+| Gain connection information                           | curl -k "imaps://[ip]" --user user:password -v                                     |      |
+| TLS Interactions                                      | openssl s_client -connect [ip]:pop3s<br><br>openssl s_client -connect [ip]:imaps   |      |
+| Enumerate through server and gather email information | [[IMAP & POP3#IMAP Useful Commands\|IMAP or POP3 commands]]                        |      |
 ### Nmap Scripts
 - 
