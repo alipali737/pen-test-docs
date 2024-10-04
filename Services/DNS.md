@@ -121,10 +121,24 @@ This can also be automated with tools like [DNSenum](https://github.com/fwaeyten
 - Identify which computer serves a particular service by examining DNS queries (eg. email server)
 
 ## DNS Tools
-| Tool       | Key Features                                                                    | Use Cases                                                                               |
-| ---------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| *dig*      | Versatile DNS lookup tool that supports various query types and detailed output | Manual DNS queries, zone transfers, troubleshooting DNS issues, analysis of DNS records |
-| *nslookup* | DNS lookup tool primarily for `A`, `AAAA`, and `MX` records                     |                                                                                         |
+| Tool                       | Key Features                                                                     | Use Cases                                                                                       |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| *dig*                      | Versatile DNS lookup tool that supports various query types and detailed output  | Manual DNS queries, zone transfers, troubleshooting DNS issues, analysis of DNS records         |
+| *nslookup*                 | DNS lookup tool primarily for `A`, `AAAA`, and `MX` records                      | Basic DNS queries, quick checks of DNS and mail server records                                  |
+| *host*                     | Streamlined DNS lookup tool with concise output                                  | Quick checks of `A`, `AAAA`, and `MX` records                                                   |
+| *dnsenum*                  | automated DNS enum tool, dictionary attacks, brute-force, zone transfers         | discovering subdomains and gathering DNS information                                            |
+| *fierce*                   | DNS recon and subdomain enumeration with recursive search and wildcard detection | GUI for DNS recon, identifying subdomains and potential targets                                 |
+| *dnsrecon*                 | Multiple DNS recon techniques and various output formats                         | Comprehensive DNS enumeration, identify subdomains, and gathering DNS records                   |
+| *theHarvester*             | OSINT tool gathers from various sources, including DNS records (email addresses) | Collecting emails, employee info, and other data associated with a domain from multiple sources |
+| Online DNS Lookup services | GUI for performing DNS lookups                                                   | Quick and easy lookups, doesn't require CLIs, check for availability or basic info              |
+### Common dig Commands
+- `dig [domain]` : default `A` record lookup for a domain
+- `dig [domain] [type]` : specify the type of record to lookup
+- `dig @[nameserver IP] [domain]` : query a specific name server
+- `dig +trace [domain]` : full path of DNS resolution
+- `dig -x [ip]` : reverse DNS lookup
+- `dig +short [domain]` : concise output
+- `dig +noall +answer [domain]` : displays answer only
 
 ## Enumeration Checklist
 
