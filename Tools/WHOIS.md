@@ -12,11 +12,13 @@ WHOIS is a widely used query and response protocol designed to access databases 
 
 It can be useful for:
 - *Identifying Key Personnel* : Can reveal names, emails, phone numbers of responsible individuals. (Could be used for social engineering)
-- *Discovering Network Infrastructure* : 
+- *Discovering Network Infrastructure* : Technical details like name servers and IPs can provide clues about the target's network infrastructure. (Potential entry points and misconfigurations)
+- *Historical Data Analysis* : Using [WhoisFreaks](https://whoisfreaks.com/) can reveal historical changes around the domain.
 
 ## Installation
-```
-
+```shell
+sudo apt update
+sudo apt install whois -y
 ```
 
 ## Documentation
