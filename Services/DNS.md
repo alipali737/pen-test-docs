@@ -41,15 +41,30 @@ Example Flow:
 - A *forwarding server* may be used to pass the query to an upstream resolver.
 - A *non-authoritative nameserver* may respond from cache if it has the needed information.
 
+![[dns.svg]]
+
 There are several types of DNS records:
 - *A* : returns an IPv4 address
 - *AAAA* : returns an IPv6 address
 - *MX* : returns the responsible mail server
 - *NS* : returns the DNS servers (nameservers)
-- *TXT* : all-router can contain various information
+- *TXT* : all-rounder can contain various information
 - *CNAME* : alias for another domain name
 - *PTR* : reverse lookup (converts IP to domain name)
+- *SRV* : service record that defines a hostname and port for a specific service
 - *SOA* : information about DNS zone and email address for admin contact (it will return as `name.domain` so you should replace the `.` with an `@`)
+## The Hosts File
+The `hosts` file (eg. `/etc/hosts`) is a file that maps hostnames & domains to IP addresses. It provides a manual method of domain name resolution that bypasses the DNS process. This can be particularly useful for development, troubleshooting, or blocking websites. They take immediate effect and don't need a system or service restart.
+- *Linux* & *MacOS* : `/etc/hosts`
+- *Windows* : `C:\Windows\System32\drivers\etc\hosts`
+
+```
+<IP address> <Hostname> [<Alias> ...]
+
+127.0.0.1        localhost
+192.168.1.10     devserver.local
+```
+
 ## Configuration
 All DNS servers work with three different types of configuration files:
 1. local DNS configuration files
@@ -104,6 +119,12 @@ This can also be automated with tools like [DNSenum](https://github.com/fwaeyten
 - Link computer names & IP addresses
 - Determine services associated with a domain
 - Identify which computer serves a particular service by examining DNS queries (eg. email server)
+
+## DNS Tools
+| Tool       | Key Features                                                                    | Use Cases                                                                               |
+| ---------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| *dig*      | Versatile DNS lookup tool that supports various query types and detailed output | Manual DNS queries, zone transfers, troubleshooting DNS issues, analysis of DNS records |
+| *nslookup* | DNS lookup tool primarily for `A`, `AAAA`, and `MX` records                     |                                                                                         |
 
 ## Enumeration Checklist
 
