@@ -154,6 +154,15 @@ There are four steps to enumerating subdomains:
 - `dig +short [domain]` : concise output
 - `dig +noall +answer [domain]` : displays answer only
 
+### DNSEnum
+A powerful cli written in Perl for DNS reconnaissance:
+- *DNS Record Enumeration* : find records and config
+- *Zone Transfer Attempts* : try to perform zone transfers to find misconfigurations
+- *Subdomain Brute-Forcing* : brute force subdomains using a wordlist
+- *Google Scraping* : scrapes google search results for additional subdomains
+- *Reverse Lookup* : finds domains associated with an IP address
+- *WHOIS Lookups* : performs WHOIS queries to find domain information
+
 ## Enumeration Checklist
 
 | Goal                                                     | Command(s)                                                                                                                                                  | Refs                             |
