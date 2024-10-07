@@ -120,9 +120,15 @@ There are four steps to enumerating subdomains:
 3. *DNS Lookups* : Perform a DNS query on the subdomain and see if it resolves to an IP (typically `A` or `AAAA` records).
 4. *Filtering and Validation* : If the subdomain is resolved, it will be added to a list of valid subdomains for further validation.
 
-| Tool | Description |
-|-
-
+| Tool                                                    | Description                                                                                                                     |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [dnsenum](https://github.com/fwaeytens/dnsenum)         | Comprehensive DNS enumeration tool that supports dictionary and brute-force attacks for discovering subdomains.                 |
+| [fierce](https://github.com/mschwager/fierce)           | User-friendly tool for recursive subdomain discovery, featuring wildcard detection and an easy-to-use interface.                |
+| [dnsrecon](https://github.com/darkoperator/dnsrecon)    | Versatile tool that combines multiple DNS reconnaissance techniques and offers customisable output formats.                     |
+| [amass](https://github.com/owasp-amass/amass)           | Actively maintained tool focused on subdomain discovery, known for its integration with other tools and extensive data sources. |
+| [assetfinder](https://github.com/tomnomnom/assetfinder) | Simple yet effective tool for finding subdomains using various techniques, ideal for quick and lightweight scans.               |
+| [puredns](https://github.com/d3mondev/puredns)          | Powerful and flexible DNS brute-forcing tool, capable of resolving and filtering results effectively.                           |
+| [gobuster](https://github.com/OJ/gobuster)              | Directory/File, DNS and VHost busting tool written in Go.                                                                       |
 ## Potential Capabilities
 - Link computer names & IP addresses
 - Determine services associated with a domain
