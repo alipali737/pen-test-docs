@@ -106,8 +106,16 @@ Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to
 
 There is a *primary* & multiple *secondary* name servers. Modifications are made to the primary which then gets replicated to the secondary servers. The secondaries (at certain intervals) fetch the `SOA` record from the primary and compare serial numbers.
 ```shell
-dig axfr [domain] @[ip]
+dig axfr [domain] @{nameserver}
 ```
+
+1. Secondary DNS initiates a *Zone Transfer Request (AXFR)*.
+2. Primary sends its *Start of Authority (SOA)* record, and secondary determine if its zone data is current.
+3. Primary transfers all DNS records in the zone one by one.
+4. Primary signals the transfer is complete.
+5. Secondary acknowledges the primary server and closes the connection.
+
+It is critical that access control is put in place as these transfers can leak sensitive information (subdomains, IPs, name server records etc).
 ### Brute-forcing Subdomains
 We can brute force `A` records to detect subdomains:
 ```shell
