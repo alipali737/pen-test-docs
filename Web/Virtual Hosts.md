@@ -14,4 +14,4 @@ The key difference between *virtual hosts* and *subdomains* is their relationshi
 - *Virtual Hosts* (*VHosts*) : These are configured in the web server itself, allowing for multiple websites or applications to be hosted on a single server. These can be top level domains (eg. `example.com`) or subdomains (eg. `dev.example.com`). However each vhost has its own separate config, enabling more precise controls.
 > If a VHost doesn't have a DNS record, you can still access it via the `/hosts` file (bypassing DNS).
 ### VHost Fuzzing
-This technique uses wordlist brute-forcing to enumerate public and private VHosts and Subdomains. This can reveal hostnames that aren't intended for 
+This technique uses wordlist brute-forcing to enumerate public and private VHosts and Subdomains. This can reveal hostnames that aren't intended for the public or are only internally accessible.
