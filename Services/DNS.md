@@ -113,7 +113,15 @@ We can brute force `A` records to detect subdomains:
 ```shell
 for sub in $(cat [wordlist]);do dig $sub.inlanefreight.htb @10.129.14.128 | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
 ```
-This can also be automated with tools like [DNSenum](https://github.com/fwaeytens/dnsenum).
+
+There are four steps to enumerating subdomains:
+1. *Wordlist selection* : General purpose, targeted, or even custom wordlists can be used.
+2. *Iteration and Querying* : Iterate through the word list, appending the word to the base domain eg. `example.com` -> `dev.example.com`.
+3. *DNS Lookups* : Perform a DNS query on the subdomain and see if it resolves to an IP (typically `A` or `AAAA` records).
+4. *Filtering and Validation* : If the subdomain is resolved, it will be added to a list of valid subdomains for further validation.
+
+| Tool | Description |
+|-
 
 ## Potential Capabilities
 - Link computer names & IP addresses
@@ -142,16 +150,16 @@ This can also be automated with tools like [DNSenum](https://github.com/fwaeyten
 
 ## Enumeration Checklist
 
-| Goal                                                     | Command(s)                                                                                                                                                  | Refs |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
-| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]                                                                    |      |
-| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |      |
-| Enumerate subdomains                                     | gobuster dns -w [wordlist] -d [domain]                                                                                                                      |      |
-| Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain]                                                                                          |      |
-| DNS IP lookups                                           | dig a [domain] @[nameserver]                                                                                                                                |      |
-| DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |      |
-| Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |      |
-| Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |      |
+| Goal                                                     | Command(s)                                                                                                                                                  | Refs                             |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]                                                                    |                                  |
+| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |                                  |
+| Enumerate subdomains                                     | gobuster dns -w [wordlist] -d [domain]                                                                                                                      | [[DNS#Brute-forcing Subdomains]] |
+| Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain]                                                                                          |                                  |
+| DNS IP lookups                                           | dig a [domain] @[nameserver]                                                                                                                                |                                  |
+| DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |                                  |
+| Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |                                  |
+| Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |                                  |
 ### General steps
 1. Find all zones using:
 	1. `axfr` (Zone Transfer) on the domain (if it is allowed)
