@@ -105,9 +105,7 @@ There are three main categories: *Infrastructure-based Enumeration*, *Host-based
 #### SSL Certificates
 - Potentially reveal sub-domains or DNS alt names
 - Tools like [crt.sh](https://crt.sh/) can give us certificate logs that can reveal more information
-```shell
-curl -s https://crt.sh/?q=example.com&output=json | jq '.[].common_name' | uniq
-```
+![[SSL Certificates#Enumerating Subdomains Through CT Logs]]
 It is important that we collect the IP addresses and ensure they are on our scope list. We can use the `host` command for this:
 ```shell
 for i in $(cat subdomainlist); do host $i | grep "has address" | grep target.com | cut -d" " -f1,4; done
