@@ -41,3 +41,14 @@ gobuster dns -d [domain] -w [wordlist]
 // Found: blog.example.com
 // Found: portal.example.com
 ```
+
+### Virtual Host Discovery
+```
+gobuster vhost -u http://[target] -w [wordlist] --append-domain
+
+gobuster vhost -t 16 -k -o vhosts.txt -u http://[target] -w [wordlist] --append-domain
+```
+- *--append-domain* : adds the base domain to the current word to search for a subdomain (eg. `example.com` would be combined with the current word to be `ftp.example.com`)
+- *-t* : increase the number of threads for faster scanning
+- *-k* : ignores SSL/TLS cert errors
+- *-o* : save the results
