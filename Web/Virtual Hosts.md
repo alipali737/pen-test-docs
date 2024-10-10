@@ -15,3 +15,8 @@ The key difference between *virtual hosts* and *subdomains* is their relationshi
 > If a VHost doesn't have a DNS record, you can still access it via the `/hosts` file (bypassing DNS).
 ### VHost Fuzzing
 This technique uses wordlist brute-forcing to enumerate public and private VHosts and Subdomains. This can reveal hostnames that aren't intended for the public or are only internally accessible.
+
+### Types of Virtual Hosting
+- *Name-based Virtual Hosting* : Relies solely on the HTTP Host header. Doesn't require multiple IPs. Requires support from web server for name-based VH and can have limitations with certain protocols like SSL/TLS.
+- *IP-Based Virtual Hosting* : Assigns a unique IP to each website hosted on a server, doesn't require the Host header and can be used with any protocol (better isolation between sites too). However multiple IPs are expensive and not scalable.
+- *Port-Based Virtual Hosting* : Associate different websites with different ports. Not as common or user-friendly as name-based VH, and often requires the p
