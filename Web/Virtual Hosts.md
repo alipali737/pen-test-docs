@@ -13,10 +13,13 @@ The key difference between *virtual hosts* and *subdomains* is their relationshi
 - *Subdomains* : These extend a base domain, typically having their own DNS records, pointing to the same IP as the base or a different one. These can be used to organise different sections or services of a website.
 - *Virtual Hosts* (*VHosts*) : These are configured in the web server itself, allowing for multiple websites or applications to be hosted on a single server. These can be top level domains (eg. `example.com`) or subdomains (eg. `dev.example.com`). However each vhost has its own separate config, enabling more precise controls.
 > If a VHost doesn't have a DNS record, you can still access it via the `/hosts` file (bypassing DNS).
-### VHost Fuzzing
-This technique uses wordlist brute-forcing to enumerate public and private VHosts and Subdomains. This can reveal hostnames that aren't intended for the public or are only internally accessible.
-
-### Types of Virtual Hosting
+## Types of Virtual Hosting
 - *Name-based Virtual Hosting* : Relies solely on the HTTP Host header. Doesn't require multiple IPs. Requires support from web server for name-based VH and can have limitations with certain protocols like SSL/TLS.
 - *IP-Based Virtual Hosting* : Assigns a unique IP to each website hosted on a server, doesn't require the Host header and can be used with any protocol (better isolation between sites too). However multiple IPs are expensive and not scalable.
-- *Port-Based Virtual Hosting* : Associate different websites with different ports. Not as common or user-friendly as name-based VH, and often requires the p
+- *Port-Based Virtual Hosting* : Associate different websites with different ports. Not as common or user-friendly as name-based VH, and often requires the port to be specified in the URL.
+
+## Virtual Host Discovery Tools
+
+| Tool | Description | Features |
+| ---- | ----------- | -------- |
+|      |             |          |
