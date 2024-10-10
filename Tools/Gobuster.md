@@ -8,7 +8,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-Gobuster is a web enumeration tool that supports a number of features (dir, dns, forced browsing etc). Written in Go, it is much faster than many of the previous generation tools for this purpose.
+Gobuster is a web enumeration tool that supports a number of features (dir, dns, virtual host discovery, forced browsing etc). Written in Go, it is much faster than many of the previous generation tools for this purpose.
 
 ## Installation
 ```
