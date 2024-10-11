@@ -43,11 +43,11 @@ These techniques gather information **without directly interacting** with the ta
 - *Analysing Page Content* : The content or source of a page can give information away about the technologies and configurations it uses.
 ### Tools
 
-| Tool       | Description                                                                     | Features                                                                       |
-| ---------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Wappalyzer | Browser extension and online service for website technology profiling           | Identifies a range of web technologies (CMSs, frameworks, analytic tools, etc) |
-| BuiltWith  | Web technology profile that provides detailed reports on a website's tech stack | Offers both free and paid plans with varying levels of detail                  |
-| WhatWeb    | CLI for web fingerprinting                                                      | Uses a database of signatures to identify various web technolgies              |
-| [[Nmap]]   | Network scanner that includes service fingerprinting                            | Can use NSE for specialised fingerprinting                                     |
-| Netcraft   | Range of web security services, including fingerprinting and security reporting | Details on website's technology, hosting provider, and security posture        |
-| wafw00f    | CLI for identifying *Web Application Firewalls* (*WAF*s)                        | Help determine if a WAF is present and if so, its type and configuration       |
+| Tool        | Description                                                                     | Features                                                                       |
+| ----------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Wappalyzer  | Browser extension and online service for website technology profiling           | Identifies a range of web technologies (CMSs, frameworks, analytic tools, etc) |
+| BuiltWith   | Web technology profile that provides detailed reports on a website's tech stack | Offers both free and paid plans with varying levels of detail                  |
+| WhatWeb     | CLI for web fingerprinting                                                      | Uses a database of signatures to identify various web technolgies              |
+| [[Nmap]]    | Network scanner that includes service fingerprinting                            | Can use NSE for specialised fingerprinting                                     |
+| Netcraft    | Range of web security services, including fingerprinting and security reporting | Details on website's technology, hosting provider, and security posture        |
+| [[Wafw00f]] | CLI for identifying *Web Application Firewalls* (*WAF*s)                        | Help determine if a WAF is present and if so, its type and configuration       |

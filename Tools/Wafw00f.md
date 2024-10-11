@@ -8,14 +8,17 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-
+Wafw00f is a tool for identifying *Web Application Firewalls* (*WAF*s). It can perform fingerprinting of the type, as well as its configuration.
 
 ## Installation
 ```
-
+pip3 install git+https://githu.com/EnableSecurity/wafw00f
 ```
 
 ## Documentation
 **Cheatsheet:** 
 **Website:** 
 ## Usage
+```
+wafw00f [target]
+```
