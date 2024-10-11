@@ -51,3 +51,17 @@ These techniques gather information **without directly interacting** with the ta
 | [[Nmap]]    | Network scanner that includes service fingerprinting                            | Can use NSE for specialised fingerprinting                                     |
 | Netcraft    | Range of web security services, including fingerprinting and security reporting | Details on website's technology, hosting provider, and security posture        |
 | [[Wafw00f]] | CLI for identifying *Web Application Firewalls* (*WAF*s)                        | Help determine if a WAF is present and if so, its type and configuration       |
+## Automating Web Reconnaissance
+Although relying on tooling can sometime be a pitfall and lead to false positives, it does provide some key advantages:
+- *Efficiency* : significantly faster and better for repetitive tasks
+- *Scalability* : can be scaled across a large domain or number of targets
+- *Consistency* : ensures consistency and reliability, minimising the risk of human error
+- *Comprehensive Coverage* : ensures comprehensive coverage (eg. DNS, subdomain discovery, crawling, port scanning) and minimises the potential for some vectors to be missed.
+- *Integration* : many tools integrate with one another and can present their results through various platforms and standards.
+
+Some key frameworks that exist for this purpose:
+- [FinalRecon](https://github.com/thewhiteh4t/FinalRecon) : a python-based tool that offeres a variety of modules (incl. SSL cert verification, Whois, header analysis, and crawling).
+- [Recon-ng](https://github.com/lanmaster53/recon-ng) : another python-based modular tool, performing actions like DNS enum, subdomain discovery, port scanning, and even exploit automation.
+- [theHarvester](https://github.com/laramies/theHarvester) : a python cli designed specifically for gathering emails, subdomains, hosts, employee names, open ports and banners from public sources (eg. search engines, PGP key stores, SHODAN db).
+- [SpiderFoot](https://github.com/smicallef/spiderfoot) : an open-source intelligence automation tool which collects a range of information (similar to *theHarvester*) about a particular target.
+- [OSINT Framework](https://osintframework.com/) : a collection of tools and resources for open-source intelligence gathering. It utilises a wide range of sources such as social media, search engines, and public records.

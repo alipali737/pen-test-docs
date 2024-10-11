@@ -126,7 +126,7 @@ There are many types of records we could get but a few common ones:
 ### Cloud Resources
 - Cloud storage resources are often misconfigured and require no auth
 	- *S3 Buckets* (AWS), *blobs* (Azure), *Cloud storage* (GCP)
-- We might discover these resources if they are in the DNS entries, alternatively we could use google Dorks `inurl:` and `intext:`.
+- We might discover these resources if they are in the DNS entries, alternatively we could use [[Search Engine Discovery|Google Dorks]] `inurl:` and `intext:`.
 	- `intext: mycompany inurl: amazonaws.com`
 	- `intext: mycompany inurl: blob.core.windows.net`
 - We can also find addresses in web page source code too
