@@ -36,3 +36,18 @@ These techniques gather information **without directly interacting** with the ta
 | *Web Archive Analysis*  | Examining historical snapshots of the target to identify changes, vulnerabilities, or hidden information. | Using the Wayback Machine to view past versions of a target website to see how it has changed over time.                            | Wayback Machine                                |
 | *Social Media Analysis* | Gathering information from social media platforms like LinkedIn, Twitter, or Facebook.                    | Searching LinkedIn for employees of the target to learn about roles, responsibilities, and potential social engineering targets.    | LinkedIn, Twitter, Facebook, OSINT tools       |
 | *Code Repositories*     | Analysing public code repositories for exposed credentials or vulnerabilities.                            | Searching github for code snippets or repos related to the target that might contain sensitive information or code vulnerabilities. | Github, GitLab                                 |
+## Fingerprinting Web Services
+- *Banner Grabbing* : Analysing the returned banner of a service to reveal version information about the software.
+- *Analysing HTTP Headers* : HTTP headers can contain a variety of hints towards the server software, configurations and potential weaknesses.
+- *Probing for Specific Responses* : Sending specially curated requests in order to trigger certain responses (eg. errors, behaviours) could reveal weaknesses or configurations.
+- *Analysing Page Content* : The content or source of a page can give information away about the technologies and configurations it uses.
+### Tools
+
+| Tool       | Description                                                                     | Features                                                                       |
+| ---------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Wappalyzer | Browser extension and online service for website technology profiling           | Identifies a range of web technologies (CMSs, frameworks, analytic tools, etc) |
+| BuiltWith  | Web technology profile that provides detailed reports on a website's tech stack | Offers both free and paid plans with varying levels of detail                  |
+| WhatWeb    | CLI for web fingerprinting                                                      | Uses a database of signatures to identify various web technolgies              |
+| [[Nmap]]   | Network scanner that includes service fingerprinting                            | Can use NSE for specialised fingerprinting                                     |
+| Netcraft   | Range of web security services, including fingerprinting and security reporting | Details on website's technology, hosting provider, and security posture        |
+| wafw00f    | CLI for identifying *Web Application Firewalls* (*WAF*s)                        | Help determine if a WAF is present and if so, its type and configuration       |
