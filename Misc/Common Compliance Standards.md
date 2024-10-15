@@ -47,3 +47,14 @@ The [Federal Information Security Management Act (FISMA)](https://www.cisa.gov/f
 - Data Networks
 
 ## National Institute of Standards and Technology (NIST)
+NIST developed the [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) that is widely used for designing policies and procedures related to incident response. They also maintain a Penetration Testing Framework:
+- Planning
+- Discovery
+- Attack
+- Reporting
+
+## Open Web Application Security Project (OWASP)
+[OWASP]([Open Web Application Security Project](https://owasp.org/)) is typically the go-to organisation for web application security guidance. They maintain a few different standards for multiple technologies:
+- [Web Security Testing Guide (WSTG)](https://owasp.org/www-project-web-security-testing-guide/)
+- [Mobile Security Testing Guide (MSTG)](https://owasp.org/www-project-mobile-security-testing-guide/)
+- [Firmware Security Testing Methodology](https://github.com/scriptingxss/owasp-fstm)
