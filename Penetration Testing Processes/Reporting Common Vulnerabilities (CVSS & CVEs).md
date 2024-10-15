@@ -52,3 +52,9 @@ These measure the current state of the exploit techniques or code availability f
 	- Attacked - reports of this vulnerability being attacked OR solutions to simplify exploit attempts are available
 	- Proof-of-Concept - PoC is available but no reports of attacks
 	- Unreported - no knowledge of PoC available & no reports (eg. neither of the above) 
+
+## Common Vulnerability and Exposures (CVEs)
+A CVE ID is assigned to a flaw that meets the following criteria:
+1. The flaw can be fixed independently of any other bugs
+2. It is acknowledged by the vendor and documented
+3. Affects a single product (if it impacts more, each one gets a CVE)
