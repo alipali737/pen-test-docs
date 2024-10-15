@@ -28,6 +28,19 @@ These metrics evaluate the technical means needed to exploit the issue:
 - *Attack Complexity* : Whether security-enhancing conditions have to be evaded?
 	- Low - no additional target-specific evasion is needed
 	- High - evasion or circumvention of security measures in place is needed
-- *Attack Requirements* : 
-- *Privileges Required* : 
-- *User Interaction* : 
+- *Attack Requirements* : Does the vulnerability rely on any specific deployment or execution conditions?
+	- None - no specific conditions are required
+	- Present - a specific deployment or execution condition is needed (eg. a race condition needs to be won)
+- *Privileges Required* : Are any privileges requires prior to exploitation?
+	- None - an unauthenticated user can perform the exploit
+	- Low - basic capabilities are needed
+	- High - significant (eg. admin) privileges are needed
+- *User Interaction* : Is another (non attacker) user required to exploit?
+	- None - no interaction is needed by a human user
+	- Passive - a user involuntarily carries out an action (eg. navigating to an unknowingly compromised website)
+	- Active - the user must consciously perform an action (eg. accepting prompts or security warnings, connecting a device)
+#### Impact Metrics
+These measure the impacts of the issue to the CIA triad.
+- *Confidentiality*
+- *Integrity*
+- *Availability*
