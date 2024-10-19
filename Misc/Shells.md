@@ -54,7 +54,7 @@ To give us more terminal features (eg. a mouse, history, etc) we need to upgrade
 There are multiple methods to do this. For our purposes, we will use the `python/stty` method. In our `netcat` shell, we will use the following command to use python to upgrade the type of our shell to a full TTY:
 
 ```shell
-alipali737@htb[/htb]$ python -c 'import pty; pty.spawn("/bin/bash")'
+python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
 After we run this command, we will hit `ctrl+z` to background our shell and get back on our local terminal, and input the following `stty` command:
