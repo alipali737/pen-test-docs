@@ -51,3 +51,4 @@ nc -lvnp [Port]
 - *-n* : disables DNS resolution and uses just IPs, to speed up the connection
 - *-p* : specifies the source port
 
+![[Misc/File Transfer#Using NetCat & Ncat|File Transfer]]

