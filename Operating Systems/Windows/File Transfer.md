@@ -185,3 +185,27 @@ You can mount a drive as part of RDP
 ```bash
 xfreerdp /v:10.10.10.132 /d:<domain> /u:<user> /p:<password> /drive:<local path>,<remote path>
 ```
+
+## Encrypting Files with AES
+We can use the [Invoke-AESEncryption.ps1](https://www.powershellgallery.com/packages/DRTools/4.0.2.3/Content/Functions%5CInvoke-AESEncryption.ps1) file to perform AES encryption. We must transfer the script to the target and then import it as a module with:
+```PowerShell
+Import-Module .\Invoke-AESEncryption.ps1
+```
+### Encrypting Text
+```PowerShell
+# Encrypt some text into a Base64 encoded ciphertext
+Invoke-AESEncryption -Mode Encrypt -Key "password" -Text "Secret Text"
+
+# Decrypt the Base64 encoded ciphertext
+Invoke-AESEncryption -Mode Decrypt -Key "password" -Text "LtxcR...AMfs="
+```
+
+### Encrypting Files
+```PowerShell
+# Encrypt a file and output it as .aes output ext
+Invoke-AESEncryption -Mode Encrypt -Key "password" -Path file.bin
+
+# Decrypt the Base64 encoded ciphertext
+Invoke-AESEncryption -Mode Decrypt -Key "password" -Path file.bin.aes
+```
+

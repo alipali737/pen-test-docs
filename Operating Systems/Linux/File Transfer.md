@@ -93,3 +93,14 @@ netstat -lnpt | grep ":22"
 # Use SCP
 scp '<user>@<ip>:<file path>' '<local file path>'
 ```
+
+## File Encryption
+[OpenSSL](https://www.openssl.org/) is often included in many Linux distros and can be used to handle file encryption.
+```bash
+# Encrypt a file using AES256, with increased iterations and Password-Based Key Derivation Function 2 (pbpdf2)
+openssl enc -aes256 -iter 100000 -pbkdf2 -in /etc/passwd -out passwd.enc
+
+# Decrypt by adding the -d flag
+openssl enc -d -aes256 -iter 100000 -pbkdf2 -in passwd.enc -out passwd
+```
+> Although this method is secure, using secure transport methods (eg. HTTPS, SFTP, or SSH) is still recommended where possible.
