@@ -15,8 +15,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ### Linux Specific
  - [LinEnum](https://github.com/rebootuser/LinEnum.git) : Check for PE vectors
  - [linuxprivchecker](https://github.com/sleventyeleven/linuxprivchecker) : Check for PE vectors
- - [GTFOBins](https://gtfobins.github.io/) : Commands that exploit through sudo
+ - [GTFOBins](https://gtfobins.github.io/) : Commands that exploit through sudo *(Living off the Land)*
 ### Windows Specific
 - [Seatbelt](https://github.com/GhostPack/Seatbelt) : Check for PE vectors
 - [JAWS](https://github.com/411Hall/JAWS) : Check for PE vectors
-- [LOLBAS](https://lolbas-project.github.io/#) : Exploits for common applications
+- [LOLBAS](https://lolbas-project.github.io/#) : Exploits for common applications *(Living off the Land)*
