@@ -74,3 +74,5 @@ check (used to check if the target is vulnerable before exploiting)
 
 exploit
 ```
+
+If an exploit has run successfully, we will be given a `meterpreter` shell (like Bash, PowerShell etc), we can use `?` to see the available commands but if we want a proper system-level shell, we can use `shell`.
