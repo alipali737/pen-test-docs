@@ -21,7 +21,7 @@ sudo apt install metasploit -y
 ## Usage
 ### Initialise the msf console
 ```
-msfconsole
+sudo msfconsole
 ```
 
 ### Searching
