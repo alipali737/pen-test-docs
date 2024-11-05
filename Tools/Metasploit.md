@@ -10,6 +10,27 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 The metasploit framework contains a ton of modules for public exploits and useful pen testing utilities.
 
+Modules are structured by their path:
+`exploit/windows/smb/psexec` would break into:
+- *exploit* : module will attempt to create a shell session
+- *windows* : the targeted platform
+- *smb* : the target service
+- *psexec* : the tool being uploaded.
+
+[This](https://docs.metasploit.com/docs/modules.html) document summarises the modules and their structure, in short:
+- *Auxiliary* modules : Do not exploit a target but perform useful tasks
+	- Administration : modify, operator or manipulate target system
+	- Analysing : mostly password cracking
+	- Gathering : collect, enumerate, gather data
+	- DoS
+	- Scanning : vulnerability scanning
+	- Server Support : run common protocol servers (eg. SMB, FTP)
+- *Encoder* modules : Used to encode raw bytes of a payload and run encoding algorithms
+- *Evasion* modules : Generates evasive payloads
+- *Exploit* modules : Modules that attempt to execute arbitrary code on the target via vulnerabilities
+- *Nop* modules : Create nop instructions (often used in stack buffer overflows)
+- *Payloads* modules : The actual payloads executed by exploit modules (often getting shells but can add accounts etc)
+- *Post* modules : Post-exploitation modules for gathering, collecting, or enumerating data from a session
 ## Installation
 ```
 sudo apt install metasploit -y
@@ -32,7 +53,7 @@ search openssh
 search cve:2009 type:exploit vsftpd
 ```
 
-### Using an exploit
+### Using an module
 ```
 use [path/to/module]
 ```
