@@ -10,6 +10,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 The metasploit framework contains a ton of modules for public exploits and useful pen testing utilities.
 
+[[MSFvenom]] is a part of the metasploit framework specifically for creating payloads.
+
 Modules are structured by their path:
 `exploit/windows/smb/psexec` would break into:
 - *exploit* : module will attempt to create a shell session
