@@ -20,3 +20,4 @@ debugInConsole: false # Print debug info in Obsidian console
 - [Seatbelt](https://github.com/GhostPack/Seatbelt) : Check for PE vectors
 - [JAWS](https://github.com/411Hall/JAWS) : Check for PE vectors
 - [LOLBAS](https://lolbas-project.github.io/#) : Exploits for common applications *(Living off the Land)*
+- 

