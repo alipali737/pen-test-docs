@@ -68,6 +68,29 @@ Get-ExecutionPolicy <account>
 | ipconfig                             | displays IP information                                 | ifconfig                 |
 | \<command> /?                        | displays the help page for a command                    | \<command> --help        |
 
+## CMD vs Powershell
+**CMD** doesn't log commands but Powershell does, so where evasion is needed and the actions are appropriate, CMD can be a preferred choice.
+**CMD** additionally also doesn't have *Execution Policies* and *User Account Control* (*UAC*) to limit your ability to execute commands.
+**CMD** works with text as inputs and output but Powershell utilised .NET objects instead. This can be better for automation but more difficult to read sometimes.
+
+Use **CMD** when:
+- Hosts pre-windows 7 do not have Powershell
+- When only simple interactions/access is required to the host
+- When using simply batch files, net commands, or MS-DOS native tools
+- When you believe execution policies may affect your ability to run scripts or other actions on the host
+
+Use **Powershell** when:
+- You need to use cmdlets or other custom-built scripts
+- You wish to interact with .NET objects instead of text output
+- Stealth is less of a concern
+- If you plan to interact with cloud-based services and hosts
+- If the scripts set and use aliases
+
+## Windows Subsystem for Linux
+WSL can make it easier to infiltrate and manipulate a windows system. Some malware utilises WSL to download and install payloads onto a Windows target via WSL. Additionally, python built-in libraries that are present on windows and linux are being used to execute powershell commands.
+
+ **Important** : it was only in Windows 11, version 22H2 that Hyper-V firewall was introduced. Meaning any versions before this are likely to have no network monitoring or filtering on communication made via WSL.
+
 ## Connecting to Windows Targets
 **Connecting from Windows**
 To connect to a windows target from another windows host, you can use the built in RDP (mstsc.exe) application. Profiles can be saved as `.RDP` files, *it is worth looking at these files if discovered in an engagement.*
