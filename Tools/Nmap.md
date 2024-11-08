@@ -87,6 +87,7 @@ SENT (0.0107s) ICMP [10.10.14.2 > 10.129.2.18 Echo request (type=8/code=0) id=13
 RCVD (0.0152s) ICMP [10.129.2.18 > 10.10.14.2 Echo reply (type=0/code=0) id=13607 seq=0] IP [ttl=128 id=40622 iplen=28 ]
 ...
 ```
+> We can also use `ping` for this process too as it shows the TTL
 #### Default ICMP Echo TTL
 - Windows : 128
 - Linux & MacOS : 64
