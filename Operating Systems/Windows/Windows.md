@@ -89,7 +89,8 @@ Use **Powershell** when:
 ## Windows Subsystem for Linux
 WSL can make it easier to infiltrate and manipulate a windows system. Some malware utilises WSL to download and install payloads onto a Windows target via WSL. Additionally, python built-in libraries that are present on windows and linux are being used to execute powershell commands.
 
- **Important** : it was only in Windows 11, version 22H2 that Hyper-V firewall was introduced. Meaning any versions before this are likely to have no network monitoring or filtering on communication made via WSL.
+ > **Important** : it was only in Windows 11, version 22H2 that Hyper-V firewall was introduced. Meaning any versions before this are likely to have no network monitoring or filtering on communication made via WSL.
+ > Additionally, Microsoft Defender for Endpoint (MDE) integration has to be configured for WSL (some earlier version of windows - pre-win10, version 2004 [build 19044] do not have this integration creating a bllind-spot for WSL...)
 
 ## Connecting to Windows Targets
 **Connecting from Windows**

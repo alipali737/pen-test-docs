@@ -1,3 +1,12 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
 **5 Core Principles**
 - Everything is a file
 - Small, single-purpose utilities
@@ -249,6 +258,9 @@ ftpd : 10.129.22.0/24
 	- Password aging and prevent previous passwords
 	- Lock accounts after auth failures
 	- Disable all unwanted SUID/SGID binaries (Permissions to take temporary user/group ownership of the file)
+
+### The powershell for linux blind-spot
+Similar to the issues in [[Windows#Windows Subsystem for Linux]], PowerShell Core can be installed on Linux systems and carry over many normal PowerShell functions. This two concepts of installing a form of the 'opposite' OS on a system often creates a sneaky blind-spot and potential for attack vectors (little knowledge is known on the potential attack vectors yet). Attacks via these systems have been seen to avoid AV and EDR mechanisms.
 
 ### Firewall Setup
 - `iptables` is a utility for configuring firewall rules
