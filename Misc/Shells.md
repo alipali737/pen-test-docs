@@ -9,6 +9,14 @@ debugInConsole: false # Print debug info in Obsidian console
 
 Once a host has been compromised and we have RCE, setting up some form of persistent communication is a key part of [[5 - Post-Exploitation]].
 
+**Linux:**
+Some useful considerations before establishing a shell session:
+- What distribution is on the system?
+- What shell & programming languages are on the system?
+- What is the purpose and function of the system in its network environment?
+- What applications is the system hosting?
+- Are there any known vulnerabilities?
+
 ## Types of Shells
 ### Reverse Shell
 Connects back to our system and gives us control through a reverse connection. We setup a listener on our machine and then connect back to it from the target.
