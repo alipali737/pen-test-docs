@@ -37,7 +37,18 @@ Modules are structured by their path:
 ```
 sudo apt install metasploit -y
 ```
+Sometimes an exploit wont be in our version of MSF so we can update it via:
+```
+sudo apt update; apt install metasploit-framework;
+```
+Alternatively, we can directly add exploits
+```
+locate exploits
+/usr/share/metasploit-framework/modules/exploits
 
+cp [exploit_file.rb] [exploits_path]
+cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modules/exploits/linux/http/
+```
 ## Documentation
 **Cheatsheet:** 
 **Website:** 

