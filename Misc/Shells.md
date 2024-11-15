@@ -149,6 +149,8 @@ This is a web script that accepts commands through HTTP params, executes the com
 
 A great benefit of these kind of shells is that they utilise the existing connection that would be allowed through a firewall.
 
+A really useful project for webshells is [Laudanum Webshells](https://github.com/jbarcia/Web-Shells/tree/master/laudanum). This contains a variety of webshells that can be injected through various means.
+Additionally to this, the `Antak` webshell in the [Nishang project](https://github.com/samratashok/nishang) is a very powerful *PowerShell* webshell, it has a variety of features such as running scripts from memory and encoding commands.
 ### Writing a web shell
 Web shells tend to be simple one line commands that take a command and execute them on the system. The following examples are all *GET* requests:
 

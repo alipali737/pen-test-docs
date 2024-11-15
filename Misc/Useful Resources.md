@@ -6,6 +6,8 @@ maxLevel: 3 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
+## Research
+- [ippsec.rocks](https://ippsec.rocks/?#) : A website that finds sections of videos that explain or demonstrate concepts.
 
 ## Payloads
 - [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md) : Payloads for many different exploits
