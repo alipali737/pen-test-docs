@@ -178,3 +178,17 @@ We need to get our web shell script into the web root to be able to execute it. 
 | Nginx      | /usr/local/nginx/html/ |
 | IIS        | c:\inetpub\wwwroot\    |
 | XAMPP      | C:\xampp\htdocs\       |
+## Detecting & Preventing Shells
+### Monitoring
+- *File Uploads* : A very common way to gain a shell, often used with web applications. Monitor application logs for file uploads that seem malicious (eg. wrong file extension, suspicious metadata, mismatched headers). Firewalls and anti-virus can add more layers here, any external-facing host should be sufficiently hardened and monitored.
+- *Suspicious non-admin user actions* : This is non-administrator users performing actions that you wouldn't expect from a normal user:
+	- Issuing bash or cmd commands could be an indicator eg. `whoami` is not common for a normal user
+	- Making connections to non-standard resources eg. connecting to another host via an SMB share that isn't part of the normal infrastructure (these are usually client connecting to an infrastructure server, not a client to another client)
+	- Utilise logging to monitor all interactions a user has with a shell interface as well as any other interactions they have with the system (syslogs)
+- *Anomalous network sessions* : Users tend to have patterns and routines (eg. use the same apps, websites, interactions at regular times). Watch for:
+	- Anomalous network traffic (first visits, unique activities, unusual traffic)
+	- Heartbeats on non-standard ports (eg. 4444 is often used by meterpreter)
+	- Looking for remote login attempts
+	- Bulk GET / POST requests in short amounts of time
+
+### Network Visibility

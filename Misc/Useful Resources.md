@@ -8,6 +8,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 ## Research
 - [ippsec.rocks](https://ippsec.rocks/?#) : A website that finds sections of videos that explain or demonstrate concepts.
+- [MITRE ATT&CK](https://attack.mitre.org/) : Prominent knowledge base of tactics and techniques based on real-world observations.
 
 ## Payloads
 - [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md) : Payloads for many different exploits
