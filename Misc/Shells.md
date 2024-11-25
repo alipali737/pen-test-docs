@@ -199,4 +199,10 @@ Understanding the *baseline* for network traffic on a particular network is very
 As shells communicate over a network, having a network security app that can perform [deep packet inspection](https://en.wikipedia.org/wiki/Deep_packet_inspection) can often identify malicious traffic like an anti-virus of sorts. If traffic to and from shells aren't encrypted, then it could be inspected and detected by networking monitoring tools.
 
 ### Protecting End Devices
-These devices are on the end of the network, meaning they are either the source or the destination of data transmissions (eg. Workstations, Servers, Printers, Cameras, NAS).
+These devices are on the end of the network, meaning they are either the source or the destination of data transmissions (eg. Workstations, Servers, Printers, Cameras, NAS). Having monitoring and alerting on these devices can be a great step to hardening them. Any devices that have a CLI that can be remotely accessed are valuable targets for an attacker.
+
+### Potential Mitigations
+- *Application Sandboxing* for exposed applications
+- *Least Privilege Permission Policies*
+- *Host segmentation & hardening* : make sure to utilise DMZs to help secure public-facing infrastructure
+- *Physical and Application Layer Firewalls*
