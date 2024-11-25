@@ -192,3 +192,11 @@ We need to get our web shell script into the web root to be able to execute it. 
 	- Bulk GET / POST requests in short amounts of time
 
 ### Network Visibility
+Its important to map and diagram all the network infrastructure. Tools like [netbrain](https://www.netbraintech.com/) can combine visual diagramming, documentation and remote management. Otherwise, tools like [Draw.io](https://draw.io/) can be useful for mapping networks.
+
+Understanding the *baseline* for network traffic on a particular network is very useful as it can help identify if abnormal amounts of traffic are happening.
+
+As shells communicate over a network, having a network security app that can perform [deep packet inspection](https://en.wikipedia.org/wiki/Deep_packet_inspection) can often identify malicious traffic like an anti-virus of sorts. If traffic to and from shells aren't encrypted, then it could be inspected and detected by networking monitoring tools.
+
+### Protecting End Devices
+These devices are on the end of the network, meaning they are either the source or the destination of data transmissions (eg. Workstations, Servers, Printers, Cameras, NAS).
