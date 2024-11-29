@@ -39,7 +39,7 @@ sudo apt install metasploit -y
 ```
 Sometimes an exploit wont be in our version of MSF so we can update it via:
 ```
-sudo apt update; apt install metasploit-framework;
+sudo apt update && sudo apt install metasploit-framework
 ```
 Alternatively, we can directly add exploits
 ```
@@ -52,6 +52,11 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 ## Documentation
 **Cheatsheet:** 
 **Website:** 
+
+>[!info]
+![[Pasted image 20241129144818.png]]
+
+
 ## Usage
 ### Initialise the msf console
 ```
