@@ -53,9 +53,8 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 **Cheatsheet:** 
 **Website:** 
 
->[!info]
-![[Pasted image 20241129144818.png]]
-
+> [!info]- Engagement process with Metasploit
+> ![[Pasted image 20241129144818.png]]
 
 ## Usage
 ### Initialise the msf console
@@ -83,7 +82,7 @@ show options
 set [OPTION] [value]
 set RHOSTS 10.0.9.4
 ```
-
+> `setg` can be used to set the option value globally, making it accessible for every module until the program is restarted (helpful for working against a specific target)
 ### Running an exploit
 ```
 run
