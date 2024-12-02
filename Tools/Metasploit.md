@@ -74,7 +74,7 @@ search cve:2009 type:exploit vsftpd
 ```
 use [path/to/module]
 ```
-
+> Get more info on a module by using `info`, this is critical for understanding a new module before it is used
 ### Configuring a module
 ```
 show options
@@ -83,6 +83,7 @@ set [OPTION] [value]
 set RHOSTS 10.0.9.4
 ```
 > `setg` can be used to set the option value globally, making it accessible for every module until the program is restarted (helpful for working against a specific target)
+> `show targets` will present a list of all the target types that module can handle, we can set a target using `set target X`
 ### Running an exploit
 ```
 run
