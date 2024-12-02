@@ -56,6 +56,8 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 > [!info]- Engagement process with Metasploit
 > ![[Pasted image 20241129144818.png]]
 
+## Meterpreter
+The *Meterpreter* payload is a specific type of multi-faceted payload. It utilises DLL injection to ensure a stable, persistent across reboots connection. It has a variety of features built in such as key loggers, hash collection, tapping etc. It runs only in-memory so it is harder to find any forensic traces. We can also load and unload additional scripts and plugins dynamically.
 ## Usage
 ### Initialise the msf console
 ```
@@ -75,6 +77,7 @@ search cve:2009 type:exploit vsftpd
 use [path/to/module]
 ```
 > Get more info on a module by using `info`, this is critical for understanding a new module before it is used
+> 
 ### Configuring a module
 ```
 show options
@@ -84,6 +87,27 @@ set RHOSTS 10.0.9.4
 ```
 > `setg` can be used to set the option value globally, making it accessible for every module until the program is restarted (helpful for working against a specific target)
 > `show targets` will present a list of all the target types that module can handle, we can set a target using `set target X`
+
+### Selecting a payload
+Before selecting a specific payload, we need to understand:
+- What platform are we on?
+- What architecture do we need?
+- What are we trying to achieve?
+- Staged or Single?
+
+Once we know this we can search for a payload
+```sh
+# Shows all payloads that could be used (hundreds)
+show payloads
+
+# Use grep to filter
+grep meterpreter show payloads
+grep windows/x64 grep reverse_tcp grep meterpreter show payloads
+
+# Select a payload within a module
+set payload X
+```
+> Once a payload is selected, don't forget to configure it `show options`
 ### Running an exploit
 ```
 run
