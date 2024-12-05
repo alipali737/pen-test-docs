@@ -60,7 +60,9 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 The *Meterpreter* payload is a specific type of multi-faceted payload. It utilises DLL injection to ensure a stable, persistent across reboots connection. It has a variety of features built in such as key loggers, hash collection, tapping etc. It runs only in-memory so it is harder to find any forensic traces. We can also load and unload additional scripts and plugins dynamically.
 
 ## Encoders
-Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion.
+Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
+
+Encoders can be specified when generating a payload in [[MSFvenom]] using the `-e` flag. A very popular encoder is `shikata_ga_nai` (*SGN*) which is described more [here](https://www.fireeye.com/blog/threat-research/2019/10/shikata-ga-nai-encoder-still-going-strong.html). We can see what encoders are available for a specific *exploit module + payload* combination using `show encoders`.
 
 ## Usage
 ### Initialise the msf console
@@ -122,3 +124,9 @@ exploit
 ```
 
 If an exploit has run successfully, we will be given a `meterpreter` shell (like Bash, PowerShell etc), we can use `?` to see the available commands but if we want a proper system-level shell, we can use `shell`.
+
+### Scanning a payload for possible detection
+[VirusTotal](https://www.virustotal.com/gui/home/upload) is a website that you can upload a file too and it will show you whether an AV would detect it. MSF has a built in `msf-virustotal` tool to check our payloads like this.
+```
+msf-virustotal -f <API_Key> -f <Payload File>
+```
