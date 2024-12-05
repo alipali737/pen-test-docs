@@ -58,6 +58,10 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 
 ## Meterpreter
 The *Meterpreter* payload is a specific type of multi-faceted payload. It utilises DLL injection to ensure a stable, persistent across reboots connection. It has a variety of features built in such as key loggers, hash collection, tapping etc. It runs only in-memory so it is harder to find any forensic traces. We can also load and unload additional scripts and plugins dynamically.
+
+## Encoders
+Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion.
+
 ## Usage
 ### Initialise the msf console
 ```
