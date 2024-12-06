@@ -65,7 +65,7 @@ Encoders make payloads compatible with a variety of architectures as well as hel
 Encoders can be specified when generating a payload in [[MSFvenom]] using the `-e` flag. A very popular encoder is `shikata_ga_nai` (*SGN*) which is described more [here](https://www.fireeye.com/blog/threat-research/2019/10/shikata-ga-nai-encoder-still-going-strong.html). We can see what encoders are available for a specific *exploit module + payload* combination using `show encoders`.
 
 ## Plugins
-Plugins by default are pre-installed into the `/usr/share/metasploit-framework/plugins` directory. Once a plugin is in here, you can load it in metasploit with `load <plugin>`.
+Plugins by default are pre-installed into the `/usr/share/metasploit-framework/plugins` directory (custom plugins can be copied in). Once a plugin is in here, you can load it in metasploit with `load <plugin>`.
 
 ## Usage
 ### Initialise the msf console
