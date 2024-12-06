@@ -64,6 +64,9 @@ Encoders make payloads compatible with a variety of architectures as well as hel
 
 Encoders can be specified when generating a payload in [[MSFvenom]] using the `-e` flag. A very popular encoder is `shikata_ga_nai` (*SGN*) which is described more [here](https://www.fireeye.com/blog/threat-research/2019/10/shikata-ga-nai-encoder-still-going-strong.html). We can see what encoders are available for a specific *exploit module + payload* combination using `show encoders`.
 
+## Plugins
+Plugins by default are pre-installed into the `/usr/share/metasploit-framework/plugins` directory. Once a plugin is in here, you can load it in metasploit with `load <plugin>`.
+
 ## Usage
 ### Initialise the msf console
 ```
@@ -129,4 +132,50 @@ If an exploit has run successfully, we will be given a `meterpreter` shell (like
 [VirusTotal](https://www.virustotal.com/gui/home/upload) is a website that you can upload a file too and it will show you whether an AV would detect it. MSF has a built in `msf-virustotal` tool to check our payloads like this.
 ```
 msf-virustotal -f <API_Key> -f <Payload File>
+```
+
+
+### Using databases in Metasploit
+Databases in Metasploit present a way to store scan results, credentials, entrypoints etc. It can be really useful in large engagements to keep track of previous actions and discoveries.
+```sh
+# Ensure that the postgreSQL service is running
+sudo service postgresql status
+sudo systemctl start postgresql
+
+# Initialise a metasploit database (update metasploit if broken)
+sudo msfdb init
+sudo msfdb status
+
+# Run the database
+sudo msfdb run
+
+# In msfconsole you can interact with the database
+help database
+
+# Import Nmap scan results (.xml result works best)
+db_import Scan.xml
+
+# Backup and extract data from DB (useful after session for backups)
+db_export -f xml backup.xml
+
+# Can also call nmap inside metasploit
+db_nmap
+```
+> The `hosts` command will show us all hosts, IPs, hostnames etc that have been identified and stored in the DB, we can do a number of things with `hosts -h`.
+> The `services` command will show us services discovered.
+> The `creds` command will show us any credentials we've found for the target host.
+> The `loot` command provides an *at-a-glance* list of owned services and users. It can be hashes, passwd, shadow etc (Any loot we have collected).
+
+### Workspaces
+Workspaces are like folders in a project, they are useful for organising our results. We can segregate scan results, hosts and extracted information by IP, subnet, network, or domain.
+```sh
+# View current workspace
+workspace
+
+# Add / Delete a workspace
+workspace -a target_1
+workspace -d target_3
+
+# Switch workspace
+workspace target_1
 ```

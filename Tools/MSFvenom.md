@@ -51,3 +51,5 @@ We could then deliver this to our target system, common ways include:
 - Combined with a metasploit exploit (but would likely need us to be on the internal network)
 - Via portable media during an on-site attack
 > We also need to make sure it gets executed once on the system.
+
+![[Metasploit#Scanning a payload for possible detection]]
