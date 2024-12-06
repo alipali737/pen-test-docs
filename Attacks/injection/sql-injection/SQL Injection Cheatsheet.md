@@ -12,7 +12,7 @@ Web scanner tools can be used for this purpose for quick and efficient detection
 - Submitting SQL-specific syntax an observable chance could be evaluated
 - Submitting Boolean conditions and looking for differences `OR 1=1` and `OR 1=2`
 - Submitting payloads designed to trigger time delays when executed and observing response times
-- Performing [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) methods to trigger an out-of-band network interaction when executed within a SQL query
+- Performing [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) methods to trigger an out-of-band .network interaction when executed within a SQL query
 
 ## SQL Injection in Different Parts of the Query
 Generally, most SQLi vulnerabilities arise within the `WHERE` clause of a `SELECT` query. However, SQLi vulnerabilities can in principle occur at any location within the query, and within different query types. The most common other locations are:
