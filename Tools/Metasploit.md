@@ -184,4 +184,15 @@ workspace target_1
 - To background a session you can use either `[CTRL] + [Z]` or `background` (in meterpreter).
 - List sessions with `sessions`
 - Select a session with `sessions -i [no.]`
-- Some modules (mostly in the `post` category)
+- Some modules (mostly in the `post` category) can have a session associated with them in the options
+
+### Jobs
+If we are running a module that requires a port but we want to use that port for something else now, we can't just kill the session with `[CTRL] + [C]` as this would leave the port still in use. Instead, we can use jobs. Jobs are backgrounded processes that can live on even after a session dies.
+```sh
+# Help page
+jobs -h
+
+# List all running jobs
+jobs -l
+```
+We can run an exploit as a job using the `-j` flag on a the `exploit` command
