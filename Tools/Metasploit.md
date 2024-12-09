@@ -179,3 +179,9 @@ workspace -d target_3
 # Switch workspace
 workspace target_1
 ```
+
+### Sessions
+- To background a session you can use either `[CTRL] + [Z]` or `background` (in meterpreter).
+- List sessions with `sessions`
+- Select a session with `sessions -i [no.]`
+- Some modules (mostly in the `post` category)
