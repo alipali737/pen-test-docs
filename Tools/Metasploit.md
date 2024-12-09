@@ -59,6 +59,16 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 ## Meterpreter
 The *Meterpreter* payload is a specific type of multi-faceted payload. It utilises DLL injection to ensure a stable, persistent across reboots connection. It has a variety of features built in such as key loggers, hash collection, tapping etc. It runs only in-memory so it is harder to find any forensic traces. We can also load and unload additional scripts and plugins dynamically.
 
+Meterpreter comes in both staged (the normal) and stageless forms.
+**Staged**:
+1. `stage0` is a some shellcode that is executed as part of an exploit payload to open a connection to the attack machine (eg. `reverse_tcp`)
+2. `stage1` is then downloaded into memory by stage0. This is where the `metsrv` DLL is read in and using [Reflective DDL Injection] it is read into memory without every being written to disk or registered with the host process. `metsrv` then takes over execution as our meterpreter service we are used too.
+3. `stage2` is triggered by `metsrv` and brings in the first extension DLL: `stdapi`
+4. `stage3` is the same as stage2, but brings in the final extension DLL: `priv`
+Staged means we can hide `stage0` (which is very small `~360b` of shellcode) in many exploits, however the DLLs push up the size to `~1240kb`. This can be a major issue when working in a high latency or low bandwidth network. Additionally thats alot of downloading if you are working across a large network with many shells.
+
+**Stageless**:
+As the payload preparation is performed on our machine, the process is slightly different.
 ## Encoders
 Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
 
