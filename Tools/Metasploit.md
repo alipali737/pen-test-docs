@@ -73,7 +73,12 @@ As the payload preparation is performed on our machine, the process is slightly 
 	1. Does some information gathering with GetPC
 	2. Identifies an invokes the `ReflectiveLoader()` in `metsrv` for the Reflective DLL injection
 	3. Identifies the pre-loaded extensions and invokes the `DllMain()` in `metsrv` with `DLL_METASPLOIT_ATTACH` which then takes over
-	4. After `metsrv` exits, the shellcode also re-invokes `DllMain()` with `DLL_METASPLOIT_DETACH` which closes the 
+	4. After `metsrv` exits, the shellcode also re-invokes `DllMain()` with `DLL_METASPLOIT_DETACH` which exits `metsrv` using the appropriate method.
+2. Once the shellcode has been added, metasploit creates an in-memory payload buffer, writing each of the chosen extensions in along with its size.
+3. Finally it adds a 32-bit null buffer which is what `metsrv` will look for to end its extension loading
+The final payload looks like:
+![[Pasted image 20241210132738.png]]
+This can then be embedded in an exe file, encoded, and thrown into an exploit.
 ## Encoders
 Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
 
