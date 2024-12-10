@@ -69,6 +69,11 @@ Staged means we can hide `stage0` (which is very small `~360b` of shellcode) in 
 
 **Stageless**:
 As the payload preparation is performed on our machine, the process is slightly different.
+1. Metasploit copies the `metsrv` DLL into memory, overwriting the DLL's [DOS header](https://en.wikipedia.org/wiki/DOS_MZ_executable) with some shellcode that:
+	1. Does some information gathering with GetPC
+	2. Identifies an invokes the `ReflectiveLoader()` in `metsrv` for the Reflective DLL injection
+	3. Identifies the pre-loaded extensions and invokes the `DllMain()` in `metsrv` with `DLL_METASPLOIT_ATTACH` which then takes over
+	4. After `metsrv` exits, the shellcode also re-invokes `DllMain()` with `DLL_METASPLOIT_DETACH` which closes the 
 ## Encoders
 Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
 
