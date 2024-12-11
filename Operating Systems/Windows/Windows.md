@@ -485,3 +485,11 @@ Settings can also be done on an individual machine with Local Group Policies. Th
 Defender includes a cloud-delivered protection in addition to its real-time scanning. This works in-conjunction with automatic sampling of suspicious applications which are uploaded and analysed. The application is "locked" until analysis is complete to prevent any malicious behaviour. Tamper protection also monitors and restricts security settings from being changed through the Registry, Powershell cmdlets, or group policy.
 
 Windows Defender takes advantage of its embedded setting in the OS, allowing it to perform more efficiently than many alternatives whilst still providing effective protections.
+
+### Security Account Manager (SAM)
+The SAM is a database file in windows that stores users' passwords. It can be used to authenticate local and remote users (*Active Directory is normally used for remote users now*). It stores password as either an [LM hash](https://en.wikipedia.org/wiki/LM_hash) or as an [NTLM hash](https://en.wikipedia.org/wiki/NTLM_hash "NTLM hash").
+
+Located in `%SystemRoot%/system32/config/SAM`, mounted on `HKLM/SAM` and requires `SYSTEM` privs to view it. Some older systems may have a `SYSKEY` function that is used to partially encrypt the SAM database, but this was removed in windows 10 version 1709 because of abuse.
+
+### Local Security Authority (LSA)
+Includes the *Local Security Authority Server Service* (*LSASS*) process. It validates sign-ins and enforces local security policies.

