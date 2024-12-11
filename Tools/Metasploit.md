@@ -57,28 +57,7 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 > ![[Pasted image 20241129144818.png]]
 
 ## Meterpreter
-The *Meterpreter* payload is a specific type of multi-faceted payload. It utilises DLL injection to ensure a stable, persistent across reboots connection. It has a variety of features built in such as key loggers, hash collection, tapping etc. It runs only in-memory so it is harder to find any forensic traces. We can also load and unload additional scripts and plugins dynamically.
-
-Meterpreter comes in both staged (the normal) and stageless forms.
-**Staged**:
-1. `stage0` is a some shellcode that is executed as part of an exploit payload to open a connection to the attack machine (eg. `reverse_tcp`)
-2. `stage1` is then downloaded into memory by stage0. This is where the `metsrv` DLL is read in and using [Reflective DDL Injection] it is read into memory without every being written to disk or registered with the host process. `metsrv` then takes over execution as our meterpreter service we are used too.
-3. `stage2` is triggered by `metsrv` and brings in the first extension DLL: `stdapi`
-4. `stage3` is the same as stage2, but brings in the final extension DLL: `priv`
-Staged means we can hide `stage0` (which is very small `~360b` of shellcode) in many exploits, however the DLLs push up the size to `~1240kb`. This can be a major issue when working in a high latency or low bandwidth network. Additionally thats alot of downloading if you are working across a large network with many shells.
-
-**Stageless**:
-As the payload preparation is performed on our machine, the process is slightly different.
-1. Metasploit copies the `metsrv` DLL into memory, overwriting the DLL's [DOS header](https://en.wikipedia.org/wiki/DOS_MZ_executable) with some shellcode that:
-	1. Does some information gathering with GetPC
-	2. Identifies an invokes the `ReflectiveLoader()` in `metsrv` for the Reflective DLL injection
-	3. Identifies the pre-loaded extensions and invokes the `DllMain()` in `metsrv` with `DLL_METASPLOIT_ATTACH` which then takes over
-	4. After `metsrv` exits, the shellcode also re-invokes `DllMain()` with `DLL_METASPLOIT_DETACH` which exits `metsrv` using the appropriate method.
-2. Once the shellcode has been added, metasploit creates an in-memory payload buffer, writing each of the chosen extensions in along with its size.
-3. Finally it adds a 32-bit null buffer which is what `metsrv` will look for to end its extension loading
-The final payload looks like:
-![[Pasted image 20241210132738.png]]
-This can then be embedded in an exe file, encoded, and thrown into an exploit.
+![[Meterpreter#Summary]]
 ## Encoders
 Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
 
