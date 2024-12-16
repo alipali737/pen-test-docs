@@ -205,5 +205,9 @@ jobs -l
 ```
 We can run an exploit as a job using the `-j` flag on a the `exploit` command
 
+## Useful Modules
+- `multi/handler` - setup a listener for a reverse shell payload (generated with [[MSFVenom]])
+- `post/multi/recon/local_exploit_suggester` - searches for potential exploits on a system (a meterpreter session works best on windows, whereas a shell session works best on other platforms)
+
 ## Writing custom exploit scripts
 All exploit scripts are written in Ruby and documentation can be found on the [Rapid7 Rubydocs](https://www.rubydoc.info/github/rapid7/metasploit-framework/).
