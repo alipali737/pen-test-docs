@@ -45,6 +45,11 @@ debugInConsole: false # Print debug info in Obsidian console
 - Hardware based
 - IDS - sits on the side and received a copy of the traffic
 - IPS - sits on the line and actively analyses traffic
+### Heuristic / Statistical Anomaly Detection
+- Generates a baseline for activity & protocols on a network and assigns thresholds
+- Alerts if anomalies exceed maximum threshold, eg. normally SSH isn't used very much but suddenly its being used to connect to lots of machines in the network
+### Live-monitoring and Alerting (SOC-based)
+- A team monitoring live activity and using intermediate alerting systems to find potential threats that can then be reviewed
 
 ## Firewall Filters
 - Many modern firewall designs have a `Control Plane` and a `Forwarding Plane`
