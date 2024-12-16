@@ -56,7 +56,7 @@ msf6> reload_all
 ## Documentation
 **Cheatsheet:** 
 **Website:** 
-
+[Metasploit - The Penetration Tester's Guide](https://nostarch.com/metasploit)
 > [!info]- Engagement process with Metasploit
 > ![[Pasted image 20241129144818.png]]
 

