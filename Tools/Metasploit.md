@@ -10,7 +10,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 The metasploit framework contains a ton of modules for public exploits and useful pen testing utilities.
 
-[[MSFvenom]] is a part of the metasploit framework specifically for creating payloads.
+[[MSFVenom]] is a part of the metasploit framework specifically for creating payloads.
 
 Modules are structured by their path:
 `exploit/windows/smb/psexec` would break into:
@@ -48,6 +48,10 @@ locate exploits
 
 cp [exploit_file.rb] [exploits_path]
 cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modules/exploits/linux/http/
+
+msf6> loadpath /usr/share/metasploit-framework/modules
+OR
+msf6> reload_all
 ```
 ## Documentation
 **Cheatsheet:** 
@@ -61,7 +65,7 @@ cp rconfig_vendors_auth_file_upload_rce.rb /usr/share/metasploit-framework/modul
 ## Encoders
 Encoders make payloads compatible with a variety of architectures as well as helping with AV evasion. Although, detection methods have grown and become more effective, encoding is still a very important aspect of payload execution.
 
-Encoders can be specified when generating a payload in [[MSFvenom]] using the `-e` flag. A very popular encoder is `shikata_ga_nai` (*SGN*) which is described more [here](https://www.fireeye.com/blog/threat-research/2019/10/shikata-ga-nai-encoder-still-going-strong.html). We can see what encoders are available for a specific *exploit module + payload* combination using `show encoders`.
+Encoders can be specified when generating a payload in [[MSFVenom]] using the `-e` flag. A very popular encoder is `shikata_ga_nai` (*SGN*) which is described more [here](https://www.fireeye.com/blog/threat-research/2019/10/shikata-ga-nai-encoder-still-going-strong.html). We can see what encoders are available for a specific *exploit module + payload* combination using `show encoders`.
 
 ## Plugins
 Plugins by default are pre-installed into the `/usr/share/metasploit-framework/plugins` directory (custom plugins can be copied in). Once a plugin is in here, you can load it in metasploit with `load <plugin>`.
@@ -80,6 +84,11 @@ search openssh
 search cve:2009 type:exploit vsftpd
 ```
 
+We can also search for exploits on the ExploitDB using the CLI which we can directly import into `msfconsole`:
+```sh
+# Search for exploits not including python files (we want Ruby files for msfconsole)
+searchsploit -t <name> --exclude=".py"
+```
 ### Using an module
 ```
 use [path/to/module]
@@ -195,3 +204,6 @@ jobs -h
 jobs -l
 ```
 We can run an exploit as a job using the `-j` flag on a the `exploit` command
+
+## Writing custom exploit scripts
+All exploit scripts are written in Ruby and documentation can be found on the [Rapid7 Rubydocs](https://www.rubydoc.info/github/rapid7/metasploit-framework/).
