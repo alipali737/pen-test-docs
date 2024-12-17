@@ -2,14 +2,18 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 4 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Credential Storage
 ### Linux
-**/etc/shadow**
+> [Linux User Auth](https://tldp.org/HOWTO/pdf/User-Authentication-HOWTO.pdf)
+
+#### /etc/shadow
+>Should only be readable by `root`
+
 The shadow file contains all the hashes of user passwords:
 ```sh
 cat /etc/shadow
@@ -39,3 +43,22 @@ Each algorithm ID corresponds to a hashing algorithm:
 - *\$y* - Yescrypt
 - *$gy* - Gost-yescrypt
 - *$7* - Scrypt
+
+#### /etc/passwd
+> Should only be writable by root
+
+This file contains all the user accounts and some information about them:
+```shell
+cat /etc/passwd
+
+htb-student:x:1000:1000:,,,:/home/htb-student:/bin/bash
+```
+1. Username (*htb-student*)
+2. Password (*x* means it is encrypted in the shadow file, if this is blank it means no password is required - if a user can edit this they can disable the password auth etc)
+3. uid (*1000*)
+4. gid (*1000*)
+5. comment (*,,,*)
+6. home dir (*/home/htb-student*)
+7. cmd to run after login (*/bin/bash*)
+
+### Windows
