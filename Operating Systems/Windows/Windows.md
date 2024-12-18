@@ -492,4 +492,8 @@ The SAM is a database file in windows that stores users' passwords. It can be us
 Located in `%SystemRoot%/system32/config/SAM`, mounted on `HKLM/SAM` and requires `SYSTEM` privs to view it. Some older systems may have a `SYSKEY` function that is used to partially encrypt the SAM database, but this was removed in windows 10 version 1709 because of abuse.
 
 ### Local Security Authority (LSA)
-Includes the *Local Security Authority Server Service* (*LSASS*) process. It validates sign-ins and enforces local security policies.
+Includes the *Local Security Authority Server Service* (*LSASS*) process. It is a protected subsystem that validates sign-ins and enforces local security policies. It contains all information about the local security on the system and provides services for translating between names and securityIDs (*SID*). It tracks all security policies and accounts that reside on the system too.
+
+If a Domain Controller is used, these accounts and policies are stored in Active Directory and apply to the domain where the controller is located. The LSA also provides means to check access, permissions, and generating monitoring messages.
+
+![[Password Attacks#Local Security Authority Server Service (LSASS)]]
