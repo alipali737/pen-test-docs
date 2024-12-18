@@ -487,13 +487,22 @@ Defender includes a cloud-delivered protection in addition to its real-time scan
 Windows Defender takes advantage of its embedded setting in the OS, allowing it to perform more efficiently than many alternatives whilst still providing effective protections.
 
 ### Security Account Manager (SAM)
-The SAM is a database file in windows that stores users' passwords. It can be used to authenticate local and remote users (*Active Directory is normally used for remote users now*). It stores password as either an [LM hash](https://en.wikipedia.org/wiki/LM_hash) or as an [NTLM hash](https://en.wikipedia.org/wiki/NTLM_hash "NTLM hash").
+The [Security Account Manager](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc756748(v=ws.10)?redirectedfrom=MSDN) (*SAM*) is a database file in windows that stores users' passwords. It can be used to authenticate local and remote users (*Active Directory is normally used for remote users now*). It stores password as either an [LM hash](https://en.wikipedia.org/wiki/LM_hash) or as an [NTLM hash](https://en.wikipedia.org/wiki/NTLM_hash "NTLM hash").
 
 Located in `%SystemRoot%/system32/config/SAM`, mounted on `HKLM/SAM` and requires `SYSTEM` privs to view it. Some older systems may have a `SYSKEY` function that is used to partially encrypt the SAM database, but this was removed in windows 10 version 1709 because of abuse.
+
+Windows systems can be assigned to either a workgroup or domain when setup. If a workgroup is used, the SAM db is stored locally. If a domain is assigned, the Domain Controller (*DC*) validates credentials from the AD db (`ntds.dit`) stored in `%SystemRoot%/ntds.dit`.
+
+### NTDS
+In an Windows domain, each Domain Controller (*part of a larger Active Directory Forest*) will hold a file called `NTDS.dit` that keeps all Domain Controllers synchronised (*with the exception of Read-Only Domain Controllers*). `NTDS.dit` is a database file that stores the data in Active Directory, including:
+- User accounts (usernames & passwords)
+- Group accounts
+- Computer accounts
+- Group policy objects
 
 ### Local Security Authority (LSA)
 Includes the *Local Security Authority Server Service* (*LSASS*) process. It is a protected subsystem that validates sign-ins and enforces local security policies. It contains all information about the local security on the system and provides services for translating between names and securityIDs (*SID*). It tracks all security policies and accounts that reside on the system too.
 
 If a Domain Controller is used, these accounts and policies are stored in Active Directory and apply to the domain where the controller is located. The LSA also provides means to check access, permissions, and generating monitoring messages.
-
+### LSASS
 ![[Password Attacks#Local Security Authority Server Service (LSASS)]]

@@ -65,7 +65,7 @@ htb-student:x:1000:1000:,,,:/home/htb-student:/bin/bash
 Windows [Windows client authentication process](https://docs.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication) tends to be more complicated than with Linux systems, consisting with many different modules that the various processes required to authenticate a client. Additionally, there are many different authentication processes, such as Kerberos auth.
 ![[Windows#Local Security Authority (LSA)]]
 ![[Pasted image 20241218082951.png]]
-> A local interactive login (a user logging into the system locally) utilises the logon process (`WinLogon.exe`), the logon user interface process (`LogonUI`), the `credential providers`, `LSASS`, one or more `authentication packages`, and `SAM` or `AD`.
+> A local interactive login (a user logging into the system locally) utilises the logon process (`WinLogon.exe`), the logon user interface process (`LogonUI`), the `credential providers`, `LSASS`, one or more `authentication packages`, and [[Windows#Security Account Manager (SAM)|SAM]] or `AD`.
 > Authentication packages are often DLLs that perform authentication checks (non-domain joined and interactive logins is handled by `Msv1_0.dll`).
 
 #### WinLogon
@@ -75,8 +75,9 @@ Handles security-related user interactions, including:
 - Locking and unlocking the system
 It relies on credential providers *(`COM` objects in DLLs)* on the system to obtain usernames and passwords.
 WinLogon is the only process to accept logon requests from the keyboard, sent via [[SMB#RPCclient|RPC]] from `Win32k.sys`.
-1. `WinLogon` is called, which in-turn, launches the `LogonUI` for the user to enter their credentials.
-2. Once a username & password have been obtained by the `credential provider`, the `lsass` process is called to authenticate the attempt.
+![[Pasted image 20241218090302.png]]
+#### Credential Manager
+This feature allows users to save credentials for various network resources and websites. Credentials are stored in each user's `Credential Locker`, which is then encrypted and saved to `C:\Users\[user]\AppData\Local\Microsoft\[Vault/Credentials]`.
 #### Local Security Authority Server Service (LSASS)
 [Local Security Authority Subsystem Service](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service) (*LSASS*) is a collection of modules and authentication processes. The service is responsible for:
 - the local system security policy
@@ -84,6 +85,14 @@ WinLogon is the only process to accept logon requests from the keyboard, sent vi
 - security audit logging to the `Event log`
 > Detailed architecture [here](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc961760(v=technet.10)?redirectedfrom=MSDN)
 
-| Authentication Packages | Description |
-| ----------------------- | ----------- |
-| Lsasrv.d                |             |
+| Authentication Packages | Description                                                                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lsasrv.dll              | LSA Server service - enforces security policies and acts as the security package manager for LSA. Also selects whether to use NTLM or Kerberos protocol. |
+| Msv1_0.dll              | Authentication package for local machine logons that don't require custom authentication.                                                                |
+| Samsrv.dll              | The [[Windows#Security Account Manager (SAM)\|SAM]] stores local security accounts, enforces locally stored policies, and supports APIs.                 |
+| Kerberos.dll            | Security package for Kerberos-based authentication.                                                                                                      |
+| Netlogon.dll            | Network-based logon service.                                                                                                                             |
+| Ntdsa.dll               | Library used to create new record and folders in the Windows Registry                                                                                    |
+#### Security Account Manager (SAM)
+![[Windows#Security Account Manager (SAM)]]
+
