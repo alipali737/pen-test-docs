@@ -23,7 +23,7 @@ Services like remote sessions using PowerShell and event log merging require *Wi
 | ------------ | ------------- | ----- |
 |              |               |       |
 ## How it works
-
+*WinRM* is the Microsoft implementation of the [Web Services Management Protocol](https://docs.microsoft.com/en-us/windows/win32/winrm/ws-management-protocol) (*WS-Management*) network protocol. It is an XML-based protocol using *SOAP* for remote windows system management. It handles the communication between  [Web-Based Enterprise Management](https://en.wikipedia.org/wiki/Web-Based_Enterprise_Management) (*WBEM*) and the [Windows Management Instrumentation](https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page) (*[[WMI]]*), which can call the [Distributed Component Object Model](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dcom/4a893f3d-bd29-48cd-9f43-d9777a4415b0) (*DCOM*).
 
 ## Configuration
 - From Windows 10, it must be explicitly enabled and configured.
