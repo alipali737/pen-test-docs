@@ -10,6 +10,14 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 John is a tool for checking the strength of and cracking encrypted (or hashed) passwords. It utilises brute force or dictionary attacks.
 
+### John VS Hashcat
+Both tools have their use cases, the primary points for each are:
+
+| Tool            | Pros                                                                                                                                                                               | Cons                                                                                                                                                          | Recommended use case                                                                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| John The Ripper | Supports more hashes<br>Supports most OS's<br>Able to do in-house hash detection<br>Takes advantage of CPU specific optimisations                                                  | GPU support for only specific hashes<br>Some hashes need to be converted first (which can be difficult to work out which tool to use)<br>CUDA is a pain       |                                                                                                                                                                   |
+| Hashcat         | Fantastic GPU support<br>Supports most compute binaries (open CL, Apple Metal, etc)<br>Supports most OS's<br>Supports lots of hash types<br>Able to detect hashes with second tool | Hash detection isn't great<br>Some device drivers lower performance (not HC's fault)<br>Potentially slower for wordlist attacks due to drive -> GPU bandwidth | A powerful GPU is available.<br>Brute-force & rule attacks that generate candidates on the GPU.<br>Linux with AMD GPU is ideal.<br>NTLMv2 & WPA hashes are faster |
+
 ## Documentation
 **Cheatsheet:** 
 **Website:** https://github.com/openwall/john
@@ -31,4 +39,20 @@ john --wordlist=list1.txt,list2.txt,list3.txt --rules hashes.txt
 ```
 
 ### Incremental Mode
-This takes a character 
+This takes a character set and generates passwords from it, it starts with the shortest. It is the most effective but also the most time consuming. It is faster than the random brute force attempt, especially against weak passwords.
+```sh
+john --incremental <hash_file>
+```
+> The default char set is `a-zA-Z0-9`.
+
+### Preparing a file for cracking
+There are many tools that convert different file types to a format compatible with John, eg:
+- `pdf2john`
+- `ssh2john`
+- `rar2john`
+- `zip2john`
+```sh
+pdf2john server_doc.pdf > server_doc.hash
+john server_doc.hash
+```
+> Use `locate *2john*` to find these tools pre-installed.
