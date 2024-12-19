@@ -30,13 +30,14 @@ Services like remote sessions using PowerShell and event log merging require *Wi
 - Enabled by default starting with the Windows Server 2012, but must first be configured for older server and client versions (+ firewall configurations needed). 
 
 ## Potential Capabilities
-- 
+- Configuration of windows systems
 
 ## Enumeration Checklist
 
-| Goal                    | Command(s)                                                                         | Refs |
-| ----------------------- | ---------------------------------------------------------------------------------- | ---- |
-| Footprinting            | nmap [ip] -sV -sC -p5985,5986                                                      |      |
-| Test a WinRM connection | *(powershell)* Test-WSMan <br><br>*(linux)* evil-winrm -i [ip] -u [user] -p [pass] |      |
+| Goal                      | Command(s)                                                                         | Refs             |
+| ------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| Footprinting              | nmap [ip] -sV -sC -p5985,5986                                                      | [[Nmap]]         |
+| Cracking user credentials | crackmapexec [proto] [target-ip] -u [user or userlist] -p [pass or passlist]       | [[CrackMapExec]] |
+| Test a WinRM connection   | *(powershell)* Test-WSMan <br><br>*(linux)* evil-winrm -i [ip] -u [user] -p [pass] | [[Evil-Winrm]]   |
 ### Nmap Scripts
 - 
