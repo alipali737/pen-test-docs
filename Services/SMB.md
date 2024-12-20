@@ -101,7 +101,7 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 | Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                                  |           |
 | Enumerate Hostname        | nmblookup -A [target]                                                                                                                                              |           |
 | List shares               | smbmap -H [target]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]<br><br>![[CrackMapExec#List SMB Shares]] |           |
-| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -u [user] \\\\\\\\[target]\\\\[share name]      |           |
+| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]      |           |
 | SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                     | [[Hydra]] |
 | Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                    |           |
 | Overall Scan              | enum4linux -a [target]                                                                                                                                             |           |
