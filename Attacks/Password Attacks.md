@@ -96,3 +96,22 @@ This feature allows users to save credentials for various network resources and 
 #### Security Account Manager (SAM)
 ![[Windows#Security Account Manager (SAM)]]
 
+## Common Password Combinations
+A really important piece of information for speeding up cracking passwords is understanding the password policy implemented, what criteria does a password have to meet?
+A lot of the time a password is asked to meet:
+- Must contain a number
+- Must contain a symbol
+- Must be 8+ chars
+- Must contain both lowercase and upper case
+Often these accommodations are made by users
+- `a -> @`
+- `e -> 3`
+- `s -> 5`
+- `!` at the end
+- Capital at the start
+- `1` or `123` at the end
+
+A pretty common format for a user to do is:
+- Capital at the start
+- Single word
+- `!` at the end
