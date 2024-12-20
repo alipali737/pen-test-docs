@@ -44,6 +44,6 @@ $! c
 To then generate the list, you would use:
 ```sh
 # `sort -u` sorts the password list lexographically and removes duplicates
-hashcat --force password.list -r custom.rules --stdout | sort -u > mut_password.list
+hashcat --force password.list -r custom.rule --stdout | sort -u > mut_password.list
 ```
 > There are built in rules in hashcat, a popular one is `best64.rule`.
