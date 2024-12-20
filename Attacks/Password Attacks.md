@@ -115,3 +115,5 @@ A pretty common format for a user to do is:
 - Capital at the start
 - Single word
 - `!` at the end
+
+The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) contains a list of many default credentials for common applications, often these default credentials can be forgotten or overlooked when configuring infrastructure which can lead to easy access of the system.

@@ -17,6 +17,11 @@ debugInConsole: false # Print debug info in Obsidian console
 - [Impacket](https://github.com/SecureAuthCorp/impacket) : Collection of python scripts to interact directly with network protocols
 - [Laudanum Webshells](https://github.com/jbarcia/Web-Shells/tree/master/laudanum) : A collection of injectable webshells (pre-installed in parrot & kali `/usr/share/webshells/`)
 - [Mimikatz](https://github.com/gentilkiwi/mimikatz) : A tool for extracting a variety of plaintext passes, hashes, PIN codes and kerberos tickets in Windows.
+
+## Cheat Sheets
+- [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) : List of default credentials for many applications
+- [Router Default Credentials](https://www.softwaretestinghelp.com/default-router-username-and-password-list/) : List of default credentials for many routers
+
 ## PrivEsc
 - [Privilege Escalation Awesome Scripts SUITE (PEASS)](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) : Suite of scripts relating to privilege escalation
 ### Linux Specific
