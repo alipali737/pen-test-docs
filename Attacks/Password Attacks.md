@@ -43,7 +43,6 @@ Each algorithm ID corresponds to a hashing algorithm:
 - *\$y* - Yescrypt
 - *$gy* - Gost-yescrypt
 - *$7* - Scrypt
-
 #### /etc/passwd
 > Should only be writable by root
 
