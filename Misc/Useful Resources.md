@@ -16,7 +16,8 @@ debugInConsole: false # Print debug info in Obsidian console
 - [Darkarmour](https://github.com/bats3c/darkarmour) : A tool for generating and utilising obfuscated binaries for windows hosts
 - [Impacket](https://github.com/SecureAuthCorp/impacket) : Collection of python scripts to interact directly with network protocols
 - [Laudanum Webshells](https://github.com/jbarcia/Web-Shells/tree/master/laudanum) : A collection of injectable webshells (pre-installed in parrot & kali `/usr/share/webshells/`)
-- [Mimikatz](https://github.com/gentilkiwi/mimikatz) : A tool for extracting a variety of plaintext passes, hashes, PIN codes and kerberos tickets in Windows.
+- [Mimikatz](https://github.com/gentilkiwi/mimikatz) : A tool for extracting a variety of plaintext passes, hashes, PIN codes and kerberos tickets in Windows. (*Designed to be run on windows only*)
+	- [pypykatz](https://github.com/skelsec/pypykatz) : A python implementation for Mimikatz (*so it can be run on linux-based system*)
 
 ## Cheat Sheets
 - [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) : List of default credentials for many applications

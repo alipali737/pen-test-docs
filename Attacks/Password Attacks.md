@@ -148,3 +148,33 @@ $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
 
 $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam
 ```
+
+### Attacking LSASS
+> Ref: [[Windows#LSASS]]
+
+Upon initial logon, LSASS will:
+- Cache credentials locally in memory
+- Create [access tokens](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
+- Enforce security policies
+- Write to Windows security log
+The credentials that get stored in-memory can be dumped and extracted. There are many ways to get the contents of the LSASS process memory.
+
+A memory dump can be created via a few methods:
+**Task Manager Memory Dumping** (requires GUI session)
+1. Open Task Manager
+2. Select the Processes tab
+3. Find and right click the `Local Security Authority Process`
+4. Select `Create dump file`
+5. The file will be created as `C:\Users\[user]\AppData\Local\Temp\lsass.DMP`
+
+**rundll32.exe & comsvcs.dll for Memory Dumping**
+> Most modern AV detect this method
+
+We can use the `rundll32.exe` CLI utility to dump the process memory. It is faster than the above method and doesn't require a GUI session.
+1. Find the `lsass.exe` process ID (*PID*)
+	1. CMD - `tasklist /svc`
+	2. PS - `Get-Process lsass`
+2. With an elevated PS session we can run:
+	1. `rundll32 C:\windows\system32\comsvcs.dll, MiniDump [PID] C:\lsass.dmp full`
+> This command uses `rundll32.exe` to run `comsvcs.dll` which in-turn calls MiniDumpWriteDump (`MiniDump`) on the LSASS process memory, outputting to `C:\lsass.dmp`
+
