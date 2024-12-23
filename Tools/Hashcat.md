@@ -16,6 +16,7 @@ Hashcat can also create custom password lists based on a set of rules given.
 - Download the binary from the hashcat website
 ## Documentation
 **Cheatsheet:** 
+- Hash types : https://hashcat.net/wiki/doku.php?id=example_hashes
 **Website:** https://hashcat.net/hashcat/
 **HTB Module:** [Cracking Passwords with Hashcat](https://academy.hackthebox.com/course/preview/cracking-passwords-with-hashcat)
 ## Usage

