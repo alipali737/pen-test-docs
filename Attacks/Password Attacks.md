@@ -125,7 +125,7 @@ The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-she
 There are 3 registry hives (*we need local admin access to get*) that are useful for dumping and cracking hashes from the SAM db.
 - `hklm\sam` - Hashes for local account passwords
 - `hklm\system` - Contains the system boot key that is used to encrypt the SAM database
-- `hklm\security` - Contains cached credentials for domain accounts (*useful if wea re attacking a domain-joined windows target*)
+- `hklm\security` - Contains cached credentials for domain accounts (*useful if we are attacking a domain-joined windows target*)
 
 We can use the `reg.exe` utility to copy the registry hives. Once saved, we just need to [[Operating Systems/Windows/File Transfer|File Transfer]] them back to our attack machine.
 ```cmd
@@ -140,4 +140,11 @@ Once on the attack machine, we can use Impacket's `secretsdump.py` tool to grab 
 $ secretsdump -sam sam.save -security security.save -system system.save LOCAL
 ```
 
-We can then use a tool like [[Hashcat]] to offline crack the NT (*NTLM*) or LM hashes that have been dumped
+We can then use a tool like [[Hashcat]] to offline crack the NT (*NTLM*) or LM hashes that have been dumped.
+
+**Remote dumping** of the LSA secrets & SAM databases can also be done via tools like `crackmapexec` using a local administrator account:
+```sh
+$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
+
+$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam
+```
