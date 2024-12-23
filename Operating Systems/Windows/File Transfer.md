@@ -85,7 +85,7 @@ SMB works on TCP port 445, and can be used to transfer files to a target system.
 
 First we need to create an SMB server to host our payload (we can use Impacket's `smbserver`)
 ```bash
-sudo impacket-smbserver share -smb2support /tmp/smbshare
+sudo impacket-smbserver [shareName] -smb2support /tmp/smbshare
 ```
 
 We can then copy the file to our target system

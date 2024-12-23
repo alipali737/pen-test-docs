@@ -48,3 +48,8 @@ To then generate the list, you would use:
 hashcat --force password.list -r custom.rule --stdout | sort -u > mut_password.list
 ```
 > There are built in rules in hashcat, a popular one is `best64.rule`.
+
+### Dictionary Attack
+```sh
+$ hashcat -m [hash_id] -a 0 [hashes_file] [wordlist]
+```
