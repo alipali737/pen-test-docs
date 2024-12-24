@@ -232,3 +232,5 @@ An older auth protocol enabled by default in *Windows XP -> Windows 8* & *Window
 
 **DPAPI**
 The *Data Protection Application Programming Interface* (*[DPAPI](https://docs.microsoft.com/en-us/dotnet/standard/security/how-to-use-data-protection)*) is a set of Windows APIs used to encrypt and decrypt DPAPI data blobs for windows features & third-party apps. The `masterkey` is used to decrypt the secrets associated with each application and allows us to capture all kinds of account credentials.
+
+### Active Directory
