@@ -491,10 +491,10 @@ The [Security Account Manager](https://docs.microsoft.com/en-us/previous-version
 
 Located in `%SystemRoot%/system32/config/SAM`, mounted on `HKLM/SAM` and requires `SYSTEM` privs to view it. Some older systems may have a `SYSKEY` function that is used to partially encrypt the SAM database, but this was removed in windows 10 version 1709 because of abuse.
 
-Windows systems can be assigned to either a workgroup or domain when setup. If a workgroup is used, the SAM db is stored locally. If a domain is assigned, the Domain Controller (*DC*) validates credentials from the AD db (`ntds.dit`) stored in `%SystemRoot%/ntds.dit`.
+Windows systems can be assigned to either a workgroup or domain when setup. If a workgroup is used, the SAM db is stored locally. If a domain is assigned, the Domain Controller (*DC*) validates credentials from the AD db (`ntds.dit`).
 
 ### NTDS
-In an Windows domain, each Domain Controller (*part of a larger Active Directory Forest*) will hold a file called `NTDS.dit` that keeps all Domain Controllers synchronised (*with the exception of Read-Only Domain Controllers*). `NTDS.dit` is a database file that stores the data in Active Directory, including:
+In an Windows domain, each Domain Controller (*part of a larger Active Directory Forest*) will hold a file called `NTDS.dit` that keeps all Domain Controllers synchronised (*with the exception of Read-Only Domain Controllers*). `NTDS.dit` is a database file (`.dit` = *directory information tree*) (*stored in `%SystemRoot%/ntds.dit`*) that stores the data in Active Directory, including:
 - User accounts (usernames & passwords)
 - Group accounts
 - Computer accounts

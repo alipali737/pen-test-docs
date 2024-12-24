@@ -237,6 +237,28 @@ The *Data Protection Application Programming Interface* (*[DPAPI](https://docs.m
 Once a system joins a domain, it will no longer use it's SAM database to validate logon requests. Instead all authentication requests are validated by the domain controller. *The SAM db is still used for local account logins by appending the hostname to the username (eg. `WS01/myuser`) or typing `./` in the username field on the device locally*. It is important to understand what components are being attacked depending how the login is being performed and the configuration of the system.
 > NTDS Attack Techniques: https://attack.mitre.org/techniques/T1003/003/
 
+**Using a Dictionary Attack to gain credentials**
 [Group Policies](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831791(v=ws.11)) are ways to apply restrictions and permissions across a domain, these can impact our ability to perform techniques like dictionary attacks as it could block login attempts are a certain number of failures.
 
-Often we can guess the format of a username, commonly there is a format set across the organisation (eg. `first.last@company.com`). Google dorks of something like `"@company.com"` or `"company.com filetype:pdf"` can reveal results for employee emails/usernames. Occasionally 
+Often we can guess the format of a username, commonly there is a format set across the organisation (eg. `first.last@company.com`). Google dorks of something like `"@company.com"` or `"company.com filetype:pdf"` can reveal results for employee emails/usernames. Occasionally a company will use aliases for emails (eg. `a901@company.com` might alias to `joe.smith@company.com` internally).
+
+Once a collection of employee names has been gathered, tools like [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) and [[Hashcat#Password mutation|Hashcat]] with custom rules can generate potential usernames. Ideally though, we would try to discover the actual naming convention used by the company.
+
+Above all, we want to try to minimise the amount of data we have in our lists to as specific as we can, reducing the compute time needed.
+
+Once we have prepared our list(s), we can launch the dictionary attack against the target domain controller with a tool like [[CrackMapExec]].
+```sh
+$ crackmapexc smb [target_ip] -u john.smith@company.com -p ./passwords.list
+```
+> As far as can be seen, the default Group Policy Object (GPO) for a Windows domain, does NOT include a logon attempt lockout policy.
+
+A caveat to a dictionary attack is that it is incredibly noisy (especially remotely). The windows security log will track all logon attempts and can be observed via `Event Viewer`. 
+
+**Capturing NTDS.dit**
+New Technology Directory Services (*NTDS*) is a directory service used with AD to find & organise network resources.
+![[Windows#NTDS]]
+
+Once credentials have been obtained, we can use a tool like [[Evil-Winrm]] to connect to the target DC.
+```sh
+$ evil-winrm -i [target_ip] -u [user] -p [pass]
+```
