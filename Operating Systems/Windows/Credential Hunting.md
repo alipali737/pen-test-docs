@@ -9,7 +9,36 @@ debugInConsole: false # Print debug info in Obsidian console
 
 > A process of performing detailed searches across the file system and various applications to discover credentials.
 
-## Search Centric
 Many search features are built into applications or windows itself and can be used to identify user credentials or default credentials that have been stored on the file system.
 
-It is i
+It is important to consider the context of the target:
+- What might the target's user being doing on a day-to-day? 
+- What may require credentials?
+
+**Useful key terms**
+- passwords
+- passphrases
+- keys
+- username
+- user account
+- creds
+- users
+- passkeys
+- configuration
+- dbcredential
+- dbpassword
+- pwd
+- login
+- credentials
+
+## Search Tools
+**Windows Search**
+This can be useful for searching for key terms across the OS.
+
+**Lazagne**
+[Lazagne](https://github.com/AlessandroZ/LaZagne) is a tool (*worth keeping a standalone copy we can transfer over*) that can search for credentials that web browsers or other applications may install insecurely.
+
+```cmd
+C:\> start lazagne.exe all
+```
+> `-vv` can be used to study what is happening in the background.
