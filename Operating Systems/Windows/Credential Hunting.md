@@ -31,6 +31,14 @@ It is important to consider the context of the target:
 - login
 - credentials
 
+Some useful places to search for credentials:
+- Passwords in Group Policy in the `SYSVOL` share
+- Passwords in scripts in the `SYSVOL` share
+- Passwords in files in shares
+- unattend.xml
+- Passwords in the AD user or computer description fields
+- KeePass databases --> pull hash, crack and get loads of access.
+- Sharepoint
 ## Search Tools
 **Windows Search**
 This can be useful for searching for key terms across the OS.
