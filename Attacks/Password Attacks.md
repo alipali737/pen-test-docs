@@ -234,4 +234,9 @@ An older auth protocol enabled by default in *Windows XP -> Windows 8* & *Window
 The *Data Protection Application Programming Interface* (*[DPAPI](https://docs.microsoft.com/en-us/dotnet/standard/security/how-to-use-data-protection)*) is a set of Windows APIs used to encrypt and decrypt DPAPI data blobs for windows features & third-party apps. The `masterkey` is used to decrypt the secrets associated with each application and allows us to capture all kinds of account credentials.
 
 ### Dumping Active Directory's NTDS.dit file
+Once a system joins a domain, it will no longer use it's SAM database to validate logon requests. Instead all authentication requests are validated by the domain controller. *The SAM db is still used for local account logins by appending the hostname to the username (eg. `WS01/myuser`) or typing `./` in the username field on the device locally*. It is important to understand what components are being attacked depending how the login is being performed and the configuration of the system.
+> NTDS Attack Techniques: https://attack.mitre.org/techniques/T1003/003/
 
+[Group Policies](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831791(v=ws.11)) are ways to apply restrictions and permissions across a domain, these can impact our ability to perform techniques like dictionary attacks as it could block login attempts are a certain number of failures.
+
+Often we can guess the format of a username, commonly there is a format set across the organisation (eg. `first.last@company.com`). Google dorks of something like `"@company.com"` or `"company.com filetype:pdf"` can reveal results for employee emails/usernames. Occasionally 
