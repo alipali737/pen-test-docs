@@ -47,3 +47,7 @@ $ find /home/* -type f -name "*.txt" -o ! -name "*.*"
 ```
 
 ## Scripts
+Scripts can be a great source for credentials as they often need credentials of higher privileges to perform actions automatically, they may even pull credentials from env vars too.
+```sh
+$ for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share";done
+```
