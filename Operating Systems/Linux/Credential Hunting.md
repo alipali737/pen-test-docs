@@ -94,3 +94,24 @@ $ for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened
 
 ## Memory and Cache
 Many applications that work with credentials store them in-memory or in files to be reused later.
+> [mimipenguin](https://github.com/huntergregal/mimipenguin) is a tool that is able to leak the credentials for users that are stored in-memory on a linux system (*requires root permissions*)
+
+**LaZagne**
+[Lazagne](https://github.com/AlessandroZ/LaZagne) is a tool (*worth keeping a standalone copy we can transfer over*) that can search for credentials that web browsers or other applications may install insecurely. The github page for the tool displays all the supported applications.
+
+```sh
+$ sudo python2.7 laZagne.py all
+```
+> `-vv` can be used to study what is happening in the background.
+
+### Browsers
+Many browsers store their 'saved' user credentials in encrypted files on the system, however, these are not necessarily safe.
+```sh
+# List the firefox files
+ls -l .mozilla/firefox/ | grep default
+```
+
+Tools like [Firefox Decrypt](https://github.com/unode/firefox_decrypt) exist to break the encryption on these files. 
+> This can also be done via LaZagne if it is a 'supported browser'
+> `laZagne.py browsers`
+

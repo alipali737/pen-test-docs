@@ -104,7 +104,7 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 | Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]      |           |
 | SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                     | [[Hydra]] |
 | Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                    |           |
-| Overall Scan              | enum4linux -a [target]                                                                                                                                             |           |
+| Overall Scan              | enum4linux -a [target]<br>enum4linux-ng -A [target]                                                                                                                |           |
 | Groups via SMB            | nmap --script=smb-enum-group                                                                                                                                       |           |
 | Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv                                            |           |
 | Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                                            |           |
