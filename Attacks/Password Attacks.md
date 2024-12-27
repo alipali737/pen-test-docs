@@ -22,7 +22,7 @@ htb-student:$y$j9T$3QSBB6CbHEu...SNIP...f8Ms:18955:0:99999:7:::
 ```
 The format for the string (*separated by `:`*) goes as:
 1. Username (*htb-student*)
-2. Password Hash (*\$y\$j9T\$3...f8Ms*)
+2. Password Hash (*\$y\$j9T\$3...f8Ms*, if this field contains a `!` or `*` a user cannot login with password but other auth methods like Kerberos would still work) 
 3. Day of last change in unix time (*18955* - days after 1st Jan 1970)
 4. Minimum Age in days before the next change can occur (*0*)
 5. Maximum Age in days until the next change has to occur (*99999*)
@@ -43,8 +43,18 @@ Each algorithm ID corresponds to a hashing algorithm:
 - *\$y* - Yescrypt
 - *$gy* - Gost-yescrypt
 - *$7* - Scrypt
+##### Cracking the Shadow file
+If both the `passwd` & `shadow` files have been obtained we can use `unshadow` & [[Hashcat]] to try crack it:
+```sh
+$ unshadow passwd.copy shadow.copy > unshadow.hashes
+$ hashcat -m 1800 -a 0 unshadow.hashes rockyou.txt -o unshadow.cracked
+
+# For MD5 hashses we can use mode 500
+$ hashcat -m 500 -a 0 md5-hashes.list rockyou.txt
+```
+
 #### /etc/passwd
-> Should only be writable by root
+> Should only be writable by root but readable by all
 
 This file contains all the user accounts and some information about them:
 ```shell
@@ -59,6 +69,9 @@ htb-student:x:1000:1000:,,,:/home/htb-student:/bin/bash
 5. comment (*,,,*)
 6. home dir (*/home/htb-student*)
 7. cmd to run after login (*/bin/bash*)
+
+#### /etc/security/opasswd
+A file used by [[Linux#Pluggable Authentication Modules (PAM)|PAM]] to store old passwords. This can be a security weakness as if we get a user's old passwords, we might be able to determine a pattern and guess their current password. This file does by default require admin privs to read.
 
 ### Windows
 Windows [Windows client authentication process](https://docs.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication) tends to be more complicated than with Linux systems, consisting with many different modules that the various processes required to authenticate a client. Additionally, there are many different authentication processes, such as Kerberos auth.

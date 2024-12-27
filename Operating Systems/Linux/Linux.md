@@ -344,6 +344,15 @@ Matches are used to match specific characteristics of a packet:
 | `-m mark`               | Matches packets based on their Netfilter mark value                |
 | `-m mac`                | Matches packets based on their MAC address                         |
 | `-m iprange`            | Matches packets based on a range of IP addresses                   |
+## Linux User Authentication
+### Pluggable Authentication Modules (PAM)
+Located in (*Debian*) `/usr/lib/x86_64-linux-gnu/security/`, the `pam_unix.so` or `pam_unix2.so` modules are responsible for authentication, sessions, user information, and passwords. They utilise standardised API calls to interact with account information, storing data in `/etc/passwd` and `/etc/shadow`. PAM also has many other modules for authentications methods like LDAP and Kerberos.
+### The Passwd file
+![[Password Attacks#/etc/passwd]]
+
+### The Shadow File
+![[Password Attacks#/etc/shadow]]
+
 ## System Logs
 Logs of the activities on the system. Can determine:
 - System behaviours
