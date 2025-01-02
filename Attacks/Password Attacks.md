@@ -323,7 +323,8 @@ $ sudo hashcat -m 1000 [hash] [wordlist]
 A [Pass-the-Hash (*PtH*)](https://arc.net/l/quote/rnlbusfx) attack takes advantage of the [NTLM authentication protocol](https://docs.microsoft.com/en-us/windows/win32/secauthn/microsoft-ntlm#:~:text=NTLM%20uses%20an%20encrypted%20challenge,to%20the%20secured%20NTLM%20credentials) to authenticate a user using a hash. We can use the hash (`username:hash`) directly to login instead of using the clear-text password (`username:password`).
 
 #### Mimikatz
-Using [[Mimikatz]] we can perform the attack:
+Using [[Mimikatz]] we can dump out the hashes and then we can perform the attack:
+![[Mimikatz#Obtaining Hashes & Credentials]]
 ![[Mimikatz#Pass-the-Hash]]
 
 #### Invoke-TheHash
@@ -361,3 +362,7 @@ User Account Control (UAC) can limit a local user's ability to perform remote ad
 > If the registry key `FilterAdministratorToken` is enabled (set to 1, but *disabled by default*) then even the RID 500 account is restricted. Meaning remote PTH will fail against even this account.
 
 These settings only apply to local administrator accounts however, domain accounts with admin rights on the system can still be exploited using PtH.
+
+### Pass-the-Ticket (PtT)
+Very similarly to a [[#Pass-the-Hash]] attack, but instead of an NTLM hash, we use a [[Kerberos]] ticket to move laterally through an AD environment. To perform a PtT attack, we need a valid Kerberos ticket, either a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] (giving us access to any resource a user has privileges) or a [[Kerberos#Ticket Granting Service (TGS)|TGS]] (to allow access to a specific resource).
+

