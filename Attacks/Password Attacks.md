@@ -321,3 +321,20 @@ $ sudo hashcat -m 1000 [hash] [wordlist]
 
 ### Pass-the-Hash
 A [Pass-the-Hash (*PtH*)](https://arc.net/l/quote/rnlbusfx) attack takes advantage of the [NTLM authentication protocol](https://docs.microsoft.com/en-us/windows/win32/secauthn/microsoft-ntlm#:~:text=NTLM%20uses%20an%20encrypted%20challenge,to%20the%20secured%20NTLM%20credentials) to authenticate a user using a hash. We can use the hash (`username:hash`) directly to login instead of using the clear-text password (`username:password`).
+
+#### Mimikatz
+Using [[Mimikatz]] we can perform the attack:
+![[Mimikatz#Pass-the-Hash]]
+
+#### Invoke-TheHash
+Another way is to use powershell and the [Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash) tool. The tool is a collection of PowerShell functions for performing a PtH attack with [[WMI]] or [[SMB]]. Using the .NET TCPClient, an NTLM hash is used to authenticate and execute a command as a user. *Local administrator privileges are NOT required client-side* but the user and hash we use to authenticate need administrator privileges on the target computer.
+```PowerShell
+# Import the functions
+PS C:\> Import-Module .\Invoke-TheHash.psd1
+# PtH via SMB
+PS C:\> Invoke-SMBExec -Target <Target_IP/Hostname> -Domain <Domain> -Username <User> -Hash <NTLM_hash> -Command "<cmd>"
+```
+> We could use a range of commands to add admin users or whatever. A useful thing could be to execute a reverse shell. A website like https://www.revshells.com/ can generate a PowerShell Base64 reverse shell command.
+
+#### PtH with Impacket (Linux)
+We can use a tool like Impacket's P
