@@ -324,7 +324,7 @@ A [Pass-the-Hash (*PtH*)](https://arc.net/l/quote/rnlbusfx) attack takes advanta
 
 #### Mimikatz
 Using [[Mimikatz]] we can dump out the hashes and then we can perform the attack:
-![[Mimikatz#Obtaining Hashes & Credentials]]
+![[Mimikatz#Obtaining Hashes & Tickets]]
 ![[Mimikatz#Pass-the-Hash]]
 
 #### Invoke-TheHash
@@ -366,3 +366,36 @@ These settings only apply to local administrator accounts however, domain accoun
 ### Pass-the-Ticket (PtT)
 Very similarly to a [[#Pass-the-Hash]] attack, but instead of an NTLM hash, we use a [[Kerberos]] ticket to move laterally through an AD environment. To perform a PtT attack, we need a valid Kerberos ticket, either a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] (giving us access to any resource a user has privileges) or a [[Kerberos#Ticket Granting Service (TGS)|TGS]] (to allow access to a specific resource).
 
+On Windows, tickets are processed and stored by the [[Windows#LSASS|LSASS]] process. A non-privileged user can only request their own tickets, but a local admin can collect them all. Therefore, to use either of the options below to export tickets, you *must be running as local administrator*.
+#### Exporting Tickets with Mimikatz
+![[Mimikatz#Obtaining Hashes & Tickets]]
+
+#### Exporting Tickets with Rubeus
+[Rubeus](https://github.com/GhostPack/Rubeus) can be used to export tickets using the `dump` option. (if running as the local administrator) then all tickets can be dumped in base64 format.
+> The `/nowrap` flag can make copy-paste easier.
+
+```cmd
+C:\> Rubeus.exe dump /nowrap
+```
+
+### Pass the Key or OverPass the Hash
+Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
+We can collect the encryption keys using a tool like [[Mimikatz]]:
+![[Mimikatz#Exporting Kerberos Keys]]
+
+Then perform the attack:
+![[Mimikatz#Pass-the-Hash]]
+
+```cmd
+C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /nowrap
+```
+> The key type can be `/rc4`, `/aes128`, `/aes256`, or `/des`.
+> Most AD domains use AES encryption as default now, so using an `rc4` key could cause an `encryption downgrade` alert.
+
+[[Mimikatz]] requires administrative rights to perform the Pass the Key/OverPass the Hash attack, whereas [Rubeus](https://github.com/GhostPack/Rubeus) does not.
+> Ref: [Rubeus Example for OverPass the Hash](https://github.com/GhostPack/Rubeus#example-over-pass-the-hash)
+
+#### Pass the Ticket with Rubeus
+```cmd
+C:\> Rubeus.exe asktgt /dp
+```
