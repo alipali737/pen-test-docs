@@ -320,4 +320,4 @@ $ sudo hashcat -m 1000 [hash] [wordlist]
 *If we are unsuccessful in cracking a hash, there are other methods that can be used to [[Password Attacks#Pass-the-Hash|Pass-the-Hash]]*.
 
 ### Pass-the-Hash
-A Pass-the-Hash (*PtH*) attack takes advantage of the [NTLM authentication protocol](https://docs.microsoft.com/en-us/windows/win32/secauthn/microsoft-ntlm#:~:text=NTLM%20uses%20an%20encrypted%20challenge,to%20the%20secured%20NTLM%20credentials) to authenticate a user using a hash. We can use the hash (`username:hash`) directly to login instead of using the clear-text password (`username:password`).
+A [Pass-the-Hash (*PtH*)](https://arc.net/l/quote/rnlbusfx) attack takes advantage of the [NTLM authentication protocol](https://docs.microsoft.com/en-us/windows/win32/secauthn/microsoft-ntlm#:~:text=NTLM%20uses%20an%20encrypted%20challenge,to%20the%20secured%20NTLM%20credentials) to authenticate a user using a hash. We can use the hash (`username:hash`) directly to login instead of using the clear-text password (`username:password`).
