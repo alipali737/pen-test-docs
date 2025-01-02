@@ -25,6 +25,19 @@ sudo apt-get -y install crackmapexec
 crackmapexec <proto> <target-ip> -u <user or userlist> -p <pass or passlist>
 ```
 
+### Password Spraying a domain using Pass-the-Hash
+We can perform a password spraying attack on a set of targets to see if we are able to login to any host on a subnet. 
+```sh
+crackmapexec smb [target(s)] -u [user] -d . -H [hash]
+
+# Try credentials against local administrator password on each host
+crackmapexec smb 10.129.201.0/24 -u Administrator -d . -H [administrator_hash] --local-auth
+```
+The `--local-auth` can also be added if we want to attempt to login via local credentials on the host (eg. the local administrator password). 
+> If we discover systems all using the same administrator password, we could recommend the use of the [Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) which randomises the local admin password and can also rotate it on fixed intervals.
+
+The `-x` flag can be used to execute a command too
+
 ### List SMB Shares
 ```sh
 crackmapexec smb [ip] -u [user] -p [pass] --shares
