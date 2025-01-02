@@ -357,3 +357,7 @@ Once enabled, we can use [[xfreerdp]] and the `/pth` option to gain access
 ```sh
 $ xfreerdp /v:[target_ip] /u:[user] /pth:[hash]
 ```
+User Account Control (UAC) can limit a local user's ability to perform remote administration operations. If the registry key `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy` is set to 0, only the built-in local admin can perform these operations. Setting it to 1 will allow other local admins.
+> If the registry key `FilterAdministratorToken` is enabled (set to 1, but *disabled by default*) then even the RID 500 account is restricted. Meaning remote PTH will fail against even this account.
+
+These settings only apply to local administrator accounts however, domain accounts with admin rights on the system can still be exploited using PtH.
