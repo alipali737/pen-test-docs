@@ -10,6 +10,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 Mimikatz is a windows tool for extracting plaintext passwords, hashes, PIN codes, and kerberos tickets from memory. It is also capable of performing Pass-the-Hash, Pass-the-Ticket, or build *Golden* tickets.
 > [pypykatz](https://github.com/skelsec/pypykatz) is a python implementation of the tool that can be run on linux systems.
+> [Linikatz](https://github.com/CiscoCXSecurity/linikatz) performs a similar role for linux too
 
 ## Installation
 Pre-built binaries available in the git repo: https://github.com/gentilkiwi/mimikatz/releases

