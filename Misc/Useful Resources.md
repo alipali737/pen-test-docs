@@ -24,6 +24,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Cheat Sheets
 - [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) : List of default credentials for many applications
 - [Router Default Credentials](https://www.softwaretestinghelp.com/default-router-username-and-password-list/) : List of default credentials for many routers
+- [FileInfo.com](https://fileinfo.com/filetypes/) : Descriptions of most file types
+	- Example for creating a word list of all archive extensions: `curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt`
 
 ## PrivEsc
 - [Privilege Escalation Awesome Scripts SUITE (PEASS)](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) : Suite of scripts relating to privilege escalation

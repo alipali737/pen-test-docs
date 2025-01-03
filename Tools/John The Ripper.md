@@ -51,8 +51,16 @@ There are many tools that convert different file types to a format compatible wi
 - `ssh2john`
 - `rar2john`
 - `zip2john`
+- `office2john` : for any password protected Microsoft office documents
 ```sh
 pdf2john server_doc.pdf > server_doc.hash
 john server_doc.hash
 ```
 > Use `locate *2john*` to find these tools pre-installed.
+
+
+## Side Note
+If you are trying to crack an `openssl` encrypted archive, then it is more reliable to use `openssl` in a `for-loop` than through a tool like [[John The Ripper]] or [[Hashcat]].
+```sh
+$ for i in $(cat <wordlist>); do openssl enc -aes256 -d -in <archive_file> -k $i 2>/dev/null | tar xz;done
+```
