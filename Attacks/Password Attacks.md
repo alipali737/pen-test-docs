@@ -363,14 +363,14 @@ User Account Control (UAC) can limit a local user's ability to perform remote ad
 
 These settings only apply to local administrator accounts however, domain accounts with admin rights on the system can still be exploited using PtH.
 
-### Pass-the-Ticket (PtT)
+### Pass-the-Ticket (PtT) on Windows systems
 Very similarly to a [[#Pass-the-Hash]] attack, but instead of an NTLM hash, we use a [[Kerberos]] ticket to move laterally through an AD environment. To perform a PtT attack, we need a valid Kerberos ticket, either a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] (giving us access to any resource a user has privileges) or a [[Kerberos#Ticket Granting Service (TGS)|TGS]] (to allow access to a specific resource).
 
 On Windows, tickets are processed and stored by the [[Windows#LSASS|LSASS]] process. A non-privileged user can only request their own tickets, but a local admin can collect them all. Therefore, to use either of the options below to export tickets, you *must be running as local administrator*.
-#### Exporting Tickets with Mimikatz
+#### Exporting Tickets with Mimikatz (Windows)
 ![[Mimikatz#Obtaining Hashes & Tickets]]
 
-#### Exporting Tickets with Rubeus
+#### Exporting Tickets with Rubeus (Windows)
 [Rubeus](https://github.com/GhostPack/Rubeus) can be used to export tickets using the `dump` option. (if running as the local administrator) then all tickets can be dumped in base64 format.
 > The `/nowrap` flag can make copy-paste easier.
 
@@ -378,6 +378,10 @@ On Windows, tickets are processed and stored by the [[Windows#LSASS|LSASS]] proc
 C:\> Rubeus.exe dump /nowrap
 ```
 
+### Pass-the-Ticket (PtT) on Linux systems
+Rarely but still a possibility, a linux system can be connected to an Active Directory environment (or may communicate with one via scripts etc). Commonly, Kerberos is also used for this authentication, therefore it is possible to perform PtT from a linux system.
+
+Linux machines stores Kerberos tickets as [ccache files](https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html) in the `/tmp` directory. By default the location of the store is in the `KRB5CCNAME` env var.
 ### Pass the Key or OverPass the Hash
 Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
 We can collect the encryption keys using a tool like [[Mimikatz]]:
