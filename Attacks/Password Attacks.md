@@ -381,7 +381,20 @@ C:\> Rubeus.exe dump /nowrap
 ### Pass-the-Ticket (PtT) on Linux systems
 Rarely but still a possibility, a linux system can be connected to an Active Directory environment (or may communicate with one via scripts etc). Commonly, Kerberos is also used for this authentication, therefore it is possible to perform PtT from a linux system.
 
-Linux machines stores Kerberos tickets as [ccache files](https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html) in the `/tmp` directory. By default the location of the store is in the `KRB5CCNAME` env var.
+Linux machines stores Kerberos tickets as [ccache files](https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html) in the `/tmp` directory. By default the location of the store is in the `KRB5CCNAME` env var. Normally, only privileged users can read/write these files.
+
+Another source for Kerberos tickets on linux is with [keytab](https://kb.iu.edu/d/aumh) files. They are files that contain pairs of Kerberos principals and encrypted keys (*which are derived from your Kerberos password*). These keytabs are used to authenticate to remote servers using Kerberos without needing the password (*but have to be recreated if the password is changed*). [Keytab](https://kb.iu.edu/d/aumh) files are useful for allowing scripts to authenticate without human interaction or passwords being stored.
+> Keytabs are not computer specific, so could be copied (or stolen) and reused on another machine to authenticate as that user.
+
+**Check if Linux machine is domain-joined**
+```sh
+# Will display any domains the machine is connected to
+$ realm list
+```
+> Ref: [realm](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/windows_integration_guide/cmd-realmd)
+> If `realm` isn't available, we can look for the [sssd](https://sssd.io/) or [winbind](https://www.samba.org/samba/docs/current/man-html/winbindd.8.html) services which could suggest if the machine is domain-joined - [blog post](https://web.archive.org/web/20210624040251/https://www.2daygeek.com/how-to-identify-that-the-linux-server-is-integrated-with-active-directory-ad/)
+> `ps -ef | grep -i "winbind\|sssd"`
+
 ### Pass the Key or OverPass the Hash
 Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
 We can collect the encryption keys using a tool like [[Mimikatz]]:
