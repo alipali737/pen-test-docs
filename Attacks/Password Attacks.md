@@ -385,8 +385,10 @@ Linux machines stores Kerberos tickets as [ccache files](https://web.mit.edu/ker
 
 Another source for Kerberos tickets on linux is with [keytab](https://kb.iu.edu/d/aumh) files. They are files that contain pairs of Kerberos principals and encrypted keys (*which are derived from your Kerberos password*). These keytabs are used to authenticate to remote servers using Kerberos without needing the password (*but have to be recreated if the password is changed*). [Keytab](https://kb.iu.edu/d/aumh) files are useful for allowing scripts to authenticate without human interaction or passwords being stored.
 > Keytabs are not computer specific, so could be copied (or stolen) and reused on another machine to authenticate as that user.
+> You must have rw privileges to use a keytab file
+> The linux machine's ticket is default stored as `/etc/krb5.keytab` which would allow you to completely impersonate the machine itself
 
-**Check if Linux machine is domain-joined**
+#### Check if Linux machine is domain-joined
 ```sh
 # Will display any domains the machine is connected to
 $ realm list
@@ -394,6 +396,30 @@ $ realm list
 > Ref: [realm](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/windows_integration_guide/cmd-realmd)
 > If `realm` isn't available, we can look for the [sssd](https://sssd.io/) or [winbind](https://www.samba.org/samba/docs/current/man-html/winbindd.8.html) services which could suggest if the machine is domain-joined - [blog post](https://web.archive.org/web/20210624040251/https://www.2daygeek.com/how-to-identify-that-the-linux-server-is-integrated-with-active-directory-ad/)
 > `ps -ef | grep -i "winbind\|sssd"`
+#### Identifying Keytab files
+```sh
+$ find / -name *keytab* -ls 2>/dev/null
+```
+Sometimes these files are referenced in scripts or cronjobs. A common tool for interacting with Kerberos in linux is [kinit](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/kinit.html) and can be a key indicator for keytab files.
+
+#### CCACHE files (Credential Cache)
+```sh
+$ env | grep -i krb5
+KRB5CCNAME=FILE:/tmp/...
+```
+Each time a user logs in and authenticated via Kerberos, a cache file is created for them. If we have privileges to read the files (normally root) then we can impersonate any user that is authenticated.
+
+#### Abusing KeyTab Files
+```sh
+# List information about a keytab file (incl. who it belongs too)
+$ klist -k -t <keytab_file>
+
+# View current kerberos login information
+$ klist
+
+# Impersonate a different user
+#
+```
 
 ### Pass the Key or OverPass the Hash
 Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
