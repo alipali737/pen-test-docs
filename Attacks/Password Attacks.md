@@ -459,6 +459,12 @@ $ python3 keytabextract.py /home/julia/julia.keytab
 > - Or crack the hashes to obtain the plaintext passwords
 > (KeyTab files can contain multiple credentials for multiple users, and/or different hash types)
 
+#### Extracting credentials on Linux using Linikatz
+
+
+### Converting tickets between OS's
+The [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) can be used to transform `ccache` file from linux to windows, OR `kirbi` files from windows to linux.
+
 ### Pass the Key or OverPass the Hash
 Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
 We can collect the encryption keys using a tool like [[Mimikatz]]:

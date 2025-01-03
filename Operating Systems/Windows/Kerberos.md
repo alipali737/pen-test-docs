@@ -16,3 +16,25 @@ When a user requests a TGT, they must authenticate to the domain controller by e
 The TGS is requested by users who want to use a service. These tickets allow services to verify the user's identity. 
 
 **Example:** If a user wants to connect to a database, it will request a TGS from the Key Distribution Centre (KDC), presenting their TGT. Once validated, a TGS will be given to the database server for authentication.
+
+## Installing the Kerberos client on Linux
+```sh
+# Install the package
+$ sudo apt-get install krb5-user -y
+
+# View the config
+$ cat /etc/krb5.conf
+
+[libdefaults]
+        default_realm = INLANEFREIGHT.HTB
+
+<SNIP>
+
+[realms]
+    INLANEFREIGHT.HTB = {
+        kdc = dc01.inlanefreight.htb
+    }
+
+<SNIP>
+```
+Once setup we can use a tool like [[Evil-Winrm]] with Kerberos authentication.
