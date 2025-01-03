@@ -130,6 +130,14 @@ A pretty common format for a user to do is:
 
 The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) contains a list of many default credentials for common applications, often these default credentials can be forgotten or overlooked when configuring infrastructure which can lead to easy access of the system.
 
+```sh
+# Limit the list to only passwords of 6+ chars
+$ grep -E '^.{6,}$' [file_in] > [file_out]
+
+# Limit the list to only passwords starting with capitals 
+$ grep -E '^([A-Z])' [file_in] > [file_out]
+```
+
 ## Windows
 
 ### Attacking SAM
