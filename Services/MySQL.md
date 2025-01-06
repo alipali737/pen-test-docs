@@ -48,12 +48,13 @@ sudo apt install mysql-server -y
 
 ## Enumeration Checklist
 
-| Goal                          | Command(s)                                                                                                                                                                                  | Refs |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
-| Identify the service via Nmap | sudo nmap [ip] -sC -sV -p3306 --script mysql*                                                                                                                                               |      |
-| Connect with a client         | mysql -u [user] -p[password] -h [ip]                                                                                                                                                        |      |
-| Show information              | show databases;<br><br>use [database name];<br><br>show tables;<br><br>show columns from [table];<br><br>select \* from [table];<br><br>select \* from [table] where [column] = "[string]"; |      |
-| Get version                   | select version();                                                                                                                                                                           |      |
+| Goal                          | Command(s)                                                                                                                                                                                  | Refs                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Identify the service via Nmap | sudo nmap [ip] -sC -sV -p3306 --script mysql*                                                                                                                                               |                                                                                               |
+| Connect with a client         | mysql -u [user] -p[password] -h [ip]                                                                                                                                                        | [guide](https://dev.mysql.com/doc/mysql-getting-started/en/#mysql-getting-started-installing) |
+| Show information              | show databases;<br><br>use [database name];<br><br>show tables;<br><br>show columns from [table];<br><br>select \* from [table];<br><br>select \* from [table] where [column] = "[string]"; |                                                                                               |
+| Get version                   | select version();                                                                                                                                                                           |                                                                                               |
+| Linux GUI App                 | sudo dpkg -i dbeaver-<version>.deb<br><br>dbeaver &                                                                                                                                         | [https://github.com/dbeaver/dbeaver/releases](https://github.com/dbeaver/dbeaver/releases)    |
 ### Nmap Scripts
 > always manually validate results for false positives
 - mysql*

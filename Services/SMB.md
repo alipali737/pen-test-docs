@@ -98,7 +98,7 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 ## Interacting with a share
 ### Windows
 You can use the run tool (`[WINKEY]+[R]`) and input the address as `\\<HOST>\<SHARE>\`.
-```cmd
+```
 C:\> net use n: \\<HOST>\<SHARE>
 C:\> net use n: \\<HOST>\<SHARE> /user:<user> <pass>
 
@@ -112,8 +112,54 @@ C:\> dir n:\*pass* /s /b
 C:\> findstr /s /i pass n:\*.*
 ```
 > More findstr examples [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr#examples)
+```PowerShell
+# Equivalent of the 'dir' / 'ls' commands to list a directory (alias 'gci')
+PS C:\> Get-ChildItem \\<HOST>\<SHARE>
 
+# Mount a new drive
+PS C:\> New-PSDrive -Name "N" -Root "\\<HOST>\<SHARE>" -PSProvider "FileSystem"
 
+# Authentication
+PS C:\> $username = '<user>'
+PS C:\> $password = '<pass>'
+PS C:\> $secpassword = ConvertTo-SecureString $password -AsPlainText -Force
+PS C:\> $cred = New-Object System.Management.Automation.PSCredential $username, $secpassword
+PS C:\> New-PSDrive -Name "N" -Root "\\<HOST>\<SHARE>" -PSProvider "FileSystem" -Credential $cred
+
+# Count the items on a share
+PS C:\> N:
+PS N:\> (Get-ChildItem -File -Recurse | Measure-Object).Count
+
+# Search for a pattern in a path
+PS C:\> Get-ChildItem -Recurse -Path N:\ -Include *pass* -File
+
+# Search for a pattern in files
+PS C:\> Get-ChildItem -Recurse -Path N:\ | Select-String "pass" -List
+```
+
+### Linux
+```sh
+# Mount a share
+$ sudo mkdir /mnt/<Share>
+$ sudo mount -t cifs -o username=<user>,password=<pass>,domain=. //<HOST>/<SHARE> /mnt/<SHARE>
+
+# Using a credential file (same format as above but in a file)
+$ sudo mount -t cifs //<HOST>/<SHARE> /mnt/<SHARE> -o credentials=<credentials_file>
+# == credentials.txt ==
+# username=<user>
+# password=<pass>
+# domain=.
+# =====================
+```
+> To use `cifs` we need to install `cifs-utils` --> `sudo apt install cifs-utils`
+
+```sh
+# Search for pattern in path
+$ find /mnt/<SHARE> -name *pass*
+
+# Search for pattern in files
+$ grep -rn /mnt/<SHARE> -ie pass
+```
 ## Enumeration Checklist
 
 | Goal                      | Command(s)                                                                                                                                                         | Refs      |
