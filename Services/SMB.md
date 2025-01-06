@@ -94,6 +94,11 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 ```shell
 ./enum4linux-ng.py [Target] -A
 ```
+
+## Mounting a Share
+### Windows
+You can use the run tool (`)
+
 ## Enumeration Checklist
 
 | Goal                      | Command(s)                                                                                                                                                         | Refs      |
