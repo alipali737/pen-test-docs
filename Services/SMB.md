@@ -95,9 +95,24 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 ./enum4linux-ng.py [Target] -A
 ```
 
-## Mounting a Share
+## Interacting with a share
 ### Windows
-You can use the run tool (`)
+You can use the run tool (`[WINKEY]+[R]`) and input the address as `\\<HOST>\<SHARE>\`.
+```cmd
+C:\> net use n: \\<HOST>\<SHARE>
+C:\> net use n: \\<HOST>\<SHARE> /user:<user> <pass>
+
+# Scan a drive for the number of files on it
+C:\> dir n: /a-d /s /b | find /c ":\"
+
+# Search for a pattern in file names
+C:\> dir n:\*pass* /s /b
+
+# Search for a pattern in text-based files
+C:\> findstr /s /i pass n:\*.*
+```
+> More findstr examples [here](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/findstr#examples)
+
 
 ## Enumeration Checklist
 
