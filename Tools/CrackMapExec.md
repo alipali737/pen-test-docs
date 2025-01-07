@@ -23,7 +23,7 @@ sudo apt-get -y install crackmapexec
 **Website:** https://web.archive.org/web/20231116172005/https://www.crackmapexec.wiki/
 ## Usage
 ```sh
-crackmapexec <proto> <target-ip> -u <user or userlist> -p <pass or passlist>
+crackmapexec <proto> <target-ip> -u <user or userlist> -p <pass or passlist> -d .
 ```
 
 ### Password Spraying a domain using Pass-the-Hash
