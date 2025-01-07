@@ -36,6 +36,10 @@ FTP can also potential offer *anonymous* FTP, which doesn't require the user to 
 - Upload payloads or malicious files / tools
 - Download sensitive data
 - FTP Bounce (uses `PORT` cmd to basically proxy through a server)
+
+### FTP Bounce Attacks
+
+
 ## Enumeration Checklist
 
 | Goal                                       | Command(s)                                                                 | Refs                                                                       |
