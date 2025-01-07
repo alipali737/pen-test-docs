@@ -38,17 +38,17 @@ FTP can also potential offer *anonymous* FTP, which doesn't require the user to 
 - FTP Bounce (uses `PORT` cmd to basically proxy through a server)
 ## Enumeration Checklist
 
-| Goal                                       | Command(s)                                                                 | Refs                                              |
-| ------------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------- |
-| Footprint the service                      | nmap [IP] -n -Pn -p[PORT] -vv -sV --script "\*ftp\* and (default or safe)" | https://nmap.org/book/man-nse.html                |
-| Try anonymous connection                   | ftp anonymous@[target]<br>nmap --script=ftp-anom                           | <br>This script uses `anonymous` as the user and  |
-| Exploits for version                       | searchsploit [version]<br><br>google [version]                             |                                                   |
-| FTP Brute force                            | nmap [IP] -n -Pn -p[PORT] --script ftp-brute.nse<br><br>hydra              |                                                   |
-| List All                                   | LIST -R                                                                    |                                                   |
-| Get/Put files                              | get/mget<br>put/mput                                                       | /etc/passwd<br>/etc/sudoers<br>/etc/shadow        |
-| Download all files                         | wget -m --no-passive ftp://[user]:[pass]@[IP]                              |                                                   |
-| Search for config files for other services |                                                                            |                                                   |
-| Search for SSH keys                        | /home/user/.ssh/authorized_keys<br>/home/user/.ssh/id_rsa                  | Use john to crack keys?                           |
+| Goal                                       | Command(s)                                                                 | Refs                                                                       |
+| ------------------------------------------ | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Footprint the service                      | nmap [IP] -n -Pn -p[PORT] -vv -sV --script "\*ftp\* and (default or safe)" | https://nmap.org/book/man-nse.html                                         |
+| Try anonymous connection                   | ftp anonymous@[target]<br>nmap --script=ftp-anom                           | <br>This script uses `anonymous` as the user and `IEUser@` as the password |
+| Exploits for version                       | searchsploit [version]<br><br>google [version]                             |                                                                            |
+| FTP Brute force                            | nmap [IP] -n -Pn -p[PORT] --script ftp-brute.nse<br><br>hydra              |                                                                            |
+| List All                                   | LIST -R                                                                    |                                                                            |
+| Get/Put files                              | get/mget<br>put/mput                                                       | /etc/passwd<br>/etc/sudoers<br>/etc/shadow                                 |
+| Download all files                         | wget -m --no-passive ftp://[user]:[pass]@[IP]                              |                                                                            |
+| Search for config files for other services |                                                                            |                                                                            |
+| Search for SSH keys                        | /home/user/.ssh/authorized_keys<br>/home/user/.ssh/id_rsa                  | Use john to crack keys?                                                    |
 ## Connecting to FTP
 ```shell
 nc -nv [IP] [PORT]
