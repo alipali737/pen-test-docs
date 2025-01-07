@@ -132,10 +132,25 @@ GO
 Impersonating another user is done via:
 ```sql
 EXECUTE AS LOGIN = 'sa'
-<CMD>
 GO
 ```
 > You should run this in the masterDB as all users have access to this db and will prevent an error - `USE master`
+
+To logout we can use the `REVERT` command.
+> It is worth checking all users we can impersonate as some may have access to additional DBs
+
+### Connecting to other DBs
+MSSQL has a concept called [linked servers](https://docs.microsoft.com/en-us/sql/relational-databases/linked-servers/create-linked-servers-sql-server-database-engine). We can perform Transact-SQL statements on other database instances (or even other DB products like oracle). We could use this to move laterally:
+```sql
+-- We can view any remote servers we have a connection too (0 means its a linked server, 1 means its a remote server)
+SELECT srvname, isremote FROM sysservers
+GO
+
+-- Identify the user used for the connection
+EXECUTE('<remote_command>') AT [<LINKED_SERVER>]
+EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.10.0.12\SQLEXPRESS]
+```
+
 ## Enumeration Checklist
 
 | Goal                               | Command(s)                                                                                                                                                                                                                                                                                          | Refs                                                                                                                  |
