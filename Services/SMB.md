@@ -17,8 +17,11 @@ Samba can also act as a member or controller for an Active Directory domain.
 Each host in a network is part of a *workgroup*, this is used to identify a collection of computers and their resources on an SMB network.
 
 **Standard Port:** 
-- SMB : *137-139*/tcp
-- CIFS : *445*/tcp
+- NBT(NetBIOS) : *139*/tcp & *137-138*/udp
+- CIFS/SMB : *445*/tcp
+> On a windows system SMB can run directly over port 445/tcp without needing NetBIOS.
+> If a non-windows system (eg. SAMBA service) or NetBIOS is enabled, SMB will run over port 139/tcp with NetBIOS.
+
 
 **Version Names:** 
 
@@ -31,7 +34,7 @@ A client must establish a connection with an SMB server application before any a
 
 An SMB server can then provide arbitrary parts of its local file system as shares. *Access Control Lists* (*ACLs*) are used to control the shares (Not the underlying file permissions, that is [[Windows#NTFS vs Sharing Permissions|NTFS]]).
 #### Samba
-Samba implements the *Common Internet File System* (*CIFS*) protocol. It is a specific implementation of the SMB protocol (like a dialect), created by Microsoft. It allows connections with newer Windows systems.
+Samba is for non-windows systems. Samba implements the *Common Internet File System* (*CIFS*) protocol. It is a specific implementation of the SMB protocol (like a dialect), created by Microsoft. It allows connections with newer Windows systems.
 
 When passing SMB commands over Samba to an older NetBIOS service, it usually connects over TCP ports *137-139*, but CIFS only uses *445*.
 
@@ -58,10 +61,11 @@ The Samba SMB daemon can be restarted with `systemctl`
 - Access shared resources or files on a network.
 - Gain insights as to the devices and potential users on a network.
 
-## RPCclient
-As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
+## MSRPC / RPCclient
+RPC lets us execute a procedure (eg. a function) in a local or remote process. We can use `MS-RPCE` which is RPC over SMB (using SMB named pipes). As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
 
 ```shell
+# Authenicate with Null session (anonymous user)
 rpcclient -U "" [Target]
 
 Enter WORKGROUP\'s password:
@@ -160,18 +164,26 @@ $ find /mnt/<SHARE> -name *pass*
 # Search for pattern in files
 $ grep -rn /mnt/<SHARE> -ie pass
 ```
-## Enumeration Checklist
 
-| Goal                      | Command(s)                                                                                                                                                         | Refs      |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                                  |           |
-| Enumerate Hostname        | nmblookup -A [target]                                                                                                                                              |           |
-| List shares               | smbmap -H [target]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]<br><br>![[CrackMapExec#List SMB Shares]] |           |
-| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]      |           |
-| SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                     | [[Hydra]] |
-| Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                    |           |
-| Overall Scan              | enum4linux -a [target]<br>enum4linux-ng -A [target]                                                                                                                |           |
-| Groups via SMB            | nmap --script=smb-enum-group                                                                                                                                       |           |
-| Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv                                            |           |
-| Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                                            |           |
-| OS discovery              | nmap [target] --script=smb-os-discovery.nse                                                                                                                        |           |
+## PsExec and Alternative Tools
+Executing code remotely is incredibly powerful, tools like [PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) can do this.
+
+[PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) contains a Windows service image inside of its executable. It deploys the service to the admin$ (*by default*) share on the remote machine. 
+
+## Enumeration Checklist
+> Useful SANS cheatsheet: https://www.willhackforsushi.com/sec504/SMB-Access-from-Linux.pdf
+
+| Goal                      | Command(s)                                                                                                                                                                                        | Refs      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                                                                 |           |
+| Enumerate Hostname        | nmblookup -A [target]                                                                                                                                                                             |           |
+| List shares               | smbmap -H [target]<br>smbmap -H [target] -r [dir]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]<br><br>![[CrackMapExec#List SMB Shares]] |           |
+| Download & upload Files   | smbmap -H [target] --dowload [remote_path]<br>smbmap -H [target] --upload [local_path] \[remote_path]                                                                                             |           |
+| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]                                     |           |
+| SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                                                    | [[Hydra]] |
+| Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                                                   |           |
+| Overall Scan              | enum4linux -a [target]<br>enum4linux-ng -A [target]                                                                                                                                               |           |
+| Groups via SMB            | nmap --script=smb-enum-group                                                                                                                                                                      |           |
+| Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv                                                                           |           |
+| Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                                                                           |           |
+| OS discovery              | nmap [target] --script=smb-os-discovery.nse                                                                                                                                                       |           |
