@@ -38,9 +38,11 @@ sudo apt install mysql-server -y
 - `secure_file_priv` : Limit the effect of data import and export operations
 
 ### Default Setup
-- *system schema* (*sys*): [docs](https://dev.mysql.com/doc/refman/8.0/en/system-schema.html)
+- *system schema* (*sys*) : [docs](https://dev.mysql.com/doc/refman/8.0/en/system-schema.html)
 	- `host_summary` table contains host information : `select host, unique_users from host_summary;`
-- *information schema* (*information_schema*): metadata database
+- *information schema* (*information_schema*) : metadata database
+- *mysql* : system database that information required by MySQL Server
+- *performance schema* (*performance_schema*) : feature for monitoring MySQL Server execution at a low level
 
 ## Potential Capabilities
 - Potentially gain access to sensitive information in the database
