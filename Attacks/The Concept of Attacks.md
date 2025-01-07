@@ -40,3 +40,17 @@ These present the control the process has over the system. They specify what a p
 The destination is like the goal of the task, what is it that this task should do? For the task to have any use, it must generally return or store the data it has manipulated.
 - *Local* : the system's environment in which the process occurred. The results and outcomes of the task are either processed further by a process or stored.
 - *Network* : the results of the processing is forwarded to a remote interface (an IP, service or even another network)
+
+## Log4J Example
+
+| Step   | Log4J                                                                                                                             | Category      |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| **1.** | Attacker manipulates the User-Agent header with a JNDI lookup                                                                     | *Source*      |
+| **2.** | The process misinterprets the data, leading to execution of the lookup                                                            | *Process*     |
+| **3.** | The JNDI lookup is executed as administrator due to permission needed for logging (*needs access to protected dirs for security*) | *Privileges*  |
+| **4.** | The JNDI lookup goes to the malicious server serving the malicious Java classa                                                    | *Destination* |
+| ====   | ====                                                                                                                              | ====          |
+| **5.** | The malicious java class is downloaded (deserialised) on the target                                                               | *Source*      |
+| **6.** | The malicious java class is read by the process                                                                                   | *Process*     |
+| **7.** | Malicious code is executed with administrator privileges                                                                          | *Privileges*  |
+| **8.** | The code leads back to the attacker and they take control of the system                                                           | *Destination* |
