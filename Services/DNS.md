@@ -149,6 +149,8 @@ There are four steps to enumerating subdomains:
 
 A takeover is where a DNS points to a domain that is hasn't been renewed or is no longer in use but the record still exists. The `CNAME` type record is used for aliasing, eg. A company could setup an AWS S3 bucket and alias that bucket's domain to a subdomain for their organisation (eg. `pictures.example.com CNAME example.s3.amazonaws.com` this will resolve the pictures subdomain to the s3 bucket).
 
+We can enumerate through `CNAME` records and if we find any that result in a 404 then we can likely perform a subdomain takeover.
+
 ### DNS Spoofing
 This is where a legitimate DNS server is compromised and its records are changed to redirect users to a malicious address instead (causing a *MITM* attack).
 Tools like [Ettercap](https://www.ettercap-project.org/) or [Bettercap](https://www.bettercap.org/) can be used for local DNS Cache Poisoning.
@@ -203,6 +205,7 @@ A powerful cli written in Perl for DNS reconnaissance:
 | DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |                                                                     |
 | Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |                                                                     |
 | Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |                                                                     |
+> DO NOT FORGET: often you will need to add discovered internal sub domains to the /etc/hosts file so they resolve correctly
 ### General steps
 1. Find all zones using:
 	1. `axfr` (Zone Transfer) on the domain (if it is allowed)
