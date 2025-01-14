@@ -31,12 +31,12 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Enumeration Checklist
 
-| Goal                | Command(s)                                     | Refs                                                                 |
-| ------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| General Information | sudo nmap [ip] -sV -sC -p3389 --script rdp*    |                                                                      |
-| RDP security check  | sudo cpan<br>rdp-sec-check.pl [ip]<br>         | [rdp-sec-check.pl](https://github.com/CiscoCXSecurity/rdp-sec-check) |
-| RDP Bruteforce      | hydra -L [user_list] -P [pass_list] rdp://[ip] | [[Hydra]]                                                            |
-| Connect to an RDP   | xfreerdp /u:[user] /p:[pass] /v:[ip]           |                                                                      |
+| Goal                | Command(s)                                     | Refs                                                                                       |
+| ------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| General Information | sudo nmap [ip] -sV -sC -p3389 --script rdp*    |                                                                                            |
+| RDP security check  | sudo cpan<br>rdp-sec-check.pl [ip]<br>         | [rdp-sec-check.pl](https://github.com/CiscoCXSecurity/rdp-sec-check)                       |
+| RDP Bruteforce      | hydra -L [user_list] -P [pass_list] rdp://[ip] | [[Hydra]]<br>> this can cause account lockouts, so password-spraying attacks are preferred |
+| Connect to an RDP   | xfreerdp /u:[user] /p:[pass] /v:[ip]           |                                                                                            |
 > Nmap uses the cookie `mstshash=nmap` on RDP connections. This can be identified by threat hunters or EDRs that could result in us getting blocked.
 ### Nmap Scripts
 - rdp-*
