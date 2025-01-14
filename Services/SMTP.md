@@ -43,7 +43,6 @@ Two key issues with the protocol:
 - `EXPN` : Check if a mailbox is available for messaging
 - `NOOP` : Request a response from the server to prevent time-out
 - `QUIT` : Closes the connection
-- 
 
 ### SMTP Server Programs
 - *Mail Submission Agent* (*MSA*) : Receives emails from the SMTP client (A.K.A *Relay* server). Validates email (origin etc).
@@ -71,15 +70,65 @@ cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 As it is often unknown where the emails will come from that we trust, sometimes the `mynetworks` config setting is set to `0.0.0.0/0`. This allows the sending of fake emails.
 ## Potential Capabilities
 - Sometimes we can check the validity of users with the `VRFY` command as it may be configured to output a `252` code if a user exists. (Not reliable so check with dummy user).
-- 
+```sh
+$ telnet [smtp_target] 25
+
+VRFY root
+252 root
+
+VRFY www-data
+252 www-data
+
+VRFY fake-user
+550 unknown
+```
+- `EXPN` command works similarly but when used with a *distribution list* it lists the entire list
+```sh
+$ telnet [smtp_target] 25
+
+EXPN root
+250 root@example.com
+
+VRFY support-team
+250 john@example.com
+250 claire@example.com
+```
+- The `RCPT TO` can also be abused for user enumeration (this will send emails)
+```sh
+$ telnet [smtp_target] 25
+
+MAIL FROM:test@example.com
+blah
+250 sender ok
+
+RCPT TO:john
+250 Recipient ok
+
+RCPT TO:kate
+550 unknown
+```
+
+## Cloud Enumeration
+If a client is using a CSP for their email service, many of these include custom features we can abuse.
+
+### Microsoft Office365
+[O365spray](https://github.com/0xZDH/o365spray) is a tool for username and password spraying aimed at Microsoft Office 365.
+```sh
+# Validate if they are using MS Office 365
+$ python3 o365spray.py --validate --domain [domain]
+
+# Username enum
+$ python3 o365spray.py --enum -U [users] --domain [domain]
+```
 
 ## Enumeration Checklist
 
-| Goal                                | Command(s)                  | Refs                                                            |
-| ----------------------------------- | --------------------------- | --------------------------------------------------------------- |
-| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25 |                                                                 |
-| Connect via telnet to send commands | telnet [ip] [port]          |                                                                 |
-| Enumerate users                     | smtp-user-enum              | https://pentestmonkey.net/tools/user-enumeration/smtp-user-enum |
+| Goal                                | Command(s)                                                     | Refs                                                            |
+| ----------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
+| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25                                    |                                                                 |
+| Connect via telnet to send commands | telnet [ip] [port]                                             |                                                                 |
+| Enumerate users                     | smtp-user-enum -M [method] -U [users.list] -D [domain] -t [ip] | https://pentestmonkey.net/tools/user-enumeration/smtp-user-enum |
+| Password Attacks                    | hydra                                                          |                                                                 |
 
 ### Nmap Scripts
 - smtp-commands : tries sending smtp commands (*default script*)

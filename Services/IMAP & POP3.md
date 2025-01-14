@@ -14,8 +14,6 @@ debugInConsole: false # Print debug info in Obsidian console
 
 *POP3* only provides listing, retrieving, and deleting emails as functions at the email server. It downloads emails from the server onto the local client, removing them on the server (meaning they can't be accessed on another client).
 
-
-
 **Standard Port:** 
 - *IMAP* : 143/tcp
 - *IMAP* : 993/tcp : alternative port sometimes used in SSL/TLS
@@ -55,7 +53,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - `1 CLOSE` : Removes all messages with the *Deleted* flag set
 - `1 LOGOUT`
 ### POP3 Useful Commands
-- `USER username`
+- `USER username` (*This can be abused to enumerate users based on its return statuses*)
 - `PASS password`
 - `STAT` : Number of emails on the server
 - `LIST` : Get number and size of all emails
