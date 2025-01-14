@@ -13,7 +13,8 @@ debugInConsole: false # Print debug info in Obsidian console
 SecurityTrails provides a short [list](https://securitytrails.com/blog/most-popular-types-dns-attacks) of the most popular attacks on DNS servers
 
 **Standard Port:** 
-- Zone transfers typically : *53/tcp*
+- Normal use: *53/udp*
+- Zone transfers typically : *53/tcp* (being used more and more in current times)
 
 **Version Names:** 
 
@@ -173,16 +174,16 @@ A powerful cli written in Perl for DNS reconnaissance:
 
 ## Enumeration Checklist
 
-| Goal                                                     | Command(s)                                                                                                                                                  | Refs                             |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]                                                                    |                                  |
-| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |                                  |
-| Enumerate subdomains                                     | gobuster dns -w [wordlist] -d [domain]                                                                                                                      | [[DNS#Brute-forcing Subdomains]] |
-| Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain]                                                                                          |                                  |
-| DNS IP lookups                                           | dig a [domain] @[nameserver]                                                                                                                                |                                  |
-| DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |                                  |
-| Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |                                  |
-| Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |                                  |
+| Goal                                                     | Command(s)                                                                                                                                                  | Refs                                                                |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| DNS Zone Transfer                                        | dig axfr [domain] @[nameserver]<br><br>*(win)* nslookup-> set type=any -> ls -d [domain]<br><br>fierce --domain [domain]                                    | <br><br><br><br>Enumerate root domain and search for zone transfers |
+| DNS brute force                                          | dnsrecon -d [Target] -D [dnsmap wordlist] -t std --xml output.xml<br><br>dnsenum --dnsserver [IP] --enum -p 0 -s 0 -o subdomains.txt -f [wordlist] [domain] |                                                                     |
+| Enumerate subdomains                                     | gobuster dns -w [wordlist] -d [domain]                                                                                                                      | [[DNS#Brute-forcing Subdomains]]                                    |
+| Discover nameservers for a domain                        | dig ns [domain] @[target DNS server IP]<br><br>host -t ns [domain]                                                                                          |                                                                     |
+| DNS IP lookups                                           | dig a [domain] @[nameserver]                                                                                                                                |                                                                     |
+| DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |                                                                     |
+| Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |                                                                     |
+| Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |                                                                     |
 ### General steps
 1. Find all zones using:
 	1. `axfr` (Zone Transfer) on the domain (if it is allowed)
