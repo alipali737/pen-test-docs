@@ -142,6 +142,24 @@ There are four steps to enumerating subdomains:
 - Link computer names & IP addresses
 - Determine services associated with a domain
 - Identify which computer serves a particular service by examining DNS queries (eg. email server)
+- Takeovers
+- DNS Spoofing / DNS Cache Poisoning
+### Domain & Subdomain Takeover
+> The [can-i-take-over-xyz](https://github.com/EdOverflow/can-i-take-over-xyz) repo is a great reference for sub domain takeovers.
+
+A takeover is where a DNS points to a domain that is hasn't been renewed or is no longer in use but the record still exists. The `CNAME` type record is used for aliasing, eg. A company could setup an AWS S3 bucket and alias that bucket's domain to a subdomain for their organisation (eg. `pictures.example.com CNAME example.s3.amazonaws.com` this will resolve the pictures subdomain to the s3 bucket).
+
+### DNS Spoofing
+This is where a legitimate DNS server is compromised and its records are changed to redirect users to a malicious address instead (causing a *MITM* attack).
+Tools like [Ettercap](https://www.ettercap-project.org/) or [Bettercap](https://www.bettercap.org/) can be used for local DNS Cache Poisoning.
+```sh
+# First, setup our malicious DNS file
+$ cat /etc/ettercap/etter.dns
+
+# [target_domain] A [malicious_ip]
+company.com     A    192.168.225.110
+*.company.com   A    192.168.225.110
+```
 
 ## DNS Tools
 | Tool                       | Key Features                                                                     | Use Cases                                                                                       |
@@ -154,6 +172,7 @@ There are four steps to enumerating subdomains:
 | *dnsrecon*                 | Multiple DNS recon techniques and various output formats                         | Comprehensive DNS enumeration, identify subdomains, and gathering DNS records                   |
 | *theHarvester*             | OSINT tool gathers from various sources, including DNS records (email addresses) | Collecting emails, employee info, and other data associated with a domain from multiple sources |
 | Online DNS Lookup services | GUI for performing DNS lookups                                                   | Quick and easy lookups, doesn't require CLIs, check for availability or basic info              |
+| *subfinder*                | Subdomain enumerator by looking at open sources                                  | Find subdomains for a root domain by searching public sources.                                  |
 ### Common dig Commands
 - `dig [domain]` : default `A` record lookup for a domain
 - `dig [domain] [type]` : specify the type of record to lookup
