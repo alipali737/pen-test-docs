@@ -119,16 +119,29 @@ $ python3 o365spray.py --validate --domain [domain]
 
 # Username enum
 $ python3 o365spray.py --enum -U [users] --domain [domain]
+
+# Password spray
+$ python3 o365spray.py --spray -U [users] -p [pass] --count 1 --lockout 1 --domain [domain]
 ```
+
+### Gmail
+[CredKing](https://github.com/ustayready/CredKing) is a tool that utilised AWS Lambda functions to perform password spraying against Gmail or Okta domains. *Using AWS allows it to rotate IPs*.
+
+## Open Relays
+Open relays are servers that are improperly configured and allows unauthenticated email relay. This could be accidental or intentional but allows any mail from any source to be re-routed through the open relay server. This masks the original source of the message and make it appear like it originated from the open relay.
+
+If we find an open relay mail server in a network, we could potentially target it and spoof our email address (eg. we could use an address that is normally used to broadcast company wide).
 
 ## Enumeration Checklist
 
-| Goal                                | Command(s)                                                     | Refs                                                            |
-| ----------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
-| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25                                    |                                                                 |
-| Connect via telnet to send commands | telnet [ip] [port]                                             |                                                                 |
-| Enumerate users                     | smtp-user-enum -M [method] -U [users.list] -D [domain] -t [ip] | https://pentestmonkey.net/tools/user-enumeration/smtp-user-enum |
-| Password Attacks                    | hydra                                                          |                                                                 |
+| Goal                                | Command(s)                                                                                                                                                      | Refs                                                            |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Nmap service scan                   | sudo nmap [ip] -sC -sV -p25                                                                                                                                     |                                                                 |
+| Connect via telnet to send commands | telnet [ip] [port]                                                                                                                                              |                                                                 |
+| Enumerate users                     | smtp-user-enum -M [method] -U [users.list] -D [domain] -t [ip]                                                                                                  | https://pentestmonkey.net/tools/user-enumeration/smtp-user-enum |
+| Password Attacks                    | [[Hydra]]<br>[[#Microsoft Office365\|O365spray]]                                                                                                                |                                                                 |
+| Open relay attacks                  | nmap --script smtp-open-relay -p25 -Pn [ip]<br><br>swaks --from [source_addr] --to [dest_addr(s)] --header [header_text] --body [body_text] --server [relay_ip] |                                                                 |
+
 
 ### Nmap Scripts
 - smtp-commands : tries sending smtp commands (*default script*)

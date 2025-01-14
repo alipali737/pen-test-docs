@@ -7,7 +7,7 @@ includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
 ## Research
-- [ippsec.rocks](https://ippsec.rocks/?#) : A website that finds sections of videos that explain or demonstrate concepts.
+- [ippsec.rocks](https://ippsec.rocks/?#) : A website that finds sections of videos that explain or demonstrate concepts. (*Also shows HTB boxes that address the topics*)
 - [MITRE ATT&CK](https://attack.mitre.org/) : Prominent knowledge base of tactics and techniques based on real-world observations.
 
 ## Payloads
