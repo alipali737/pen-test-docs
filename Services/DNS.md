@@ -138,6 +138,7 @@ There are four steps to enumerating subdomains:
 | [assetfinder](https://github.com/tomnomnom/assetfinder) | Simple yet effective tool for finding subdomains using various techniques, ideal for quick and lightweight scans.               |
 | [puredns](https://github.com/d3mondev/puredns)          | Powerful and flexible DNS brute-forcing tool, capable of resolving and filtering results effectively.                           |
 | [gobuster](https://github.com/OJ/gobuster)              | Directory/File, DNS and VHost busting tool written in Go.                                                                       |
+| [Subbrute](https://github.com/TheRook/subbrute)         | Allows for self-defined resolvers                                                                                               |
 ## Potential Capabilities
 - Link computer names & IP addresses
 - Determine services associated with a domain
