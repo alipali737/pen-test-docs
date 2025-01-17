@@ -116,11 +116,7 @@ Using [[Responder]] or [impacket-smbserver](https://github.com/SecureAuthCorp/im
 ### User Impersonation
 The `IMPERSONATE` permission allows you to take on the permissions of another user. This can lead to privilege escalation. Sysadmins can impersonate any user by default but for non-privileged users, permissions must be granted explicitly. To identify users we can impersonate with:
 ```sql
-SELECT distinct b.name
-FROM sys.server_permissions a
-INNER JOIN sys.server_principles b
-ON a.grantor_principle_id = b.principle_id
-WHERE a.permission_name = 'IMPERSONATE'
+SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principles b ON a.grantor_principle_id = b.principle_id WHERE a.permission_name = 'IMPERSONATE'
 GO
 ```
 We can check our user for sysadmin (a return value of `0` indicates we do NOT have the role, a `1` means we do):
