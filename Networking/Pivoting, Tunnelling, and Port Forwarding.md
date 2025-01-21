@@ -14,7 +14,7 @@ Pivoting is *moving to other networks through a compromised host to find more ta
 
 On any new compromised host we should always check:
 - Our privilege level
-- Any network connections
+- Any network connections (`ifconfig` / `ipconfig`)
 - Potential VPN or remote access software
 
 If a host has more than one network adapter, we can likely use it to move to another network segment.
@@ -23,6 +23,18 @@ If a host has more than one network adapter, we can likely use it to move to ano
 > - Foothold
 > - Beach Head System
 > - Jump Host
+
+### The Networking Behind Pivoting
+Computers can have multiple (physical or virtual) NICs or Network Adapters, each with their own IP address. These can all be viewed with `ifconfig` / `ipconfig`. From here we can view the names (*`tun` is often an indicator of a VPN*) and IP addresses (*Look for public addresses*). 
+
+### Routing
+Any system can participate in routing, not just a router. We can view the routing table using either:
+```sh
+$ netstat -r
+
+$ ip route
+```
+
 
 ## Tunneling
 Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
