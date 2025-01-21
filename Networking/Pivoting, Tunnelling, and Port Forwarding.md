@@ -10,6 +10,7 @@ A very common situation is when we have compromised a reachable host from our at
 
 ## Pivoting
 Pivoting is *moving to other networks through a compromised host to find more targets on different network segments*. The goal of pivoting is to defeat segmentation (both physically and virtually) to access an isolated network.
+> Pivoting is slightly different to Lateral Movement as it works to move to other networks whereas Lateral Movement is movement within the same network.
 
 On any new compromised host we should always check:
 - Our privilege level
@@ -24,4 +25,4 @@ If a host has more than one network adapter, we can likely use it to move to ano
 > - Jump Host
 
 ## Tunneling
-Tunnelling is when we *en*
+Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 

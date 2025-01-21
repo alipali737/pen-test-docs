@@ -19,6 +19,7 @@ By using a host in the internal network, we can now reach (and deeper test) netw
 
 The goal of pivoting is to access inaccessible systems via an intermediary system.
 
+> [[Pivoting, Tunnelling, and Port Forwarding]]
 ## Evasive Testing
 We need to be considerate of the evasive expectations, we might need to bypass things like *network segmentation*, *threat monitoring*, *IPS/IDS*, *EDR*, etc.
 
