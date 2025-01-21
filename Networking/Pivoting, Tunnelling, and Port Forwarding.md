@@ -35,6 +35,5 @@ $ netstat -r
 $ ip route
 ```
 
-
 ## Tunneling
 Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
