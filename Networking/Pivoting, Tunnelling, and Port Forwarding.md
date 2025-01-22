@@ -40,3 +40,6 @@ Tunnelling is when we *encapsulate traffic in another protocol and route traffic
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
+
+### Example using SSH port forwarding to bypass a firewall
+
