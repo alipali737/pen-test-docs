@@ -23,12 +23,10 @@ If a host has more than one network adapter, we can likely use it to move to ano
 > - Foothold
 > - Beach Head System
 > - Jump Host
-
 ### The Networking Behind Pivoting
 Computers can have multiple (physical or virtual) NICs or Network Adapters, each with their own IP address. These can all be viewed with `ifconfig` / `ipconfig`. From here we can view the names (*`tun` is often an indicator of a VPN*) and IP addresses (*Look for public addresses*). 
 
-### Routing
-Any system can participate in routing, not just a router. We can view the routing table using either:
+Any system can participate in routing, not just a router. We can view the routing table using either (*this can show us valuable information about what networks the machine can access*):
 ```sh
 $ netstat -r
 
@@ -42,4 +40,36 @@ Tunnelling is when we *encapsulate traffic in another protocol and route traffic
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
 
 ### Example using SSH port forwarding to bypass a firewall
+![[port-forwarding.drawio.png]]
+1. First we check to see what ports are open on our target system using [[Nmap]]
+```sh
+$ nmap -sT -p- x.x.x.x
 
+PORT     STATE  SERVICE
+22/tcp   open   ssh
+3306/tcp closed mysql
+```
+We can access SSH but MySQL is closed (*as it is for local use only*) so to get access to it we need to do some port forwarding.
+
+2. We can use SSH to expose a port (`1234`) on our local machine and route all traffic from remote `3306` to it (*`-L` can be used multiple times to forward multiple remote ports*)
+```sh
+$ ssh -L 1234:localhost:3306 user@x.x.x.x
+```
+> This command:
+> 1. Exposes port `1234` on our attack machine
+> 2. Port forwards the remote's `localhost:3306` to the attack machine's port `1234`
+> 3. Finally, establishes the ssh connection to the remote server
+
+3. We can then use `netstat` or [[Nmap]] to confirm the port has been forwarded
+```sh
+$ netstat -antp | grep 1234
+
+tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      4034/ssh
+tcp6       0      0 ::1:1234                :::*                    LISTEN      4034/ssh
+```
+```sh
+$ nmap -v -sV -p1234 localhost
+
+PORT     STATE SERVICE VERSION
+1234/tcp open  mysql   MySQL 8.0.28-0ubuntu0.20.04.3
+```
