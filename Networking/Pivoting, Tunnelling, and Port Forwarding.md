@@ -33,13 +33,23 @@ $ netstat -r
 $ ip route
 ```
 
+### Preparing a Pivot
+If we have a compromised host that has access to other networks, we can scan that network for other hosts using the IP range ([[Network Addressing#Subnetting]]).
+Like [[#SSH port forwarding to access closed ports]], we can utilise SSH for this dynamic port forwarding and pivoting. However, we also need to utilise a *SOCKS Listener* on our local machine then configure SSH to forward traffic to the network after connecting to the target host (*This is SSH tunneling over SOCKS proxy*).
+
+#### SOCKS
+Socket Secure (*SOCKS*) is a protocol for communicating with servers when firewall restrictions are present. Most protocols initiate a connection to connect to a service, SOCKS instead generates traffic from a client, which then connects to the SOCKS server controlled by the user who wants to access a service on the client-side. This is very useful for circumventing restrictions from firewalls, allowing external entities to bypass the firewall and access protected services. SOCKS proxy can create a route to an external server from NAT networks.
+
+*SOCKS4* doesn't support UDP or authentication, *SOCKS5* does.
+> [[#]]
+
 ## Tunneling
 Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
 
-### Example using SSH port forwarding to bypass a firewall
+### SSH port forwarding to access closed ports
 ![[port-forwarding.drawio.png]]
 1. First we check to see what ports are open on our target system using [[Nmap]]
 ```sh
@@ -73,3 +83,11 @@ $ nmap -v -sV -p1234 localhost
 PORT     STATE SERVICE VERSION
 1234/tcp open  mysql   MySQL 8.0.28-0ubuntu0.20.04.3
 ```
+
+### SSH dynamic port forwarding with SOCKS
+![[dynamic-port-forwarding-with-socks.webp]]
+1. First we request the communication with the SSH server from our client, we ask for dynamic port forwarding to be established and specify our client to listen on `localhost:9050`.
+```sh
+$ ssh -D 9050 user@x.x.x.x
+```
+2. Next we use a tool like [[Proxychains]] to redirect the TCP connections through SOCKS.
