@@ -41,10 +41,12 @@ Like [[#SSH port forwarding to access closed ports]], we can utilise SSH for thi
 Socket Secure (*SOCKS*) is a protocol for communicating with servers when firewall restrictions are present. Most protocols initiate a connection to connect to a service, SOCKS instead generates traffic from a client, which then connects to the SOCKS server controlled by the user who wants to access a service on the client-side. This is very useful for circumventing restrictions from firewalls, allowing external entities to bypass the firewall and access protected services. SOCKS proxy can create a route to an external server from NAT networks.
 
 *SOCKS4* doesn't support UDP or authentication, *SOCKS5* does.
-> [[#]]
+> [[#SSH dynamic port forwarding with SOCKS]]
 
-## Tunneling
+## Tunnelling
 Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
+### Tunnelling with Meterpreter
+
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
