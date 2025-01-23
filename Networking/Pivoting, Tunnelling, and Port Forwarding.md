@@ -91,3 +91,6 @@ PORT     STATE SERVICE VERSION
 $ ssh -D 9050 user@x.x.x.x
 ```
 2. Next we use a tool like [[Proxychains]] to redirect the TCP connections through SOCKS.
+![[Proxychains#Configuration]]
+3. Redirect [[Nmap]]'s packets to run through our proxy chain (*this is called SOCKS tunneling*)
+![[Proxychains#Redirecting a tool's packets with proxychains]]

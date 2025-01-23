@@ -48,6 +48,9 @@ sudo nmap [target] -p- --disable-arp-ping -Pn -n --reason -sS
 sudo nmap [target] -p- --disable-arp-ping -Pn -n -sA --source-port 53
 ```
 
+## Proxying and Pivoting
+- [[Pivoting, Tunnelling, and Port Forwarding]]
+- [[Proxychains]]
 ## Host Discovery
 **Objective:** Determine what hosts are alive on a network that can be further enumerated
 ### Basic Network Scan (Ping Sweeping)
@@ -57,7 +60,10 @@ nmap -sn [target range]
 > Run as `sudo` for MAC addresses
 > `-sn` disables port scanning on each target
 
-A ping sweep is for target discovery, it sends ICMP packets to each address in the range and checks for responses.
+A ping sweep is for target discovery, it sends ICMP packets to each address in the range and checks for responses
+> By default, Windows Defender blocks ICMP requests so a full TCP connect scan (`-sT`) without ICMP requests (`-Pn`) must be used (however for a large IP range, these can take AGES!!!!)
+> `nmap -Pn -sT [target]`
+
 ### Scan a specific list of hosts
 By creating a file containing a list of IPs:
 ```
