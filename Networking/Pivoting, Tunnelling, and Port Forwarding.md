@@ -100,11 +100,11 @@ msf6 > use post/multi/manage/autoroute
 > run
 ```
 > this is possible to do directly in the meterpreter session with `run autoroute -s <subnet>` but it is deprecated.
-> We can see all the routes in the meterpreter session with `run autoroute -p`
+> We can see all the routes in the meterpreter session with `run autoroute -p` or setting the `CMD` option to `print` in the `autoroute` module
 
 4. Finally, we can run our tool (`nmap`) through [[Proxychains]] which will route through our [[#Tunnelling with Meterpreter|Meterpreter session]].
 ```bash
-$ proxychains nmap ...
+$ proxychains nmap -sn -v <target_internal_subnet>
 ```
 ![[meterpreter-socks-proxy.drawio.png]]
 
