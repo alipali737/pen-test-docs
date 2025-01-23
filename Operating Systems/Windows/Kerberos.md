@@ -18,7 +18,7 @@ The TGS is requested by users who want to use a service. These tickets allow ser
 **Example:** If a user wants to connect to a database, it will request a TGS from the Key Distribution Centre (KDC), presenting their TGT. Once validated, a TGS will be given to the database server for authentication.
 
 ## Installing the Kerberos client on Linux
-```sh
+```bash
 # Install the package
 $ sudo apt-get install krb5-user -y
 

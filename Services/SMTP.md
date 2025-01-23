@@ -61,7 +61,7 @@ Two key issues with the protocol:
 - Allows plaintext extensions to now be used safely, eg. [AUTH PLAIN](https://www.samlogic.net/articles/smtp-commands-reference-auth.htm) for user authentication.
 
 ## Configuration
-```shell
+```bash
 cat /etc/postfix/main.cf
 
 cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
@@ -70,7 +70,7 @@ cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
 As it is often unknown where the emails will come from that we trust, sometimes the `mynetworks` config setting is set to `0.0.0.0/0`. This allows the sending of fake emails.
 ## Potential Capabilities
 - Sometimes we can check the validity of users with the `VRFY` command as it may be configured to output a `252` code if a user exists. (Not reliable so check with dummy user).
-```sh
+```bash
 $ telnet [smtp_target] 25
 
 VRFY root
@@ -83,7 +83,7 @@ VRFY fake-user
 550 unknown
 ```
 - `EXPN` command works similarly but when used with a *distribution list* it lists the entire list
-```sh
+```bash
 $ telnet [smtp_target] 25
 
 EXPN root
@@ -94,7 +94,7 @@ VRFY support-team
 250 claire@example.com
 ```
 - The `RCPT TO` can also be abused for user enumeration (this will send emails)
-```sh
+```bash
 $ telnet [smtp_target] 25
 
 MAIL FROM:test@example.com
@@ -113,7 +113,7 @@ If a client is using a CSP for their email service, many of these include custom
 
 ### Microsoft Office365
 [O365spray](https://github.com/0xZDH/o365spray) is a tool for username and password spraying aimed at Microsoft Office 365.
-```sh
+```bash
 # Validate if they are using MS Office 365
 $ python3 o365spray.py --validate --domain [domain]
 

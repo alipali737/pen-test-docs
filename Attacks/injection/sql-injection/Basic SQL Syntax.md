@@ -10,7 +10,7 @@ SQL can be used to perform the following actions:
 
 ## Database Interaction
 #### Authentication
-```shell
+```bash
 mqsql -u root -p
 ```
 ***Note:** we do not pass the `-p` with the password as the password could be stored in plain text in the bash_history file. Instead it will prompt us to securely enter the password.*
@@ -35,7 +35,7 @@ SQL expects all queries to end with a `;`
 SHOW DATABASES;
 ```
 You will get a list of all the available databases
-```shell
+```bash
 +--------------------+
 | Database           |
 +--------------------+

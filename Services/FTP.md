@@ -39,7 +39,7 @@ FTP can also potential offer *anonymous* FTP, which doesn't require the user to 
 
 ### FTP Bounce Attacks
 This attack utilises the `PORT` command on an FTP service to make the service execute commands on another network device (like using it as a tunnel). For instance, if we had a public FTP server, we could use a bounce attack to perform port scans on an internal server that the FTP server was able to communicate with.
-```sh
+```bash
 # Nmap's -b flag can be used for a bounce attack
 # Scan port 80 on an internal server
 $ nmap -Pn -v -n -p80 -b anonymous:password@<FTP_SERVER> <INTERNAL_SERVER>
@@ -60,11 +60,11 @@ $ nmap -Pn -v -n -p80 -b anonymous:password@<FTP_SERVER> <INTERNAL_SERVER>
 | Search for config files for other services |                                                                            |                                                                                                                                                  |
 | Search for SSH keys                        | /home/user/.ssh/authorized_keys<br>/home/user/.ssh/id_rsa                  | Use john to crack keys?                                                                                                                          |
 ## Connecting to FTP
-```shell
+```bash
 nc -nv [IP] [PORT]
 telnet [IP] [PORT]
 ```
 If SSL/TLS is needed, `openssl` can provide a client
-```shell
+```bash
 openssl s_client -conect [IP]:[PORT] -starttls ftp
 ```

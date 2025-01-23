@@ -67,7 +67,7 @@ The Samba SMB daemon can be restarted with `systemctl`
 ## MSRPC / RPCclient
 RPC lets us execute a procedure (eg. a function) in a local or remote process. We can use `MS-RPCE` which is RPC over SMB (using SMB named pipes). As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
 
-```shell
+```bash
 # Authenicate with Null session (anonymous user)
 rpcclient -U "" [Target]
 
@@ -85,20 +85,20 @@ rpcclient $>
 | `enumdomusers`            | Enumerates all domain users.                                       |
 | `queryuser <RID>`         | Provides information about a specific user.                        |
 We can run an enumeration attack like:
-```shell
+```bash
 for i in $(seq 500 1100);do rpcclient -N -U "" 10.129.14.128 -c "queryuser 0x$(printf '%x\n' $i)" | grep "User Name\|user_rid\|group_rid" && echo "";done
 ```
 which will use RPC to query for users by enumerating through RIDs. This can also be done with tools like [samrdump.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py).
 
 Additionally, the [SMBMap](https://github.com/ShawnDEvans/smbmap) and [CrackMapExec](https://github.com/byt3bl33d3r/CrackMapExec) tools are also widely used and helpful for the enumeration of SMB services.
-```shell
+```bash
 smbmap -H [Target]
 
 crackmapexec smb [Target] --shares -u '' -p ''
 ```
 
 Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used to gather a range of different information
-```shell
+```bash
 ./enum4linux-ng.py [Target] -A
 ```
 
@@ -145,7 +145,7 @@ PS C:\> Get-ChildItem -Recurse -Path N:\ | Select-String "pass" -List
 ```
 
 ### Linux
-```sh
+```bash
 # Mount a share
 $ sudo mkdir /mnt/<Share>
 $ sudo mount -t cifs -o username=<user>,password=<pass>,domain=. //<HOST>/<SHARE> /mnt/<SHARE>
@@ -160,7 +160,7 @@ $ sudo mount -t cifs //<HOST>/<SHARE> /mnt/<SHARE> -o credentials=<credentials_f
 ```
 > To use `cifs` we need to install `cifs-utils` --> `sudo apt install cifs-utils`
 
-```sh
+```bash
 # Search for pattern in path
 $ find /mnt/<SHARE> -name *pass*
 

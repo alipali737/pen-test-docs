@@ -16,7 +16,7 @@ It can be useful for:
 - *Historical Data Analysis* : Using [WhoisFreaks](https://whoisfreaks.com/) can reveal historical changes around the domain.
 
 ## Installation
-```shell
+```bash
 sudo apt update
 sudo apt install whois -y
 ```
@@ -25,7 +25,7 @@ sudo apt install whois -y
 **Cheatsheet:** 
 **Website:** 
 ## Usage
-```shell
+```bash
 $ whois inlanefreight.com
 
 [...]

@@ -21,14 +21,14 @@ Proxychains is a tool that is capable of redirecting TCP connections through TOR
 ## Usage
 ### Configuration
 To setup a new proxy, we need to add it to the `/etc/proxychains.conf`
-```sh
+```bash
 # This will route all traffic used with proxy chains to localhost 9050 (which could be setup to connect externally with SSH)
 socks4 127.0.0.1 9050
 ```
 > For SSH connection setup, see [[Pivoting, Tunnelling, and Port Forwarding#SSH dynamic port forwarding with SOCKS]]
 
 ### Redirecting a tool's packets with proxychains
-```sh
+```bash
 $ proxychains [tool]
 
 $ proxychains nmap -v -sn 10.10.14.0/24

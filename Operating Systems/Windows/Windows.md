@@ -101,7 +101,7 @@ For this to work, remote access must be [enabled](https://learn.microsoft.com/en
 **Connecting from Linux**
 `xfreerdp` is a useful tool that can be run from the command line, initiating a RDP session to a windows target. This tool also allows copy pasting and drive redirection for file transfer.
 
-```shell
+```bash
 xfreerdp /v:<targetIp> /u:<username> /p:<password>
 ```
 
@@ -369,7 +369,7 @@ The `sc sdshow <service>` command will display the [security descriptor](https:/
 
 #### Security Descriptor Definition Language (SDDL)
 SDDL can look like a complete mess of characters but there is meaning:
-```cmd-session
+```batch
 C:\WINDOWS\system32> sc sdshow wuauserv
 
 D:(A;;CCLCSWRPLORC;;;AU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)S:(AU;FA;CCDCLCSWRPWPDTLOSDRCWDWO;;;WD)

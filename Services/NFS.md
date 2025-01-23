@@ -27,7 +27,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Configuration
 Configured via the */etc/exports* file which is a table of physical filesystems on an NFS server:
-```shell
+```bash
 cat /etc/exports 
 
 # /etc/exports: the access control list for filesystems which may be exported
@@ -54,7 +54,7 @@ Format: *{ directory_path } { ...hostname/subnet(permissions) }*
 - *root_squash* : prevents `root` from accessing files by changing all UID/GID 0 to `anonymous`
 - *nohide* : by default if you export two resources and one is also mounted under the other, it will hide the resource unless both are mounted. This option prevents this and an authorised user can freely move between the two resources.
 ### Example
-```shell
+```bash
 $ echo '/mnt/nfs 10.0.9.0/24(rw,sync,secure,root_squash)' >> /etc/exports
 $ systemctl restart nfs-kernel-server
 $ exportfs

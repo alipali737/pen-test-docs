@@ -181,7 +181,7 @@ If you do */27 % 8* then you get the number of bits in that Octet reserved for t
 - Used to find the MAC address of devices within the same broadcast domain
 - Simply maps an IP (L3) address to a MAC (L2) Address
 - Can be viewed using the following command
-```shell
+```bash
 arp -a
 ? (9.140.101.1) at 0:0:5e:0:1:1 on en0 ifscope [ethernet]
 ? (9.140.101.127) at 88:66:5a:4d:e2:f4 on en0 ifscope permanent [ethernet]

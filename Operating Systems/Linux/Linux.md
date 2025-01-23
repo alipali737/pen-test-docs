@@ -320,7 +320,7 @@ The criteria or matches looks for matches in the IP header (eg. IP addresses, pr
 | `REDIRECT`   | Redirects packets to another port or IP address                                                                                                             |
 | `MARK`       | Adds or modifies the Netfilter mark value of the packet, which can be used for advanced routing or other purposes                                           |
 **Example:** Create a new rule in the `INPUT` chain that filters incoming TCP packets destined for port 22 (SSH) and accepts them
-```shell
+```bash
 $ sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 ```
 

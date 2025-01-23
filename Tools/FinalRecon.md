@@ -19,7 +19,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - *Wayback Machine* : identifies URLs for previous iterations of the websites to analyse its changes and potential vulnerabilities
 
 ## Installation
-```sh
+```bash
 git clone https://github.com/thewhiteh4t/FinalRecon.git
 cd FinalRecon
 pip3 install -r requirements.txt
@@ -31,7 +31,7 @@ chmod +x ./finalrecon.py
 **Cheatsheet:** 
 **Website:** https://github.com/thewhiteh4t/FinalRecon
 ## Usage
-```sh
+```bash
 ./finalrecon.py --full --url [target_url]
 ```
 

@@ -22,7 +22,7 @@ Hashcat can also create custom password lists based on a set of rules given.
 ## Usage
 ### Password mutation
 A rule file can be created with patterns that will be used to mutate each password in the `password_list` provided in a run. The syntax for the rules can be found in the [documentation](https://hashcat.net/wiki/doku.php?id=rule_based_attack). Each rule must be on a separate line in a file:
-```sh
+```bash
 $ cat custom.rules
 
 :
@@ -43,13 +43,13 @@ $! c
 | `sXY`        | Replace all instances of X with Y.                |
 | `$!`         | Add the exclamation character at the end.         |
 To then generate the list, you would use:
-```sh
+```bash
 # `sort -u` sorts the password list lexographically and removes duplicates
 hashcat --force password.list -r custom.rule --stdout | sort -u > mut_password.list
 ```
 > There are built in rules in hashcat, a popular one is `best64.rule`.
 
 ### Dictionary Attack
-```sh
+```bash
 $ hashcat -m [hash_id] -a 0 [hashes_file] [wordlist]
 ```

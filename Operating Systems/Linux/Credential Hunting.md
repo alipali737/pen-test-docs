@@ -25,7 +25,7 @@ Some examples of places we could look in each source.
 
 ## Configuration Files
 Rarely but still possible, some services let you rename the config files, meaning that just searching for extensions isn't always all-encompassing.
-```sh
+```bash
 # Find all files witn the any of the extensions, skipping the dirs at the end
 $ for l in $(echo ".conf .config .cnf");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
 
@@ -35,20 +35,20 @@ $ for i in $(find / -name *.cnf 2>/dev/null | grep -v "doc\|lib");do echo -e "\n
 
 ## Databases
 The same search ideas can be applied to database files.
-```shell
+```bash
 $ for l in $(echo ".sql .db .*db .db*");do echo -e "\nDB File extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share\|man";done
 ```
 
 ## Notes
 Searching for notes is harder as they can be stored anywhere with any name. Often they will not have an extension or may include a `.txt` extension.
-```sh
+```bash
 # find all files in the home/* dirs, that either have .txt or no extension (== '*.txt' or != '*.*')
 $ find /home/* -type f -name "*.txt" -o ! -name "*.*"
 ```
 
 ## Scripts
 Scripts can be a great source for credentials as they often need credentials of higher privileges to perform actions automatically, they may even pull credentials from env vars too.
-```sh
+```bash
 $ for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share";done
 ```
 
@@ -56,7 +56,7 @@ $ for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: 
 
 ## SSH Keys
 As SSH private keys all contain standard headers in the files, we can still search for them across the system. SSH keys don't have to have any specific naming conventions so they are difficult to search on file names.
-```sh
+```bash
 # Match against the first line of each file in the home dir for 'PRIVATE KEY'
 grep -rnw "PRIVATE KEY" /home/* 2>/dev/null | grep ":1"
 
@@ -66,7 +66,7 @@ grep -rnw "ssh-rsa" /home/* 2>dev/null | grep ":1"
 
 ## History
 ### CLI History files
-```sh
+```bash
 $ tail -n5 /home/*/.bash*
 $ tail -n5 /home/*/*_history
 $ tail -n5 /home/*/*rc
@@ -88,7 +88,7 @@ Many logs can exist on the file system, and logs are incredibly important in Lin
 - `/var/log/mysqld.log` : MySQL server related logs
 > It is useful to be familiar with the structure of these logs, otherwise analysing each on individually would be inefficient. String matching can also be of value with logs to identify key information.
 
-```shell
+```bash
 $ for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
 ```
 
@@ -99,14 +99,14 @@ Many applications that work with credentials store them in-memory or in files to
 **LaZagne**
 [Lazagne](https://github.com/AlessandroZ/LaZagne) is a tool (*worth keeping a standalone copy we can transfer over*) that can search for credentials that web browsers or other applications may install insecurely. The github page for the tool displays all the supported applications.
 
-```sh
+```bash
 $ sudo python2.7 laZagne.py all
 ```
 > `-vv` can be used to study what is happening in the background.
 
 ### Browsers
 Many browsers store their 'saved' user credentials in encrypted files on the system, however, these are not necessarily safe.
-```sh
+```bash
 # List the firefox files
 ls -l .mozilla/firefox/ | grep default
 ```

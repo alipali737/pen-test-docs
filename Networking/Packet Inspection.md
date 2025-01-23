@@ -34,7 +34,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- [Optional] Instance Identifyer
 - A session ID can be used to locate the session information from the firewall packet database
 
-```shell
+```bash
 $ show security flow session application telnet
 Session ID: 57866, Policy name: intrazone-Juniper-SV/4, Timeout: 3394, Valid
 In: 172.20.107.10:56290 --> 172.20.207.10:23;tcp, If: vlan.107, Pkts: 27, Bytes: 1568

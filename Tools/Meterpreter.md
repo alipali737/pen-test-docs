@@ -159,7 +159,7 @@ msf6 post(multi/recon/local_exploit_suggester) >
 ```
 
 ### Dumping Hashes
-```sh
+```bash
 # Dumps users, IDs, and hashes
 hashdump
 

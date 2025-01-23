@@ -46,14 +46,14 @@ This can be useful for searching for key terms across the OS.
 **Lazagne**
 [Lazagne](https://github.com/AlessandroZ/LaZagne) is a tool (*worth keeping a standalone copy we can transfer over*) that can search for credentials that web browsers or other applications may install insecurely. The github page for the tool displays all the supported applications.
 
-```cmd
+```batch
 C:\> lazagne.exe all
 ```
 > `-vv` can be used to study what is happening in the background.
 
 **Findstr**
 A built-in cli tool that can search for strings in files.
-```cmd
+```batch
 C:\> findstr /SIM /C:"password" *.txt *.ini *.cfg
 ```
 
