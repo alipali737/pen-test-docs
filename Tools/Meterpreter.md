@@ -169,3 +169,13 @@ lsa_dump_sam
 # Dumps LSA (Local Security Authority) secrets
 lsa_dump_secrets
 ```
+
+### Tunnelling & Proxying
+![[Pivoting, Tunnelling, and Port Forwarding#Tunnelling with Meterpreter]]
+![[Pivoting, Tunnelling, and Port Forwarding#Socks proxy with Metasploit]]
+
+### Port forwarding
+![[Pivoting, Tunnelling, and Port Forwarding#Port forwarding using Meterpreter]]
+
+### Reverse port forwarding
+![[Pivoting, Tunnelling, and Port Forwarding#Reverse port forwarding with Meterpreter]]
