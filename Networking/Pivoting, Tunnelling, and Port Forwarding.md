@@ -94,3 +94,7 @@ $ ssh -D 9050 user@x.x.x.x
 ![[Proxychains#Configuration]]
 3. Redirect [[Nmap]]'s packets to run through our proxy chain (*this is called SOCKS tunneling*)
 ![[Proxychains#Redirecting a tool's packets with proxychains]]
+
+### Remote/Reverse port forwarding with SSH
+Lets say we are able to connect to a pivot host and then connect to another system. If we wanted to *get a reverse shell* we would have to forward the traffic all the way back through our chain and to our attack machine. We would do this by having the reverse shell point to our nearest pivot host to the target, then from there we would forward all the traffic back through our chain from the pivot host.
+![[pivot-reverse-shell.drawio.png]]

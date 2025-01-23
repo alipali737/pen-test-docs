@@ -37,6 +37,10 @@ $ proxychains nmap -v -sn 10.10.14.0/24
 |S-chain|-<>-127.0.0.1:9050-<><>-10.10.14.5:80-<><>-OK
 |S-chain|-<>-127.0.0.1:9050-<><>-10.10.14.6:80-<--timeout
 <..SNIP..>
+
+# MSF can also be proxyed meaning we can use scanners etc via the pivot
+$ proxychains msfconsole
 ```
 > When using [[Nmap]], we must use a `full TCP connect scan` as proxychains cannot understand partial packets (`eg. a steath scan : -sS`).
+> For [[Windows]] systems, Defender often blocks ICMP requests so we should use `-Pn` also (but this is very slow).
 
