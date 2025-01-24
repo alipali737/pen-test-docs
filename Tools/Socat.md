@@ -51,3 +51,6 @@ wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x8
 
 ### Reverse shell redirection
 ![[Pivoting, Tunnelling, and Port Forwarding#Using Socat redirection for Reverse Shells]]
+
+### Bind shell redirection
+![[Pivoting, Tunnelling, and Port Forwarding#Using Socat redirection for Bind Shells]]
