@@ -131,8 +131,11 @@ python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <ser
 > `python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port> --ntlm-proxy-ip <ip_of_proxy> --ntlm-proxy-port <port> --domain <windows_domain_name> --username <user> --password <pass>`
 4. Configure [[Proxychains]]
 ![[Proxychains#Configuration]]
-5. Use [[Proxychains]] to open the webserver in a browser
+5. Use [[Proxychains]] to query the webpage
 ```bash
+proxychains curl -v <internal_ip_of_webserver>:<port>
+
+# May timeout
 proxychains firefox-esr <internal_ip_of_webserver>:<port>
 ```
 
