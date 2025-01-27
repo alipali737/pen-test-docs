@@ -348,6 +348,4 @@ $ proxychains nmap -sn -v <target_internal_subnet>
 ![[meterpreter-socks-proxy.drawio.png]]
 
 ### DNS Tunnelling with Dnscat2
-[Dnscat2](https://github.com/iagox86/dnscat2) is a tunnelling tool that uses the [[DNS]] protocol to encapsulate the traffic. It uses an encrypted *command & control* (*C2*) channel to send data inside TXT records. Pretty much any [[Active Directory]] domain will its own DNS server that will rout traffic to external DNS servers participating in the internet's DNS system. However, with `dnscat2`, the address resolution is requested from an external server. This means that when a local DNS within the network tries to resolve an address, data is exfiltrated and sent in place of legitimate DNS requests.
-
-*This is a really stealthy approach to exfiltrate data while evading firewall detections which sniff the traffic and strip the HTTPS connections*.
+![[Dnscat2]]

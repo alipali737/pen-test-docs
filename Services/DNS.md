@@ -206,6 +206,7 @@ A powerful cli written in Perl for DNS reconnaissance:
 | DNS MX record lookup                                     | dig mx [domain] @[nameserver]                                                                                                                               |                                                                     |
 | Check if there is a version entry with a CHAOS TXT query | dig CH TXT version.bind [IP]                                                                                                                                |                                                                     |
 | Show all available records that can be disclosed         | dig any [domain] @[target DNS server IP]                                                                                                                    |                                                                     |
+| Data exfiltration using DNS tunnelling                   | [[Pivoting, Tunnelling, and Port Forwarding#DNS Tunnelling with Dnscat2]]                                                                                   |                                                                     |
 > DO NOT FORGET: often you will need to add discovered internal sub domains to the /etc/hosts file so they resolve correctly
 ### General steps
 1. Find all zones using:
