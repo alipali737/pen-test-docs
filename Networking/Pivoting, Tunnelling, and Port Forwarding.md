@@ -352,3 +352,6 @@ $ proxychains nmap -sn -v <target_internal_subnet>
 
 ### Tunnelling with [[Chisel]]
 ![[Chisel]]
+
+### ICMP Tunnelling with SOCKS using [[Ptunnel-ng]]
+ICMP tunnelling encapsulates the traffic within ICMP packets using echo requests and responses. This technique *only works if ping responses are permitted through the firewall'ed network*. When a host in a firewall'ed network
