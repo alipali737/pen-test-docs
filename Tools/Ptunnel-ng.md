@@ -8,14 +8,14 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-
+`Ptunnel-ng` is a tunnelling tool that can support ICMP with [[Pivoting, Tunnelling, and Port Forwarding#SOCKS|SOCKS]]. It uses a client-server model to establish a tunnel that can then be used for proxying.
 
 ## Installation
 ```
-
+git clone https://github.com/utoni/ptunnel-ng.git
 ```
 
 ## Documentation
 **Cheatsheet:** 
-**Website:** 
+**Website:** https://github.com/utoni/ptunnel-ng
 ## Usage
