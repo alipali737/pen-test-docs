@@ -13,6 +13,9 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Installation
 ```
 git clone https://github.com/utoni/ptunnel-ng.git
+
+cd ptunnel-ng/
+sudo ./autogen.sh
 ```
 
 ## Documentation
