@@ -14,7 +14,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ```bash
 git clone https://github.com/utoni/ptunnel-ng.git
 ```
-> **IMPORTANT** - we need 
+> **IMPORTANT** - we need to make sure we have the same versions of GLIBC on our attack machine as the target has : `ldd --version`
 ## Documentation
 **Cheatsheet:** 
 **Website:** https://github.com/utoni/ptunnel-ng
