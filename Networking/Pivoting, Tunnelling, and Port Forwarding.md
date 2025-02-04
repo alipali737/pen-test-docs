@@ -233,7 +233,7 @@ To start the dynamic port forward with plink.exe we can use:
 plink -ssh -D <local_port> <user>@<pivot_host>
 ```
 
-We can then use [Proxifier](https://www.proxifier.com/) to create a SOCKS tunnel over the SSH session. It allows you to create a SOCKS or HTTPS proxy (and proxy chains) for desktop client applications. [Proxifier](https://www.proxifier.com/) is a GUI application, within it we can create a SOCKS server for `127.0.0.1` on the port we used for SSH.
+We can then use [[Proxifier]] to create a SOCKS tunnel over the SSH session. It allows you to create a SOCKS or HTTPS proxy (and proxy chains) for desktop client applications. [Proxifier](https://www.proxifier.com/) is a GUI application, within it we can create a SOCKS server for `127.0.0.1` on the port we used for SSH.
 
 We can then start `mstsc.exe` with our windows target IP to proxy the RDP connection.
 
