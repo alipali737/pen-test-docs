@@ -8,12 +8,10 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-[Proxifier](https://www.proxifier.com/) is a GUI-based application for proxying 
+[Proxifier](https://www.proxifier.com/) is a GUI-based application for proxying, typically for use on windows systems.
 
 ## Installation
-```
-
-```
+[Proxifier Portable Windows Binary](https://www.proxifier.com/download/#win-tab)
 
 ## Documentation
 **Cheatsheet:** 
