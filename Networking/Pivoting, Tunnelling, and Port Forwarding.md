@@ -367,4 +367,6 @@ Having a network baseline can quickly alert defenders of any abnormal activities
 - A list of all enterprise hosts and their locations
 - Users who have elevated permissions
 - A list of any dual-homed hosts (*has one or more network interfaces*)
-- Keeping a visual network diagram of the entire environment (*this can be *)
+- Which assets are business-critical and how they are monitored
+- Keeping a visual network diagram of the entire environment (*this can be really useful for visualising large networked environments as defenders and attackers*)
+> For visualising networks, [Netbrain](https://www.netbraintech.com/)(paid) is a really good tool for this and you can interact with the hosts too. [draw.io](https://app.diagrams.net/) is a good tool for general diagramming.
