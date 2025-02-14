@@ -370,3 +370,8 @@ Having a network baseline can quickly alert defenders of any abnormal activities
 - Which assets are business-critical and how they are monitored
 - Keeping a visual network diagram of the entire environment (*this can be really useful for visualising large networked environments as defenders and attackers*)
 > For visualising networks, [Netbrain](https://www.netbraintech.com/)(paid) is a really good tool for this and you can interact with the hosts too. [draw.io](https://app.diagrams.net/) is a good tool for general diagramming.
+
+### People, Processes, and Technology
+Network hardening comes down to three categories: [[#People]], [[#Processes]], and [[#Technology]].
+#### People
+The human element is often the weakest part of any environment. Enforcing best practices for users and administrators can greatly prevent the "easy wins" for pentesters and malicious actors.
