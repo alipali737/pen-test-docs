@@ -2,7 +2,7 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 4 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
@@ -301,6 +301,7 @@ msf6 > use exploit/multi/handler
 ```
 3. We can then copy the payload over to the pivot host and execute it, this will form the meterpreter reverse connection back to our handler
 4. From here we can use modules like `post/multi/gather/ping_sweep` or bash to search for targets on the internal networks etc (*remember windows blocks ICMP requests normally*)
+#### Numerating hosts via the CLI
 ```bash
 for i in {1..254} ;do (ping -c 1 x.x.x.$i | grep "bytes from" &) ;done
 ```
@@ -356,3 +357,14 @@ $ proxychains nmap -sn -v <target_internal_subnet>
 ### ICMP Tunnelling with SOCKS using [[Ptunnel-ng]]
 ICMP tunnelling encapsulates the traffic within ICMP packets using echo requests and responses. This technique *only works if ping responses are permitted through the firewall'ed network*. When a host in a firewall'ed network, it can encapsulate the traffic within the ping echo request and send it to an external server. This can then be used for data exfiltration and creating pivot tunnels to an external server. The [[Ptunnel-ng]] tool can be used to tunnel between a pivot host and our attack host, proxying the traffic onto the internal network.
 ![[Ptunnel-ng]]
+
+## Detection & Prevention
+### Setting a Baseline
+Having a network baseline can quickly alert defenders of any abnormal activities on a network. We need to be able to quickly identify and investigate any: *new hosts*, *unexpected new tools or apps installed*, or *any new or unique network traffic*. It is important to keep up to date with these things, an audit should be done annually at least (*ideally every couple months*).
+#### Key things to document and track
+- DNS record, network device backups, and DHCP configurations
+- Full and current application inventory
+- A list of all enterprise hosts and their locations
+- Users who have elevated permissions
+- A list of any dual-homed hosts (*has one or more network interfaces*)
+- Keeping a visual network diagram of the entire environment (*this can be *)
