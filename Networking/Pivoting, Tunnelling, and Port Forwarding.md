@@ -451,4 +451,10 @@ These topics and techniques are critical day-to-day tasks in any test. Sometime 
 - *Command & Control* inside and throughout enterprise environments
 - Utilising our tunnels for *security control bypasses* when bringing in tools and exfiltrating data
 
-[htb containers and pivotting track](https://app.hackthebox.com/tracks/Containers-and-Pivoting)
+### Useful Resources
+- [htb containers and pivotting track](https://app.hackthebox.com/tracks/Containers-and-Pivoting)
+- [0xdf's walkthroughs](https://0xdf.gitlab.io/)
+- [RastaMouse](https://rastamouse.me/) writes excellent content on Red-Teaming, C2 infrastructure, pivoting, payloads, etc.
+- [SpecterOps](https://posts.specterops.io/offensive-security-guide-to-ssh-tunnels-and-proxies-b525cbd4d4c6) has written a great post covering SSH Tunneling and the use of proxies over a multitude of protocols. It's a must-read for anyone looking to know more about the subject and would make a handy resource to have during an engagement.
+- [SANS](https://www.sans.org/webcasts/dodge-duck-dip-dive-dodge-making-the-pivot-cheat-sheet-119115/) puts out plenty of great infosec related information and webcasts like the one linked here are a great example of that. This will cover many different Pivoting tools and avenues of use.
+- [Plaintext's Pivoting Workshop](https://youtu.be/B3GxYyGFYmQ) is an incredible workshop that our very own Academy Training Developer, Plaintext, put together to help prepare players for Cyber Apocalypse CTF 2022. The workshop is delivered in an engaging & entertaining manner, and viewers will benefit from it for years to come. Check it out if you get the chance.
