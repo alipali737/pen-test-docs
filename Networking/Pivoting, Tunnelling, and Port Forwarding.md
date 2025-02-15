@@ -375,3 +375,60 @@ Having a network baseline can quickly alert defenders of any abnormal activities
 Network hardening comes down to three categories: [[#People]], [[#Processes]], and [[#Technology]].
 #### People
 The human element is often the weakest part of any environment. Enforcing best practices for users and administrators can greatly prevent the "easy wins" for pentesters and malicious actors.
+
+BYODs pose a significant risk as the security of the device is largely the responsibility of the owner, but this can provide a risk to an employer. 
+- *Multi-factor authentication* is a strong way to increase the difficulty for attackers to compromise a system.
+- *Ensure users cannot cause harm*, this can be done via policies and procedures for domain access and control
+- Consider a *SOC* team (or *SOC as a Service*) for larger organisations
+- Ensure appropriate *Incident Response* plans exist
+
+#### Processes
+- Policies and procedures for asset management and monitoring
+	- Host audits
+	- Asset tags
+	- Asset inventories
+- Access control policies
+	- MFA
+	- Account provision/de-provisioning
+	- RBACs, ACLs etc
+- Processes for provisioning and decommissioning hosts
+	- Baseline security hardening guides
+	- Golden images
+- Change management processes 
+	- Who did what?
+	- When they did it?
+	- Auditing
+- IR, DR plans
+
+#### Technology
+- Periodically check for legacy misconfigurations and evaluate emerging threats
+- Ensure common misconfigurations are introduced when the environment is changed
+- Vulnerability management in tools or apps
+- Using the CIA triad as a balancing act (sometimes risk is the best option for preserve usability)
+
+### Protect from the outside in
+#### Perimeter
+When protecting infrastructure its best to work from the outside in, for the perimeter we can ask some questions:
+- What exactly needs protecting?
+- What are the most valuable assets to the org?
+- What is considered the network perimeter?
+- What devices & services are public-facing?
+- How can an attempted attack be detected & prevented ?
+- How can the right person and/or team receives alerts when something happens?
+- Who is responsible for monitoring alerts and any actions that need to be taken?
+- Are an external partners trusted?
+- What types of authentication mechanisms are being used?
+- Are there any Out-of-Band (OOB) management requirements? If so, who?
+- Is there a DR plan?
+We also need to consider any distributed infrastructure, especially important if the organisation uses a hybrid-cloud setup (What protections do they have between on-prem & cloud?).
+
+#### Internal 
+There is a lot of overlap between the considerations for the perimeter and internally, there are however, many different routes for a successful defence:
+- Are any hosts that need internet access properly hardened and in a DMZ?
+- Is an IDS/IPS present within the environment?
+- How are the networks configured? Is responsibility distributed between multiple teams?
+- Are there separate networks between production and management?
+- How is remote access to admin/management networks tracked for approved employees?
+- Is data received from infrastructure defences and endpoints being correlated?
+- Is host-based IDS/IPS, and event logging being used?
+Visibility is an instrumental 
