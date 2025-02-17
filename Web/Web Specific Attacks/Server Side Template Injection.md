@@ -57,7 +57,7 @@ http://vulnerable-website.com/?greeting=data.username}}<tag>
 
 ## Identify the Template Engine
 We can use specifically crafted payloads to determine what engine is being used. *Often an error message will give it away anyways*. A decision tree like this for example:
-![[Pasted image 20250217185827.png]]
+![[SSTI tree.png]]
 Can be really useful to determine the engine.
 > eg. `{{7*'7'}}` in Twig will result in `49` but will be `7777777` in Jinja2
 > [PayloadAllTheThings SSTI cheatsheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Template%20Injection/README.md?ref=sec.stealthcopter.com)
