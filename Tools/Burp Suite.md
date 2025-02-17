@@ -2,7 +2,7 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 4 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
@@ -31,3 +31,17 @@ In the (*Proxy>Options>Match and Replace*) we can define criteria to automatical
 > This can be useful if we want to change a header for example in every request.
 > This method can also be performed on the response too by adding another rule
 
+### Proxy with other tools
+
+#### [[Proxychains]]
+As [[Proxychains]] supports HTTP proxying, we can setup a proxy in the config: `http 127.0.0.1 8080` which will direct any network traffic produced when using proxychains through Burp.
+
+#### [[Nmap]]
+Nmap has a built in `--proxies` flag that can used to specify any HTTP proxies to use. It is recommended to skip host discovery when using this option too `-Pn`.
+```bash
+nmap --proxies http://127.0.0.1:8080 -Pn -p<port> -sC <server_ip>
+```
+> This is an experimental feature (as indicated by `man nmap`) so sometimes functions or traffic isn't routed through the proxy. Therefore [[#Proxychains]] is a more bulletproof option.
+
+#### [[Metasploit]]
+Some modules in [[Metasploit]] will also allow for `PROXIES` to be set (eg. `auxiliary/scanner/http/robots_txt`) which we can set with `HTTP:127.0.0.1:8080`.
