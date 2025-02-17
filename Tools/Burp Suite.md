@@ -45,3 +45,17 @@ nmap --proxies http://127.0.0.1:8080 -Pn -p<port> -sC <server_ip>
 
 #### [[Metasploit]]
 Some modules in [[Metasploit]] will also allow for `PROXIES` to be set (eg. `auxiliary/scanner/http/robots_txt`) which we can set with `HTTP:127.0.0.1:8080`.
+
+### Fuzzing (Burp Intruder)
+Burp intruder is a tool for web fuzzing and scanning. It can replace CLI web fuzzing tools like [[Gobuster]], `dirbuster`. It can be used to *fuzz pages, directories, sub-domains, parameters, parameter values, and many other things*.
+> The community edition of Burp, is throttled at 1 request per second (which is extremely slow compared to CLI tools).
+
+1. Send a request to the intruder, we should see the target details in the `target` tab
+2. In the `Positions` tab, we can place the payload position pointer. Highlight the value you wish to replace with the words from the wordlist and either press `Add §` or manually add a `§` to either side:
+```HTTP
+GET /§DIRECTORY§/ HTTP/1.1
+HOST: ...
+```
+> this will make a pointer called `DIRECTORY`
+
+3. 
