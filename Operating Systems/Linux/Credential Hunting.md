@@ -115,3 +115,5 @@ Tools like [Firefox Decrypt](https://github.com/unode/firefox_decrypt) exist to 
 > This can also be done via LaZagne if it is a 'supported browser'
 > `laZagne.py browsers`
 
+### Linpeas
+https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS
