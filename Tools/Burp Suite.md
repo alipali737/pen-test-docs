@@ -58,4 +58,22 @@ HOST: ...
 ```
 > this will make a pointer called `DIRECTORY`
 
-3. 
+3. Select an attack type, the attack type primarily dictates how many payload pointers are used and which pointers get which payloads:
+	- *Sniper attack (n=positions\*payloads)*  : Inserts each payload into each position one at a time, using a single payload set
+	- *Battering ram attack (n=payloads)* : Places the same payload into each position
+	- *Pitchfork attack (n=smallest_payload_set)* : Maps a payload set to each position (eg. position 1 gets from payload set 1, position 2 gets from payload set 2)
+	- *Cluster bomb attack (n=product_of_all_payload_sets* : Like pitchfork, but it iterates through one payload set at a time (eg. position 1 gets first element from payload set 1, position 2 iterates through all payloads in set 2) - this lets you test every combination of payloads
+4. Under the `Payloads` tab, we need to configure the 4 options: `Sets`, `Options`, `Processing`, and `Encoding`
+	- **Payload Sets**
+		- Select the set number
+		- Select the set type
+			- *Simple List* : wordlist that intruder will iterate through
+			- *Runtime file* : Similar to *Simple List* but loads 1 by 1 to avoid high memory usage
+			- *Character Substitution* : List of characters and their replacements
+	- **Payload Options**
+		- Add / Load the actual payloads into the set
+	- **Payload Processing**
+		- Allows us to determine fuzzing rules over the loaded wordlist (eg. skip if matches, add a suffix)
+	- **Payload Encoding**
+		- Specify what characters to URL encode
+5. Customise the attack options in the `Options` tab, this is stuff like number of retries, pausing etc. This is also where we can specify the success conditions using a `Grep - Match` for example.
