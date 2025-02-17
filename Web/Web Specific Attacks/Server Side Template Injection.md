@@ -11,7 +11,11 @@ SSTI is when user input is accepted as a value in a template that is used in the
 This can pose the possibility for RCE for an attacker.
 
 ## Detecting SSTI
-Using a fuzzing template such as `${{<%[%'"}}%\` you can detect a template expression being used. If an exception is raised, we know that the template is being executed.
+Using a fuzzing template such as: 
+```
+${{<%[%'"}}%\
+```
+you can detect a template expression being used. If an exception is raised, we know that the template is being executed.
 
 ### Identify the Context
 #### Plaintext Context
@@ -50,3 +54,10 @@ http://vulnerable-website.com/?greeting=data.username}}<tag>
 ```
 > If this is a blank output or an error, we have likely used the wrong syntax for the template engine. If no syntax is valid then SSTI is not present.
 > Alternatively, if we get a normal output along with the HTML, then SSTI is likely possible.
+
+## Identify the Template Engine
+We can use specifically crafted payloads to determine what engine is being used. *Often an error message will give it away anyways*. A decision tree like this for example:
+![[Pasted image 20250217185827.png]]
+Can be really useful to determine the engine.
+> eg. `{{7*'7'}}` in Twig will result in `49` but will be `7777777` in Jinja2
+> [PayloadAllTheThings SSTI cheatsheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Template%20Injection/README.md?ref=sec.stealthcopter.com)
