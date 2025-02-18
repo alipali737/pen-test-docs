@@ -77,3 +77,21 @@ HOST: ...
 	- **Payload Encoding**
 		- Specify what characters to URL encode
 5. Customise the attack options in the `Options` tab, this is stuff like number of retries, pausing etc. This is also where we can specify the success conditions using a `Grep - Match` for example.
+
+### Crawling & Scanning (Burp Scanner)
+Burp scanner is a *crawler* and *scanner* (supporting both passive and active scanning). It is a *pro only feature* though. A webcrawler simply navigates to each link it finds in each page and maps a website out.
+To start a new scan, we have the following options:
+- Scan from a specific request from Proxy History
+- Scan a new set of targets (in the Target tab)
+- Scan in-scope items
+> It is also useful to exclude some items that could end our session (eg. logout endpoints)
+> You can also trigger a scan from the `Dashboard` tab
+
+There are two types of scans:
+- *Crawl and Audit* : This crawls and then runs the scanner against it's results
+- *Crawl* : This just crawls
+> A Crawl scan only follows and maps links, it does not perform fuzzing like [[#Fuzzing (Burp Intruder)]].
+
+For authenticated crawling, we can either set credentials that Burp will use in login pages, or record a manual login in the pre-configured browser so Burp can repeat it when needed.
+
+We can view the progress of a crawl scan in the `Dashboard>Tasks` tab. The results are then available in `Target>Site map`.
