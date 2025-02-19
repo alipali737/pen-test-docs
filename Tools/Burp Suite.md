@@ -95,3 +95,22 @@ There are two types of scans:
 For authenticated crawling, we can either set credentials that Burp will use in login pages, or record a manual login in the pre-configured browser so Burp can repeat it when needed.
 
 We can view the progress of a crawl scan in the `Dashboard>Tasks` tab. The results are then available in `Target>Site map`.
+
+#### Passive Scanner
+A passive scan performs a vulnerability scan without sending any network packets to the webserver. It analyses the source of the webpages found in the crawl earlier looking for things like DOM-based XSS vulnerabilities. Burp provides a confidence level for each vulnerability if thinks its found but is unable to make any requests to test and verify in the passive mode.
+
+We can see the issues in the `Dashboard>Issue activity` section. We want to consider all issues identified but primarily focus on *High* severity and *Certain* confidence.
+
+#### Active Scanner
+The most powerful part of Burp Scanner, it performs a far more comprehensive scan than the passive scan by:
+1. Crawling and fuzzing to identify all possible pages
+2. Running a passive scan on every page
+3. Sends requests to identify and verify any issues found in the Passive Scan
+4. Performs JS analysis to identify further potential vulnerabilities
+5. Fuzzes identified insertion points and parameters to look for common web vulnerabilities (XSS, Command Injection, SQLi etc)
+
+> The `Logger` tab will show us all requests the go through, or are produced by burp.
+
+Once the scan is finished we can generate a **report**:
+1. Go to `Target>Site map`
+2. Right click the target address and select `Issue>Report issues for this host`
