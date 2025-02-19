@@ -114,3 +114,18 @@ The most powerful part of Burp Scanner, it performs a far more comprehensive sca
 Once the scan is finished we can generate a **report**:
 1. Go to `Target>Site map`
 2. Right click the target address and select `Issue>Report issues for this host`
+
+### Extensions
+Extensions can be installed to extend Burp's capabilities. These are community made extensions, some are for Pro version only as they extend pro features. Additionally many have dependencies that need to be installed manually prior to installing the extensions. Some extensions to research more into:
+
+| .NET beautifier              | J2EEScan                  | Software Vulnerability Scanner |
+| ---------------------------- | ------------------------- | ------------------------------ |
+| Software Version Reporter    | Active Scan++             | Additional Scanner Checks      |
+| AWS Security Checks          | Backslash Powered Scanner | Wsdler                         |
+| Java Deserialization Scanner | C02                       | Cloud Storage Tester           |
+| CMS Scanner                  | Error Message Checks      | Detect Dynamic JS              |
+| Headers Analyzer             | HTML5 Auditor             | PHP Object Injection Check     |
+| JavaScript Security          | Retire.JS                 | CSP Auditor                    |
+| Random IP Address Header     | Autorize                  | CSRF Scanner                   |
+| JS Link Finder               |                           |                                |
+#### Favourite Extensions List
