@@ -23,4 +23,4 @@ IOS:
 - SSL Pinning - Defence against packet interception
 	- They have pinned the fingerprint of their public key in their TLS
 	- So it rejects the connection as Burp sends its own certificate instead
-	- `objection` - a tool build upon `frida` that 
+	- `objection` - a tool build upon `frida` that can be used to disable app jailbreak and sslpinning checks by hooking the low-level libraries that are used for checking and makes them always return true (*this is the easy way but it doesn't always work*)
