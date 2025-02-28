@@ -100,6 +100,7 @@ There are 5 FSMO roles:
 - Ensures that multiple objects aren't assigned the same SID.
 - The domain object SIDs are the domain SID combined with the RID number for the object.
 #### Primary Domain Controller (PDC) Emulator (*One per domain*)
+- The host with this role is the authoritative DC in the domain and would respond to authentication requests, password changes, and manage GPOs. 
 #### Infrastructure Master (*One per domain*)
 
 ### Global Catalog
