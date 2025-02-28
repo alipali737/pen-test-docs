@@ -88,7 +88,7 @@ The [sAMAccountName](https://docs.microsoft.com/en-us/windows/win32/ad/naming-pr
 The [userPrincipalName](https://social.technet.microsoft.com/wiki/contents/articles/52250.active-directory-user-principal-name.aspx) attribute is the `<user-account-name>@<domain-name>` : `jsmith@inlanefreight.local` (*it is not mandatory*)
 
 ### FSMO Roles
-[Flexible Single Master Operation (FSMO)](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/fsmo-roles) roles give Domain Controllers (DC)s the ability to continue authenticating users and granting permissions without interruption. All 5 roles are assigned to the first DC in the forest root domain in a new AD forest. Each time a new domain is added, on the RID Master, PDC Emulator and Infrastructure Master roles are assigned to the new domain. FSMO roles are typically set when domain controllers are created, but sysadmins can transfer these roles if needed.
+[Flexible Single Master Operation (FSMO)](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/fsmo-roles) roles give Domain Controllers (DC)s the ability to continue authenticating users and granting permissions without interruption. All 5 roles are assigned to the first DC in the forest root domain in a new AD forest. Each time a new domain is added, on the RID Master, PDC Emulator and Infrastructure Master roles are assigned to the new domain. FSMO roles are typically set when domain controllers are created, but sysadmins can transfer these roles if needed. FSMO issues can lead to authentication and authorisation difficulties within a domain.
 
 There are 5 FSMO roles:
 #### Schema Master
@@ -100,8 +100,12 @@ There are 5 FSMO roles:
 - Ensures that multiple objects aren't assigned the same SID.
 - The domain object SIDs are the domain SID combined with the RID number for the object.
 #### Primary Domain Controller (PDC) Emulator (*One per domain*)
-- The host with this role is the authoritative DC in the domain and would respond to authentication requests, password changes, and manage GPOs. 
+- The host with this role is the authoritative DC in the domain and would respond to authentication requests, password changes, and manage GPOs.
+- Also maintains time within the domain.
 #### Infrastructure Master (*One per domain*)
+- Translates GUIDs, SIDs, and DNs between domains.
+- Used when multiple domains are within a single forest, enabling communication between them.
+- If this role isn't functioning correctly, ACLs with show SIDs instead of fully resolved names.
 
 ### Global Catalog
 A [global catalog (GC)](https://docs.microsoft.com/en-us/windows/win32/ad/global-catalog) is a domain controller that stores copies of ALL objects in an AD forest. It stores full copies of any object within its domain, and partial copies of objects in any other domains in the forest. A normal domain controller only stores info about its own objects, meaning that a GC can be used to query info about any object within any domain in the forest.
