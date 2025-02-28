@@ -457,7 +457,7 @@ The SID follows the pattern:
 To get the SID of another user, the `wmic useraccount where name='{username}' get name,sid` command (*to be used in command prompt*) can be used. `wmic group ...` can be used for groups too.
 ### User Account Control (UAC)
 A windows security feature to prevent malware from running or manipulating processes. The *Admin Approval Mode* prevents software installations without administrator's knowledge or prevents system-wide changes (This is the admin confirmation popup that appears sometimes). While this prompt is active the execution of the binary (which could be malware) is paused until permission is granted.
-![[user-access-control.png]]
+![[user-access-control.png|700]]
 
 ### Registry
 The registry is a hierarchical database, storing low-level settings for the OS and applications. Divided into computer-specific & user-specific data. The registry editor can be opened with `regedit`.
