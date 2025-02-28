@@ -98,6 +98,40 @@ There are 5 FSMO roles:
 ### Global Catalog
 A [global catalog (GC)](https://docs.microsoft.com/en-us/windows/win32/ad/global-catalog) is a domain controller that stores copies of ALL objects in an AD forest. It stores full copies of any object within its domain, and partial copies of objects in any other domains in the forest. A normal domain controller only stores info about its own objects, meaning that a GC can be used to query info about any object within any domain in the forest.
 
+### Read-Only Domain Controller (RODC)
+Essentially a read-only AD database. An [Read-Only Domain Controller (RODC)](https://docs.microsoft.com/en-us/windows/win32/ad/rodc-and-active-directory-schema) has no AD account passwords in its cache other than its own credentials. They can also be used to:
+- have a read-only DNS server
+- allow administrator role separation
+- reduce replication traffic
+- prevent SYSVOL modifications from being replicated to other DCs
+
+### Replication
+[Replication](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/replication/active-directory-replication-concepts) happens when AD objects are updated and transferred from one DC to another. Connection objects are created, *by the Knowledge Consistency Checker (KCC) running on every DC*, whenever a new DC is added to facilitate replication. This syncs changes to all DCs in a forest for DR.
+
+### Service Principal Name (SPN)
+A [Service Principal Name (SPN)](https://docs.microsoft.com/en-us/windows/win32/ad/service-principal-names) uniquely identifies a service instance. They are used by Kerberos authentication to associate an instance of a service with a logon account.
+
+### Group Policy Object (GPO)
+[Group Policy Objects (GPOs)](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/policy/group-policy-objects) are virtual collections of policy settings. Each GPO has a GUID and can contain local file system or AD settings. They can be applied to users and/or computer objects. They can be applied globally in a domain or granularly at the OU level.
+
+### Access Control List (ACL)
+An [Access Control List (ACL)](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-control-lists) is an ordered collection of Access Control Entries (ACEs) that apply to an object.
+
+### Access Control Entries (ACEs)
+Each [Access Control Entry (ACE)](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-control-entries) in an ACL identifies a trustee (user acc, group acc, or logon session) and lists their rights (allowed, denied, or audited).
+
+### Discretional ACL (DACL)
+DACLs define which security principals are granted or denied access to an object; it contains a list of ACEs. When a process tries to access a securable object, the system authorises based on the DACL.
+
+### System ACL (SACL)
+Allows admins to log access attempts that are made to secured objects. ACEs specify the types of access attempts that cause the system to generate a record in the security event log.
+
+### Fully Qualified Domain Name (FQDN)
+An FQDN is the complete name of a computer or host. `<hostname>.<domain>.<tld>` used to specify an object's location in the DNS tree. Used to locate a host in AD without knowing the IP.
+
+### Tombstone
+A [tombstone](https://ldapwiki.com/wiki/Wiki.jsp?page=Tombstone) is a container object in AD that holds deleted AD objects. When an object is deleted from AD, the object remains for a set period of time known as the *Tombstone Lifetime*, and *isDeleted* is set to `True`. Once the lifetime is exceeded, the object is entirely removed. Defaults to 60 or 180 days depending on DC OS version. When an object is deleted in an AD environment without an AD Recycle Bin, it will bc
+
 
 
 
