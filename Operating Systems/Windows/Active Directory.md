@@ -92,8 +92,13 @@ The [userPrincipalName](https://social.technet.microsoft.com/wiki/contents/artic
 
 There are 5 FSMO roles:
 #### Schema Master
+- Manages the read/write copy of the AD schema
 #### Domain Naming Master (*One for each forest*)
+- Manages domain names and ensures that two domains of the same name are not created in the same forest
 #### Relative ID (RID) Master (*One per domain*)
+- Assigns blocks of RIDs to other DCs within the domain that can be used for new objects.
+- Ensures that multiple objects aren't assigned the same SID.
+- The domain object SIDs are the domain SID combined with the RID number for the object.
 #### Primary Domain Controller (PDC) Emulator (*One per domain*)
 #### Infrastructure Master (*One per domain*)
 
