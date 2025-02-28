@@ -45,6 +45,20 @@ It is common to see multiple domains (or forests) linked together via a *trust r
 ![[Pasted image 20250228100259.png|800]]
 > This is an example of a trust relationship between two domains. This means that any users in either `inlanefrieght.local` or `freightlogistics.local` can access any of the sub domains below either one. True
 > HOWEVER, if a user lower down in the chain, eg. `admin.dev.inlanefrieght.local` was created, they would NOT be able to access anything else (even within the same domain) as you can only access down the tree. If you wanted to access `wh.corp.inlanefreight.local` for example, a trust relationship would need to be setup between them. 
+#### Trusts
+Trusts can be used for *forest-forest* or *domain-domain* authentication, allowing users to interact with resources outside their domain. A trust links two domains.
+
+Trusts can be transitive (*extended to objects that the child domain trusts*) or non-transitive (*only the child domain is trusted*). They can also be one-way (*only users in the trusted domain can access resources in the trusting domain, not vice-versa - the direction of trust is opposite to the direction of access*), two-way (*bidirectional*) allows access for both.
+
+Trusts, if setup improperly, can provide unintended attack paths. Mergers and acquisitions can result in bidirectional trusts which could unknowingly introduce risk into the acquiring company's environment. It isn't uncommon to see *Kerberosting* against a domain outside the principal domain to obtain administrator accounts within the principal domain.
+
+- *Parent-Child* : Domains within the same forest, the child has a two-way transitive trust with the parent domain
+- *Cross-link* : A trust between child domains to speed up authentication
+- *External* : A non-transitive trust between two separate domains in separate forests which are not already joined by a forest trust. This type of trust utilises SID filtering.
+- *Tree-root* : A two-way transitive trust between a forest root domain and a new tree root domain.
+- *Forest* : A transitive trust between two forest root domains.
+![[Pasted image 20250228135859.png|700]]
+> If the cross-link trust between `shippinglanes` & `dev.inlanefreight` was one-way, then only members of `shippinglanes` could access `dev.inlanefreight` resources, not the other way around.
 
 ### Objects
 Any resource present in an AD environment, eg. OUs, printers, users, domain controllers are all Objects
