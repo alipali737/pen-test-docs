@@ -8,11 +8,16 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 Kerberos is a stateless open standard authentication system often found in windows systems (often used in [[Active Directory]] environments). It is a ticket-based system, meaning that each service that requires authentication isn't given an account password but given a ticket exclusively for that service. Kerberos keeps all the tickets on the local system. This system prevents tickets from being used for another purpose as they are service specific.
 
+Kerberos uses port **88/tcp+udp** - *this is useful to find domain controllers*.
+
 As part of [[Active Directory]] Domain Services (AD DS), Domain Controllers have a Kerberos Key Distribution Center (KDC) that issues tickets. When a client initiates a login request to a system:
-1. The client requests a ticket from the KDC (AS-REQ), they encrypt this request using the user's password (*symmetric encryption*)
-2. If the KDC (*who holds the user's password too*) can decrypt the request using their password, it will create a [[#Ticket Granting Ticket (TGT)]], sending it back to the user.
-3. The user then presents its TGT to a Domain Controller to request a [[#Ticket Granting Service (TGS)]] ticket, encrypting with the associated service's NTLM password hash.
-4. Finally the client requests access to the required service by presenting the TGS to the application or service, which decrypts it with its password hash.
+
+1. When a user logs in, they encrypt the timestamp of the request using their password. The request is then sent to the KDC to verify the authentication by decrypting it.
+2. The KDCchecks the authentication service request (AS-REQ), verifies the user information, then issues a [[#Ticket Granting Ticket (TGT)]], encrypting it with the secret key of the krbtgt account.
+3. The user then sends the TGT to (the/a) DC, requesting a [[#Ticket Granting Service (TGS)]] for a specific service (TGS-REQ).
+4. The TGS is encrypted with the NTLM password hash of the service or computer account in whose context the service instance is running, and then delivered back to the user (TGS-REP).
+5. The user finally then presents the TGS to the service, which decrypts it using its NTLM hash, and allows the user to connect to the resource (AP-REQ).
+![[Pasted image 20250228154536.png|700]]
 
 Kerberos essentially decouples a user's credentials from their requests to consumable resources, ensuring their password isn't sent over the network. The KDC doesn't store previous transactions, so the whole system instead relies on valid TGT's for TGS' to work. Having a valid TGT, assumes the requester has already proven their identity... This could be taken advantage of it we *steal a ticket*.
 
