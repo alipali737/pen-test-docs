@@ -129,3 +129,4 @@ Extensions can be installed to extend Burp's capabilities. These are community m
 | Random IP Address Header     | Autorize                  | CSRF Scanner                   |
 | JS Link Finder               |                           |                                |
 #### Favourite Extensions List
+- Param Miner - Can be used for guessing a variety of request data (headers, params, etc)
