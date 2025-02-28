@@ -64,6 +64,8 @@ Container objects hold other objects and have a defined place in the directory s
 ### Leaf
 Leaf objects do not contain other objects and are found at the end of the subtree
 
+## Terminology 
+
 ### Global Unique Identifier (GUID)
 A 128-bit value assigned when a domain object is created. It is unique across the enterprise, similar to a MAC address. It is stored in the *objectGUID* attribute.
 
@@ -130,10 +132,35 @@ Allows admins to log access attempts that are made to secured objects. ACEs spec
 An FQDN is the complete name of a computer or host. `<hostname>.<domain>.<tld>` used to specify an object's location in the DNS tree. Used to locate a host in AD without knowing the IP.
 
 ### Tombstone
-A [tombstone](https://ldapwiki.com/wiki/Wiki.jsp?page=Tombstone) is a container object in AD that holds deleted AD objects. When an object is deleted from AD, the object remains for a set period of time known as the *Tombstone Lifetime*, and *isDeleted* is set to `True`. Once the lifetime is exceeded, the object is entirely removed. Defaults to 60 or 180 days depending on DC OS version. When an object is deleted in an AD environment without an AD Recycle Bin, it will bc
+A [tombstone](https://ldapwiki.com/wiki/Wiki.jsp?page=Tombstone) is a container object in AD that holds deleted AD objects. When an object is deleted from AD, the object remains for a set period of time known as the *Tombstone Lifetime*, and *isDeleted* is set to `True`. Once the lifetime is exceeded, the object is entirely removed. Defaults to 60 or 180 days depending on DC OS version. When an object is deleted in an AD environment without an AD Recycle Bin, it will become a tombstone object. Majority of its attributes will be stripped and it will be places in the *Deleted Objects* container for its lifespan. It can be recovered by any stripped attributes can't.
 
+### AD Recycle Bin
+If an object is deleted it goes to this bin for a set period (default 60 days). It is much easier to fully restore the object than from a tombstone.
 
+### SYSVOL
+The [SYSVOL](https://social.technet.microsoft.com/wiki/contents/articles/8548.active-directory-sysvol-and-netlogon.aspx) folder, or share, stores copied of public files in the domain such as system policies, Group Policy settings, logon/logoff scripts, and often contains other types of scripts used in the AD environment. The contents of this folder is replicated to all DCs using File Replication Services (FRS).
 
+### AdminSDHolder
+The [AdminSDHolder](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-c--protected-accounts-and-groups-in-active-directory) object is used to manage ACLs for members of built-in groups in AD marked as privileged. Its a container for the Security Descriptor applied to members of protected groups. The `SDProp` process runs on a schedule on the PDC Emulator DC. By default it runs every hour, checking that members of protected groups have the correct ACLs applied to them. Eg. if an attacker creates a malicious ACL entry for a user in the Domain Admins group, unless they modify other AD settings, the SDProp would remove the new rights.
+
+### dsHeuristics
+The [dsHeuristics](https://docs.microsoft.com/en-us/windows/win32/adschema/a-dsheuristics) attribute is a string value on the Directory Service object to define multiple forest-wide configuration settings. This can be used to exclude built-in groups from the [Protected Groups](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-c--protected-accounts-and-groups-in-active-directory) list. This means they won't be modified by the *AdminSDHolder* object.
+
+### adminCount
+The [adminCount](https://docs.microsoft.com/en-us/windows/win32/adschema/a-admincount) attribute determines whether or not the SDProp process protects a user. `0` means unprotected. Searching for users with this attribute set to `1` means these are likely privileged accounts that could be of special interest.
+
+### Active Directory Users and Computers (ADUC)
+ADUC is a GUI console for managing users, groups, computers and contacts in AD. Can also be used through PowerShell.
+
+### ADSI Edit
+A GUI tool used to manage objects in AD. It is more powerful and has more access than ADUC has. You can create, modify or delete any object in an AD. It can however, allow changes that could have devastating effects in an AD.
+
+### sIDHistory
+[This](https://docs.microsoft.com/en-us/defender-for-identity/cas-isp-unsecure-sid-history-attribute) attribute holds any SIDs that na object was assigned previously. It is often used when migrating a user across domains to maintain their access. It can be potentially abused to gain elevated access in another domain if SID Filtering isn't enabled.
 
 ## NTDS
 ![[Windows#NTDS]]
+
+## MSBROWSE
+MSBROWSE is a Microsoft networking protocol that was used in early Windows-based LANs to provide browsing services. In older windows versions, we could use `nbtstat -A ip-address` to search for the Master browser. If we see `MSBROWSE` then thats the master browser. We could use `mltest` to query the Windows Master Browser for names of Domain Controllers.
+> Largely it is obsolete and replace by SMB and CIFS.
