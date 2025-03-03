@@ -23,8 +23,12 @@ You may also come across LDAP servers that aren't affiliated with a directory se
 3. The DC then performs its authentication using the LDAP protocol and responds
 4. The LDAP server then responds to the user with their information
 
-> An AD server uses the LDAP protocol in the same way an Apache webserver uses the HTTP protocol.
+> An AD server uses the LDAP protocol in the same way an Apache webserver uses the HTTP protocol. 
+> When using AD, LDAP is setup to authenticate credentials against a `BIND` operation to set the authentication state of the LDAP session
 
+LDAP has two types of authentication:
+- *Simple Authentication*: This includes anonymous, unauthenticated, and username/password authentication. Simple auth means that a *username* and *password* create a `BIND` request to authenticate to the LDAP server.
+- *SASL Authentication*: [The Simple Authentication and Security Layer (SASL)](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) framework uses other authentication services (eg. [[Kerberos]]), to bind to the LDAP server and then uses this auth service to authenticate to LDAP.
 ## Configuration
 
 
