@@ -28,12 +28,13 @@ You may also come across LDAP servers that aren't affiliated with a directory se
 
 LDAP has two types of authentication:
 - *Simple Authentication*: This includes anonymous, unauthenticated, and username/password authentication. Simple auth means that a *username* and *password* create a `BIND` request to authenticate to the LDAP server.
-- *SASL Authentication*: [The Simple Authentication and Security Layer (SASL)](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) framework uses other authentication services (eg. [[Kerberos]]), to bind to the LDAP server and then uses this auth service to authenticate to LDAP.
-## Configuration
+- *SASL Authentication*: [The Simple Authentication and Security Layer (SASL)](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) framework uses other authentication services (eg. [[Kerberos]]), to bind to the LDAP server and then uses this auth service to authenticate to LDAP. The LDAP server uses the LDAP protocol to send an LDAP message to the auth service, initiating a series of challenge/response messages, culminating in either successful or unsuccessful authentication. SASL can provide additional security due to the separation of auth methods from application protocols.
 
+LDAP isn't encrypted by default and *can be packet sniffed*, so it is always recommended to use something like TLS.
 
 ## Potential Capabilities
-- 
+- Steal user credentials via packet sniffing
+- Authenticate via an auth service to the directory server
 
 ## Enumeration Checklist
 

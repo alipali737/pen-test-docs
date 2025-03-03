@@ -65,6 +65,8 @@ The Samba SMB daemon can be restarted with `systemctl`
 - Forced Authentication Attacks using [[Responder]]
 
 ## MSRPC / RPCclient
+> MSRPC is just Microsoft's implementation of the *Remote Procedure Call* (*RPC*) technique.
+
 RPC lets us execute a procedure (eg. a function) in a local or remote process. We can use `MS-RPCE` which is RPC over SMB (using SMB named pipes). As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
 
 ```bash
@@ -101,6 +103,12 @@ Finally [enum4linux-ng](https://github.com/cddmp/enum4linux-ng) can also be used
 ```bash
 ./enum4linux-ng.py [Target] -A
 ```
+
+### MSRPC Interfaces in [[Active Directory]]
+- *lsarpc* : A set of RPC calls to the [[Windows#Local Security Authority (LSA)|Local Security Authority (LSA)]] system for managing local security policies, audit policy, and providing interactive authentication services. LSARPC is also used to perform management on domain security policies.
+- *netlogon* : A windows process used to authenticate users and other services in the domain environment. It has a continuously running service in the background.
+- *samr* : Remote [[Windows#Security Account Manager (SAM)|SAM]] provides management functionalities for the domain account database (*stores user and group information*). Tools like [BloodHound](https://github.com/BloodHoundAD/) will utilise this to perform reconnaissance about an internal domain and visually map out the network and attack paths. Orgs can [protect](https://stealthbits.com/blog/making-internal-reconnaissance-harder-using-netcease-and-samri1o/) themselves by changing a Windows registry key to only allow administrators to perform remote SAM queries (*default is any authenticated domain user*).
+- *drsuapi* : Microsoft API that implements Directory Replication Service (RDS) Remote Protocol which can perform replication tasks across DCs. This can be used to [create a copy of the Active Directory domain database](https://attack.mitre.org/techniques/T1003/003/) (NTDS.dit) file to steal password hashes that can then be cracked or used in Pass-the-Hash attacks through remote protocols like RDP and WinRM.
 
 ## Interacting with a share
 ### Windows
