@@ -13,7 +13,7 @@ Ports are between 0-65,535.
 | 25 (TCP)      | [[SMTP]]                        | Email transfer                                                            |
 | 53 (TCP)      | [[DNS]]                         | Domain Name Server                                                        |
 | 80 (TCP)      | HTTP                            | Plain-text http                                                           |
-| 88 (UDP)      | [[Kerberos]]                    | Key distribution server                                                   |
+| 88 (UDP)      | [[Operating Systems/Windows/Kerberos]]                    | Key distribution server                                                   |
 | 110 (TCP)     | [[IMAP & POP3\|POP3]]           | Older protocol for the retrieval of emails                                |
 | 111 (TCP)     | [[SMB#RPCclient\|RPC]]          | Remote Procedure Call                                                     |
 | 135 (TCP)     | [[WMI]]                         | Windows Management Instrumentation                                        |

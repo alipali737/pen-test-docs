@@ -37,7 +37,7 @@ C:\> dir *.kirbi
 > For the tickets:
 > - If it ends with `$` (Result 2 above) then it corresponds to the computer account (allowing the system to interact with Active Directory)
 > - User tickets have the user's name (Result 1 above) followed by an `@` then the service name and domain. It follows the format `[random_value]-username@service-domain.local.kirbi`
-> - If a user ticket has the service `krbtgt` then it is the [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] of that account.
+> - If a user ticket has the service `krbtgt` then it is the [[Operating Systems/Windows/Kerberos#Ticket Granting Ticket (TGT)|TGT]] of that account.
 
 ### Exporting Kerberos Keys
 Keys are not the same as tickets, they are encryption keys that Kerberos uses for creating TGTs.

@@ -355,7 +355,7 @@ $ impacket-psexec <admin_user>@<target> -hashes :<hash>
 ![[RDP#PtH via RDP (Linux)]]
 
 ### Pass-the-Ticket (PtT) on Windows systems
-Very similarly to a [[#Pass-the-Hash]] attack, but instead of an NTLM hash, we use a [[Kerberos]] ticket to move laterally through an AD environment. To perform a PtT attack, we need a valid Kerberos ticket, either a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] (giving us access to any resource a user has privileges) or a [[Kerberos#Ticket Granting Service (TGS)|TGS]] (to allow access to a specific resource).
+Very similarly to a [[#Pass-the-Hash]] attack, but instead of an NTLM hash, we use a [[Operating Systems/Windows/Kerberos]] ticket to move laterally through an AD environment. To perform a PtT attack, we need a valid Kerberos ticket, either a [[Operating Systems/Windows/Kerberos#Ticket Granting Ticket (TGT)|TGT]] (giving us access to any resource a user has privileges) or a [[Operating Systems/Windows/Kerberos#Ticket Granting Service (TGS)|TGS]] (to allow access to a specific resource).
 
 On Windows, tickets are processed and stored by the [[Windows#LSASS|LSASS]] process. A non-privileged user can only request their own tickets, but a local admin can collect them all. Therefore, to use either of the options below to export tickets, you *must be running as local administrator*.
 #### Exporting Tickets with Mimikatz (Windows)
@@ -460,7 +460,7 @@ $ /opt/linikatz.sh
 The [impacket-ticketConverter](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketConverter.py) can be used to transform `ccache` file from linux to windows, OR `kirbi` files from windows to linux.
 
 ### Pass the Key or OverPass the Hash
-Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Kerberos#Ticket Granting Ticket (TGT)|TGT]].
+Another way to obtain tickets is to forge them ourselves. By obtaining an NTLM hash or key (*rc4_hmac*, *aes256_cts_hmac_sha1*, etc) for a domain-joined user, we can convert it into a [[Operating Systems/Windows/Kerberos#Ticket Granting Ticket (TGT)|TGT]].
 We can collect the encryption keys using a tool like [[Mimikatz]]:
 ![[Mimikatz#Exporting Kerberos Keys]]
 

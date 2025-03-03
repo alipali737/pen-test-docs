@@ -13,9 +13,7 @@ debugInConsole: false # Print debug info in Obsidian console
 **Standard Port:** 
 - 
 
-| service name | releases link | notes |
-| ------------ | ------------- | ----- |
-|              |               |       |
+
 ## How it works
 
 
