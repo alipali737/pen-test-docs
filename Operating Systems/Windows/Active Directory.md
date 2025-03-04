@@ -292,7 +292,37 @@ These accounts are stored locally on a specific server or workstation. These acc
 - *Administrator* : first account created on windows installation, SID = `S-1-5-domain-500`. It cannot be deleted or locked, but can be disabled or renamed. Windows 10 and Server 2016 disable this account by default and create a local account in the local administrators group instead.
 - *Guest* : disabled by default. Allows anonymous login (*with a blank password*) and limited access rights.
 - *SYSTEM* : (or `NT AUTHORITY\SYSTEM`) is the default account used for OS internal functions. It doesn't have a user profile but does have the highest permission level on a Windows host. It isn't a "real user", so it can't be found in User Management or added to groups.
+> The `NT AUTHORITY\SYSTEM` has most of the same rights as a regular domain user in an AD environment. If we do gain access to this account on a particular system, we could gather large amounts of data with the read access to the AD environment that could inform potential AD attacks.
 - *Network Service* : Predefined local account used by the *Service Control Manager* (*SCM*) for running Windows services. When a service runs as this account, it will present credentials to remote services.
 - *Local Service* : Another predefined local account used by the *Service Control Manager* (*SCM*) but has minimal privileges and presents anonymous credentials to the network.
 
 ### Domain Users
+These users have rights that extend across a domain, granting access to remote resources. Unlike local users, a domain user can log in on any domain-joined host. The different AD account types can be seen [here](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-accounts). 
+
+The `KRBTGT` account is a very important one as it is the service account for the Key Distribution service and can be used to gain unconstrained access to the domain, escalate privileges and gain domain persistence through attacks like [Golden Ticket](https://attack.mitre.org/techniques/T1558/001/).
+
+### User Naming Attributes
+- *UserPrincipalName* (UPN) : The primary logon name for the user, normally the email address of the user.
+- *ObjectGUID* : Unique identifier, in AD it remains the same even if the user is removed.
+- *SAMAccountName* : A logon name that supports the previous version of Windows clients and servers.
+- *objectSID* : The user's Security Identifier (SID). Identifies a user and its group membership during security interactions.
+- *sIDHistory* : Previous SIDs for the user object if moved from another domain.
+
+```PowerShell
+Get-ADUser -Identity <username>
+```
+
+> For a deeper look at user object attributes, check out this [page](https://docs.microsoft.com/en-us/windows/win32/ad/user-object-attributes) 
+
+## Domain-joined vs Non-Domain-joined Machines
+### Domain-joined
+- Easier access to information sharing within an enterprise
+- Central management point (the DC) to get resources, policies and updates from
+- Inherits the domain's Group Policy
+- Domain users can access the network from any domain-joined host
+
+### Non-Domain-joined / workgroup machines
+- Not managed by domain policy
+- Complicates resource sharing outside the local network
+- Users can make changes to their specific machine
+- Accounts are not migrated / accessible from any other hosts within the workgroup
