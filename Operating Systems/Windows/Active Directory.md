@@ -231,4 +231,13 @@ LM Passwords are:
 > This means that a brute force actually only needs to match two seven character strings. If we are using parallelism this can be incredibly easy. 
 
 ### NTHash (NTLM)
-*NT LAN Manager* (NTLM) hashes are used in modern Windows systems.
+*NT LAN Manager* (NTLM) hashes are used in modern Windows systems. It is a challenge-response authentication protocol:
+1. NTLM `NEGOTIATE_MESSAGE` (client -> server)
+2. NTLM `CHALLENGE_MESSAGE` (server -> client) : challenge to verify the client's identity
+3. NTLM `AUTHENTICATE_MESSAGE` (client -> server)
+4. `Netlogon_network_info` (client -> server)
+5. `Netlogon_Validation_SAM_info` (server -> client)
+
+These hashes are stored in the [[Windows#Security Account Manager (SAM)|SAM]] database on a host and the [[Windows#NTDS|NTDS.dit]] db on the Domain Controller. NTLM supports the use of [[#LM]] hashes and the NT hash (*MD4 hash of the little-endian UTF-16 value of the password - `MD4(UTF-16-LE(password))`*).
+
+It can be possible to brute force the entire NTLM 8 character keyspace in under *3 hours*. Dictionary attacks and rules can make longer passwords vulnerable still. NTLM is also vulnerable to [[Password Attacks#Pass-the-Hash|Pass-the-Hash]] attacks.
