@@ -487,8 +487,7 @@ Defender includes a cloud-delivered protection in addition to its real-time scan
 Windows Defender takes advantage of its embedded setting in the OS, allowing it to perform more efficiently than many alternatives whilst still providing effective protections.
 
 ### New Technology LAN Manager (NTLM)
-[Windows New Technology LAN Manager (NTLM)](https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview) is a set of security protocols that authenticates users' identities while also protecting integrity and confidentiality of their data. NTLM is an SSO solution that utilises a challenge-response protocol to verify user identities without having a password provided each time. NTLM has many flaws but it is still commonplace to ensure compatibility with legacy systems whilst still being the preferred method on modern systems. Whilst still supported, Kerberos has taken over at the default auth system for modern systems (Windows 2000+ AD domains). *Passwords are stored on the server or domain controller but are NOT salted!* This can be exploited via a [[Password Attacks#Pass-the-Hash|Pass-the-Hash (PtH)]] attack.
-> An NTLM is also sometimes referred to by `RC4-HMAC`.
+![[Active Directory#NTLM Authentication]]
 
 ### Security Account Manager (SAM)
 The [Security Account Manager](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc756748(v=ws.10)?redirectedfrom=MSDN) (*SAM*) is a database file in windows that stores users' passwords. It can be used to authenticate local and remote users (*Active Directory is normally used for remote users now*). It stores password as either an [LM hash](https://en.wikipedia.org/wiki/LM_hash) or as an [NTLM hash](https://en.wikipedia.org/wiki/NTLM_hash "NTLM hash").

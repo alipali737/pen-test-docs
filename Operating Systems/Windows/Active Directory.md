@@ -13,7 +13,7 @@ AD was first released with Windows Server 2000 and has been improved incremental
 
 It's essentially a read-only database that *any user* (regardless of privilege) can enumerate, meaning it can be searched for potentially exploitable misconfigurations. It is extremely important to properly secure an AD implementation (network segmentation, least privilege, hardening etc), many attacks can be done as a standard domain user account.
 
-AD specifically requires LDAP ([[Operating Systems/Windows/Kerberos]]), [[DNS]], and RPC ([[SMB & RPC#MSRPC / RPCclient|MSRPC]]) for its authentication and communication needs.
+AD specifically requires LDAP ([[Kerberos]]), [[DNS]], and RPC ([[SMB & RPC#MSRPC / RPCclient|MSRPC]]) for its authentication and communication needs.
 
 ## Active Directory Structure
 AD is a hierarchical tree structure, with a forest a the top containing one or more domains, these can then have nested subdomains.
@@ -192,3 +192,43 @@ MSBROWSE is a Microsoft networking protocol that was used in early Windows-based
 > Largely it is obsolete and replace by SMB and CIFS.
 
 ## NTLM Authentication
+NTLMv1 & NTLMv2 are authentication protocols that deal with NTLM (NT) and LM hashes. Although not perfect, [[Kerberos]] is often the preferred choice for AD authentication when compared with the other options:
+
+| Hash/Protocol  | Cryptographic Technique                              | Mutual Authentication | Message Type                    | Trusted Third Party   |
+| -------------- | ---------------------------------------------------- | --------------------- | ------------------------------- | --------------------- |
+| *NTLM*         | Symmetric key cryptography                           | No                    | Random number                   | Domain Controller     |
+| *NTLMv1*       | Symmetric key cryptography                           | No                    | MD4 Hash, Random number         | Domain Controller     |
+| *NTLMv2*       | Symmetric key cryptography                           | No                    | MD4 Hash, Random number         | Domain Controller     |
+| *[[Kerberos]]* | Symmetric key cryptography & asymmetric cryptography | Yes                   | Encrypted ticket using DES, MD5 | Domain Controller/KDC |
+
+[Windows New Technology LAN Manager (NTLM)](https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview) is a set of security protocols that authenticates users' identities while also protecting integrity and confidentiality of their data. 
+
+NTLM is an SSO solution that utilises a challenge-response protocol to verify user identities without having a password provided each time. 
+
+NTLM has many flaws but it is still commonplace to ensure compatibility with legacy systems whilst still being the preferred method on modern systems. 
+
+Whilst still supported, Kerberos has taken over at the default auth system for modern systems (Windows 2000+ AD domains). 
+
+*Passwords are stored on the server or domain controller but are NOT salted!* This can be exploited via a [[Password Attacks#Pass-the-Hash|Pass-the-Hash (PtH)]] attack.
+
+> An NTLM is also sometimes referred to by `RC4-HMAC`.
+### LM
+LAN Manager (*LM*) hashes are the oldest password storage mechanism in Windows. If in use, they are stored in the [[Windows#Security Account Manager (SAM)|SAM]] database on a host and the [[Windows#NTDS|NTDS.dit]] db on the Domain Controller. (*it is disabled by default due to security weaknesses*)
+> LM hash usage can be disallowed via [[#Group Policy Object (GPO)|Group Policy]]
+
+LM Passwords are:
+- *limited to 14 characters*
+- *not case sensitive* (they are uppercased before being hashed)
+- maximum keyspace of 69 characters
+
+**Hashing Method**
+1. A 14 char password is split into two seven-char chunks.
+	1. `NULL` chars are added to pad the password to 14 chars
+2. Two DES keys are created from each chunk
+3. These chunks are then encrypted with the string `KGS!@#$%` to create two 8-byte ciphertexts.
+4. The two values are then concatenated together to create the final LM hash.
+
+> This means that a brute force actually only needs to match two seven character strings. If we are using parallelism this can be incredibly easy. 
+
+### NTHash (NTLM)
+*NT LAN Manager* (NTLM) hashes are used in modern Windows systems.
