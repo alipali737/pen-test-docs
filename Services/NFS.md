@@ -8,7 +8,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ```
 
 ## Summary
-*Network File System* (*NFS*) is a network file system that has the same purpose as [[SMB]]. NFS is used within Linux and Unix systems. NFS clients *cannot* communicate directly with SMB servers.
+*Network File System* (*NFS*) is a network file system that has the same purpose as [[SMB & RPC]]. NFS is used within Linux and Unix systems. NFS clients *cannot* communicate directly with SMB servers.
 
 **Standard Port:** 
 - *NFSv4* : 2049/(udp or tcp)

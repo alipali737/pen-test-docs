@@ -13,7 +13,7 @@ AD was first released with Windows Server 2000 and has been improved incremental
 
 It's essentially a read-only database that *any user* (regardless of privilege) can enumerate, meaning it can be searched for potentially exploitable misconfigurations. It is extremely important to properly secure an AD implementation (network segmentation, least privilege, hardening etc), many attacks can be done as a standard domain user account.
 
-AD specifically requires LDAP ([[Operating Systems/Windows/Kerberos]]), [[DNS]], and RPC ([[SMB#MSRPC / RPCclient|MSRPC]]) for its authentication and communication needs.
+AD specifically requires LDAP ([[Operating Systems/Windows/Kerberos]]), [[DNS]], and RPC ([[SMB & RPC#MSRPC / RPCclient|MSRPC]]) for its authentication and communication needs.
 
 ## Active Directory Structure
 AD is a hierarchical tree structure, with a forest a the top containing one or more domains, these can then have nested subdomains.
@@ -190,3 +190,5 @@ A GUI tool used to manage objects in AD. It is more powerful and has more access
 ## MSBROWSE
 MSBROWSE is a Microsoft networking protocol that was used in early Windows-based LANs to provide browsing services. In older windows versions, we could use `nbtstat -A ip-address` to search for the Master browser. If we see `MSBROWSE` then thats the master browser. We could use `mltest` to query the Windows Master Browser for names of Domain Controllers.
 > Largely it is obsolete and replace by SMB and CIFS.
+
+## NTLM Authentication

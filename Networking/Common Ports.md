@@ -15,15 +15,15 @@ Ports are between 0-65,535.
 | 80 (TCP)      | HTTP                            | Plain-text http                                                           |
 | 88 (UDP)      | [[Operating Systems/Windows/Kerberos]]                    | Key distribution server                                                   |
 | 110 (TCP)     | [[IMAP & POP3\|POP3]]           | Older protocol for the retrieval of emails                                |
-| 111 (TCP)     | [[SMB#RPCclient\|RPC]]          | Remote Procedure Call                                                     |
+| 111 (TCP)     | [[SMB & RPC#RPCclient\|RPC]]          | Remote Procedure Call                                                     |
 | 135 (TCP)     | [[WMI]]                         | Windows Management Instrumentation                                        |
-| 137 (TCP)     | [[SMB]]                         | Windows file sharing via Server Message Block                             |
-| 139 (TCP)     | [[SMB\|NetBIOS]]                | windows name resolution (used with 445 for file & printer sharing)        |
+| 137 (TCP)     | [[SMB & RPC]]                         | Windows file sharing via Server Message Block                             |
+| 139 (TCP)     | [[SMB & RPC\|NetBIOS]]                | windows name resolution (used with 445 for file & printer sharing)        |
 | 143 (TCP)     | [[IMAP & POP3\|IMAP]]           | Retrieval of emails                                                       |
 | 161 (TCP/UDP) | [[SNMP]]                        | Simple Network Management Protocol, communication between network devices |
 | 389 (TCP/UDP) | [[LDAP]]                        | Directory access control                                                  |
 | 443 (TCP)     | SSL/TLS (HTTPS)                 | Encrypted http                                                            |
-| 445 (TCP)     | [[SMB\|CIFS]]                   | Common Internet File System (SMB for Unix systems)                        |
+| 445 (TCP)     | [[SMB & RPC\|CIFS]]                   | Common Internet File System (SMB for Unix systems)                        |
 | 587 (TCP)     | [[SMTP]]                        | SMTP over TLS                                                             |
 | 993 (TCP)     | [[IMAP & POP3\|IMAP]] (TLS/SSL) | IMAP over TLS                                                             |
 | 995 (TCP)     | [[IMAP & POP3\|POP3]] (TLS/SSL) | POP3 over TLS                                                             |

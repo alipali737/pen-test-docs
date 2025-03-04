@@ -86,7 +86,7 @@ Handles security-related user interactions, including:
 - Changing passwords
 - Locking and unlocking the system
 It relies on credential providers *(`COM` objects in DLLs)* on the system to obtain usernames and passwords.
-WinLogon is the only process to accept logon requests from the keyboard, sent via [[SMB#RPCclient|RPC]] from `Win32k.sys`.
+WinLogon is the only process to accept logon requests from the keyboard, sent via [[SMB & RPC#RPCclient|RPC]] from `Win32k.sys`.
 ![[Pasted image 20241218090302.png]]
 #### Credential Manager
 This feature allows users to save credentials for various network resources and websites. Credentials are stored in each user's `Credential Locker`, which is then encrypted and saved to `C:\Users\[user]\AppData\Local\Microsoft\[Vault/Credentials]`.
@@ -330,7 +330,7 @@ Using [[Mimikatz]] we can dump out the hashes and then we can perform the attack
 ![[Mimikatz#Pass-the-Hash]]
 
 #### Invoke-TheHash
-Another way is to use powershell and the [Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash) tool. The tool is a collection of PowerShell functions for performing a PtH attack with [[WMI]] or [[SMB]]. Using the .NET TCPClient, an NTLM hash is used to authenticate and execute a command as a user. *Local administrator privileges are NOT required client-side* but the user and hash we use to authenticate need administrator privileges on the target computer.
+Another way is to use powershell and the [Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash) tool. The tool is a collection of PowerShell functions for performing a PtH attack with [[WMI]] or [[SMB & RPC]]. Using the .NET TCPClient, an NTLM hash is used to authenticate and execute a command as a user. *Local administrator privileges are NOT required client-side* but the user and hash we use to authenticate need administrator privileges on the target computer.
 ```PowerShell
 # Import the functions
 PS C:\> Import-Module .\Invoke-TheHash.psd1
