@@ -191,6 +191,10 @@ A GUI tool used to manage objects in AD. It is more powerful and has more access
 MSBROWSE is a Microsoft networking protocol that was used in early Windows-based LANs to provide browsing services. In older windows versions, we could use `nbtstat -A ip-address` to search for the Master browser. If we see `MSBROWSE` then thats the master browser. We could use `mltest` to query the Windows Master Browser for names of Domain Controllers.
 > Largely it is obsolete and replace by SMB and CIFS.
 
+## Kerberos
+![[Kerberos#Summary]]
+![[Kerberos#How it works]]
+
 ## NTLM Authentication
 NTLMv1 & NTLMv2 are authentication protocols that deal with NTLM (NT) and LM hashes. Although not perfect, [[Kerberos]] is often the preferred choice for AD authentication when compared with the other options:
 
@@ -273,3 +277,22 @@ response = LMv2 | CC | NTv2 | CC*
 ```
 
 ## Domain Cached Credentials (MSCache2)
+In an AD environment, most authentication methods such as [[#NTLM Authentication]] all require the host to communicate with the Domain Controller. The [MS Cache v1 and v2](https://webstersprodigy.net/2014/02/03/mscash-hash-primer-for-pentesters/) (AKA *Domain Cached Credentials - DCC*) solves the potential issue where a domain-joined host cannot communicate with the DC, thus, NTLM/Kerberos authentication wouldn't work.
+
+With DCC, the host caches the last *ten* hashes for any domain users that successfully log into the machine in the `HKEY_LOCAL_MACHINE\SECURITY\Cache` registry key. These hashes however, cannot be used for a [[Password Attacks#Pass-the-Hash|PtH]] attack and they are incredibly slow to crack.
+
+Its important to watch out for these hashes as they are a waste of time to attempt to crack:
+```
+$DCC2$10240#jsmith#e4e9...c90f
+```
+
+## User and Machine Accounts
+### Local Accounts
+These accounts are stored locally on a specific server or workstation. These accounts' permissions don't work across the domain. The [default accounts](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts) are:
+- *Administrator* : first account created on windows installation, SID = `S-1-5-domain-500`. It cannot be deleted or locked, but can be disabled or renamed. Windows 10 and Server 2016 disable this account by default and create a local account in the local administrators group instead.
+- *Guest* : disabled by default. Allows anonymous login (*with a blank password*) and limited access rights.
+- *SYSTEM* : (or `NT AUTHORITY\SYSTEM`) is the default account used for OS internal functions. It doesn't have a user profile but does have the highest permission level on a Windows host. It isn't a "real user", so it can't be found in User Management or added to groups.
+- *Network Service* : Predefined local account used by the *Service Control Manager* (*SCM*) for running Windows services. When a service runs as this account, it will present credentials to remote services.
+- *Local Service* : Another predefined local account used by the *Service Control Manager* (*SCM*) but has minimal privileges and presents anonymous credentials to the network.
+
+### Domain Users
