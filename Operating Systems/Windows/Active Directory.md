@@ -241,3 +241,8 @@ LM Passwords are:
 These hashes are stored in the [[Windows#Security Account Manager (SAM)|SAM]] database on a host and the [[Windows#NTDS|NTDS.dit]] db on the Domain Controller. NTLM supports the use of [[#LM]] hashes and the NT hash (*MD4 hash of the little-endian UTF-16 value of the password - `MD4(UTF-16-LE(password))`*).
 
 It can be possible to brute force the entire NTLM 8 character keyspace in under *3 hours*. Dictionary attacks and rules can make longer passwords vulnerable still. NTLM is also vulnerable to [[Password Attacks#Pass-the-Hash|Pass-the-Hash]] attacks.
+
+**Format:**
+```
+<user>:<RID>:<LM>:<NT>:::
+```
