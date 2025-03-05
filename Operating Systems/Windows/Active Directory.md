@@ -326,3 +326,5 @@ Get-ADUser -Identity <username>
 - Complicates resource sharing outside the local network
 - Users can make changes to their specific machine
 - Accounts are not migrated / accessible from any other hosts within the workgroup
+
+## Active Directory Groups
