@@ -96,7 +96,7 @@ To give us more terminal features (eg. a prompt, mouse, history, etc) we need to
 python -c 'import pty; pty.spawn("/bin/sh")'
 ```
 ```bash
-python3 -c 'import pty; pty.spawn("/bin/sh")'
+python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 ### Interactive
 ```bash
