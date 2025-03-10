@@ -347,7 +347,7 @@ Groups in AD have two fundamental characteristics: *type* and *scope*:
 		- *universal -> global* : can be converted if it doesn't already contain any universal groups as members
 
 ```PowerShell
-Get-ADGroup  -Filter * |select samaccountname,groupscope
+Get-ADGroup  -Filter * | select samaccountname,groupscope
 ```
 
 Where groups can be members of other groups, this could accidentally cause unintended privileges for certain users. Tools like [[BloodHound]] are particularly useful in uncovering privileges a user may inherit through one or more nested groups.
@@ -363,11 +363,46 @@ Like users, group have many [attributes](http://www.selfadsi.org/group-attribute
 ### Default / Built-in Groups
 > [default or built-in security groups](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-security-groups)
 
-| Group Name          | Description                                                                                    |
-| ------------------- | ---------------------------------------------------------------------------------------------- |
-| *Account Operators* | Create and modify standard user accounts across a domain, can also log into domain controllers |
-| *Administrators*    |                                                                                                |
+```PowerShell
+Get-ADGroup -Identity "Server Operators" -Properties *
+```
+
+| Group Name                           | Description                                                                                                                                                                                                         |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| *Account Operators*                  | Create and modify standard user accounts across a domain, can also log into domain controllers                                                                                                                      |
+| *Administrators*                     | Administrator access on a computer or domain (*if this group is on the DC*)                                                                                                                                         |
+| *Backup Operators*                   | Can backup and restore all files on a computer. Can log into DCs and are basically Domain Admins. Can also make [[Password Attacks#Dumping Active Directory's NTDS.dit file\|shadow copies of SAM/NTDS databases]]. |
+| *DnsAdmins*                          | Access to DNS information. Only created if the DNS server role is/was installed on the DC.                                                                                                                          |
+| *Domain Admins*                      | Administrator access on all domain-joined machines.                                                                                                                                                                 |
+| *Domain Computers*                   | Any computers in a domain (*aside from DCs*)                                                                                                                                                                        |
+| *Domain Controllers*                 | All DCs within a domain.                                                                                                                                                                                            |
+| *Domain Guests*                      | Guest accounts within the domain. New accounts are created when signing in as a guest on a domain-joined computer.                                                                                                  |
+| *Domain Users*                       | All user accounts within a domain.                                                                                                                                                                                  |
+| *Enterprise Admins*                  | Complete configuration access within the domain. Only exists on the root domain in an AD forest. Can make forest-wide changes such as child domains & trusts.                                                       |
+| *Event Log Readers*                  | Members can read event logs on local computers. Only created when a host is promoted to a domain controller.                                                                                                        |
+| *Group Policy Creator Owners*        | Can manage GPOs in the domain                                                                                                                                                                                       |
+| *Hyper-V Administrators*             | Unrestricted access to all features in Hyper-V. If DCs are virtualised, this group becomes effective domain admins.                                                                                                 |
+| *IIS_IUSRS*                          | Group used by Internet Information Services (IIS), beginning with IIS 7.0                                                                                                                                           |
+| *Pre-Windows 2000 Compatible Access* | Backwards compat for Windows NT 4.0 and earlier. Often a leftover legacy config. Can be used to read information on an AD without an AD login                                                                       |
+| *Print Operators*                    | Can manage printers in a domain. Can log into a DC and potentially use a malicious printer driver to escalate privs.                                                                                                |
+| *Protected Users*                    | Member of this [group](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-security-groups#protected-users) have additional protections against credential theft  |
+| *Read-only Domain Controllers*       | Contains all Read-only domain controllers in the domain                                                                                                                                                             |
+| *Remote Desktop Users*               | Grants permission to use RDP to a host                                                                                                                                                                              |
+| *Remote Management Users*            | Grants access to systems via [[WinRM]]                                                                                                                                                                              |
+| *Schema Admins*                      | Can modify the [[#Schema\|AD Schema]]. Only exists on the root domain in the AD forest.                                                                                                                             |
+| *Server Operators*                   | Only exists on DCs. Members can modify services, access SMB shares and backup files on DCs. No members by default.                                                                                                  |
 
 ## Rights and Privileges
 - *Rights* are typically for users and groups, they grant access to objects such as files.
 - *Privileges* grant a permission to perform an action, such as running a program, shut down a system, reset a password etc. Can be assigned to a user or via a group membership.
+
+> [User Rights Assignment](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-rights-assignment) : explanation on the different rights a user can be assigned in Windows.
+
+Tools like [SharpGPOAbuse](https://github.com/FSecureLABS/SharpGPOAbuse) could let us assign rights to a user we control if we have write access over a GPO. We might want access to privileges such as:
+- *SeRemoteInteractiveLogonRight* : Could allow us to RDP to a host
+- *SeBackupPrivilege* : Allows a user to create backups, can be used to make copies of Registry hives and the NTDS file.
+- *SeDebugPrivilege* : Allows a user to debug and adjust the memory of a process. Can allow tools like [[Mimikatz]] to read memory of the [[Windows#LSASS|LSASS]] service.
+- *SeImpersonatePrivilege* : Allows the impersonation of a token of a privileged account such as `NT AUTHORITY\SYSTEM`. Can be used with tools like `JuicyPotato`, `RogueWinRM`, `PrintSpoofer` to esc privs.
+- *SeLoadDriverPrivilege* : Can load and unload device drivers, can be used to potentially esc privs
+- *SeTakeOwnershipPrivilege* : Allows a user to take ownership of an object. Could be used to gain access to shares or files for example
+
