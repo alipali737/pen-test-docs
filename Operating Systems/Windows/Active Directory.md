@@ -339,5 +339,15 @@ Groups in AD have two fundamental characteristics: *type* and *scope*:
 	- *Distribution* : These are mainly for email applications like email lists. This type of group cannot be used to assign permissions to resources in a domain environment.
 - *Scope* : Shows how the group can be used within the domain or forest
 	- *Domain Local* : Used to manage permissions within a domain. Cannot control resources outside of its domain, but *CAN* have users from other domains in it. *CAN* be nested in other local groups, but *NOT* in global groups.
+		- *domain -> universal* : can be done if the domain local group doesn't contain any domain local groups as its members
 	- *Global* : Grant access to resources in another domain. Can only contain members from the domain it was created in. Can be nested in other global or local groups.
-	- *Universal* : Can be used to manage resources across multiple domains, and can give any object within the same forest.
+		- *global -> universal* : can be done if its not a child to another global group
+	- *Universal* : Can be used to manage resources across multiple domains, and can give any object within the same forest. *CAN* contain users from any domain. Universial groups are in the Global Catalog (GC) and any changes are replicated across the forest. It is advised to have global groups in the universal group and then just configure users and computers in the global groups, this prevents mass replication and network load when doing activities such as removing a user from a group.
+		- *universal -> domain* : no restrictions
+		- *universal -> global* : can be converted if it doesn't already contain any universal groups as members
+
+```PowerShell
+Get-ADGroup  -Filter * |select samaccountname,groupscope
+```
+
+Where groups can be members of other groups, this could accidentally cause unintended privileges for certain users. Tools like [[BloodHound]] are particularly useful in uncovering privileges a user may inherit through one or more nested groups.
