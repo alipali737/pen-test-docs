@@ -328,3 +328,16 @@ Get-ADUser -Identity <username>
 - Accounts are not migrated / accessible from any other hosts within the workgroup
 
 ## Active Directory Groups
+Groups VS Organisational Units (OUs):
+- Groups assign rights and permissions to a set of users
+- OUs tend to be for more specific purposes such as allowing a user to reset passwords for others
+- OUs are for organising user, groups and resources into logical units for easier overview management
+
+Groups in AD have two fundamental characteristics: *type* and *scope*:
+- *Type* : Defines the group's purpose
+	- *Security* : Primarily used for ease of assigning permissions and rights to a collection of users
+	- *Distribution* : These are mainly for email applications like email lists. This type of group cannot be used to assign permissions to resources in a domain environment.
+- *Scope* : Shows how the group can be used within the domain or forest
+	- *Domain Local* : Used to manage permissions within a domain. Cannot control resources outside of its domain, but *CAN* have users from other domains in it. *CAN* be nested in other local groups, but *NOT* in global groups.
+	- *Global* : Grant access to resources in another domain. Can only contain members from the domain it was created in. Can be nested in other global or local groups.
+	- *Universal* : Can be used to manage resources across multiple domains, and can give any object within the same forest.
