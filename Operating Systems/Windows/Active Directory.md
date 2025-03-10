@@ -351,3 +351,23 @@ Get-ADGroup  -Filter * |select samaccountname,groupscope
 ```
 
 Where groups can be members of other groups, this could accidentally cause unintended privileges for certain users. Tools like [[BloodHound]] are particularly useful in uncovering privileges a user may inherit through one or more nested groups.
+
+**Important Group Attributes**
+Like users, group have many [attributes](http://www.selfadsi.org/group-attributes.htm). Some of the most [important group attributes](https://docs.microsoft.com/en-us/windows/win32/ad/group-objects) are:
+- *cn* : Common-Name is the name of the group in Active Directory Domain Services (*LDAP*)\
+- *member* : Which user, group, and contact objects are members of the group
+- *groupType* : Integer that specifies the group type and scope
+- *memberOf* : A list of all the groups this group is a member of
+- *objectSid* : The [[Windows#Security Identifier (SID)|SID]] of the group
+
+### Default / Built-in Groups
+> [default or built-in security groups](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/active-directory-security-groups)
+
+| Group Name          | Description                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| *Account Operators* | Create and modify standard user accounts across a domain, can also log into domain controllers |
+| *Administrators*    |                                                                                                |
+
+## Rights and Privileges
+- *Rights* are typically for users and groups, they grant access to objects such as files.
+- *Privileges* grant a permission to perform an action, such as running a program, shut down a system, reset a password etc. Can be assigned to a user or via a group membership.
