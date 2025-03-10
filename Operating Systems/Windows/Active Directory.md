@@ -405,4 +405,9 @@ Tools like [SharpGPOAbuse](https://github.com/FSecureLABS/SharpGPOAbuse) could l
 - *SeImpersonatePrivilege* : Allows the impersonation of a token of a privileged account such as `NT AUTHORITY\SYSTEM`. Can be used with tools like `JuicyPotato`, `RogueWinRM`, `PrintSpoofer` to esc privs.
 - *SeLoadDriverPrivilege* : Can load and unload device drivers, can be used to potentially esc privs
 - *SeTakeOwnershipPrivilege* : Allows a user to take ownership of an object. Could be used to gain access to shares or files for example
+> Many techniques listed [here](https://blog.palantir.com/windows-privilege-abuse-auditing-detection-and-defense-3078a403d74e) and [here](https://book.hacktricks.wiki/en/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.html) on windows priv abuse
 
+## View a User's Privileges
+```PowerShell
+whoami /priv
+```
