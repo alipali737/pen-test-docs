@@ -411,3 +411,11 @@ Tools like [SharpGPOAbuse](https://github.com/FSecureLABS/SharpGPOAbuse) could l
 ```PowerShell
 whoami /priv
 ```
+
+## Active Directory Hardening
+
+### Password Rotation with LAPS
+[Microsoft Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) is a tools for randomising and rotating local administrator passwords on Windows hosts to prevent lateral movement. LAPS can be configured to rotate a account passwords on a fixed interval. It reduces the impact of a compromised host in an AD environment.
+
+### Audit Policy Settings
+Logging and Monitoring are critical for any organisation 
