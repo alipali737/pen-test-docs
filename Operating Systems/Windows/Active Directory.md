@@ -413,7 +413,7 @@ whoami /priv
 ```
 
 ## Active Directory Hardening
-
+> More AD best security practices [here](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory)
 ### Password Rotation with LAPS
 [Microsoft Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) is a tools for randomising and rotating local administrator passwords on Windows hosts to prevent lateral movement. LAPS can be configured to rotate a account passwords on a fixed interval. It reduces the impact of a compromised host in an AD environment.
 
@@ -447,4 +447,19 @@ Having long, complex passwords is essential (16 chars+ really) and should be enf
 Domain Admin accounts should only ever really be used to log into Domain Controllers. Logging into other systems could increase the attack vector and chances of the password being compromised in another system.
 
 ### Periodically Auditing and Removing Stale Users and Objects
-Its important to keep on top of unused accounts and objects. Their security m
+Its important to keep on top of unused accounts and objects. Their security may have fallen behind if they aren't actively used but could still present an attack path.
+
+### Auditing Permissions and Access
+Periodic audits of permissions and access should be conducted to ensure users still have the correct privileges for their role and requirements.
+
+### Audit Policies & Logging
+Visibility is key in any environment, ensuring that the logging and rules to detect anomalous activities are still effective is key.
+
+### Using Restricted Groups
+[Restricted Groups](https://social.technet.microsoft.com/wiki/contents/articles/20402.active-directory-group-policy-restricted-groups.aspx) allow for administrators to configure group membership via Group Policy. It can be used for many things but a key example is controlling the members of the administrator group on each host in the environment.
+
+### Limiting Server Roles
+Minimising the number of roles down to only the critical ones on sensitive systems is another way of reducing the attack surface on a machine. Additionally, making sure applications are ideally running in separated server instances (eg. you wouldn't want you web application on the same server as your exchange server or database ideally).
+
+### Limiting Local Admin and RDP Rights
+Tightly control which users have local admin rights on which computers. Restricted groups are very useful for this. Limiting the potential for a low privileged account being compromised and then having access to escalate privileges or remote connect to other machines and leak sensitive information.
