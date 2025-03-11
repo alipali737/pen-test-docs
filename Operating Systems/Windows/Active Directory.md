@@ -418,4 +418,33 @@ whoami /priv
 [Microsoft Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) is a tools for randomising and rotating local administrator passwords on Windows hosts to prevent lateral movement. LAPS can be configured to rotate a account passwords on a fixed interval. It reduces the impact of a compromised host in an AD environment.
 
 ### Audit Policy Settings
-Logging and Monitoring are critical for any organisation 
+Logging and Monitoring are critical for any organisation. Detecting and reacting to unexpected changes or activities means you can respond to potential threats.
+
+### Group Policy Security Settings
+GPOs allow you to control the policy settings for specific users, groups, and computers at the OU level. Some important types of security policies are:
+- [Account Policies](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/account-policies) : Manage how user accounts interact with the domain (including passwords, lockouts, and kerberos settings)
+- [Local Policies](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/security-options) : Apply to a specific computer and include host related settings (eg. event audit policy, user rights assignments, specific security settings)
+- [Software Restriction Policies](https://docs.microsoft.com/en-us/windows-server/identity/software-restriction-policies/software-restriction-policies) : Controls which software can be run on a host
+- [Application Control Policies](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/windows-defender-application-control) : Controls which applications can be run by certain users/groups. Tools like [AppLocker](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-overview) can be used to block access to certain types of applications and files (eg. CMD and PowerShell).
+- [Advanced Audit Policy Configuration](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/secpol-advanced-security-audit-policy-settings) : Settings to adjust audit activities such as file access, logons, privilege usage etc.
+
+### Update Management (SCCM/WSUS)
+The [Windows Server Update Service (WSUS)](https://docs.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus) can be installed as a role on a Windows Server and can be used to automatically patch systems. *System Center Configuration Manager* (*SCCM*) is a paid solution that relies on WSUS but offers more features. Patch management is critical to ensure devices are properly protected and none are missed off.
+
+### Group Managed Service Accounts (gMSA)
+A gMSA is a privileged account managed by the domain that can be used to run services automatically with credentials. The domain controller manages its password with a 120 char pass. It gets rotated regularly but doesn't ever need to be known by the users.
+
+### Security Groups
+Security groups such as [[#Default / Built-in Groups]] offer a important tool for managing access to network resources for a collection of users.
+
+### Account Separation
+Administrators must have separate accounts (one regular for day-to-day, and one for administrative actions). This helps to reduce the impact of a user's account being compromised.
+
+### Password Complexity Policies + Pass-phrases + 2FA
+Having long, complex passwords is essential (16 chars+ really) and should be enforced through policies. Additionally, having password filters for disallowed passwords containing common words or phrases. MFA is another critical tool that should be used for limiting privileged actions such as RDP access.
+
+### Limiting Domain Admin Account Usage
+Domain Admin accounts should only ever really be used to log into Domain Controllers. Logging into other systems could increase the attack vector and chances of the password being compromised in another system.
+
+### Periodically Auditing and Removing Stale Users and Objects
+Its important to keep on top of unused accounts and objects. Their security m
