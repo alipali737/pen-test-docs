@@ -463,3 +463,8 @@ Minimising the number of roles down to only the critical ones on sensitive syste
 
 ### Limiting Local Admin and RDP Rights
 Tightly control which users have local admin rights on which computers. Restricted groups are very useful for this. Limiting the potential for a low privileged account being compromised and then having access to escalate privileges or remote connect to other machines and leak sensitive information.
+
+## Group Policy
+Group policy is a Windows feature that provides administrators with a wide array of settings that can be applied to both user and computer accounts in a Windows environment. It can be configured at both a local and domain level.
+
+*If a GPO is compromised, an attacker could gain privileges to move laterally, escalate their privileges, or even full domain compromise.*
