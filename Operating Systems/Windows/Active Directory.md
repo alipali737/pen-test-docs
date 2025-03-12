@@ -467,4 +467,30 @@ Tightly control which users have local admin rights on which computers. Restrict
 ## Group Policy
 Group policy is a Windows feature that provides administrators with a wide array of settings that can be applied to both user and computer accounts in a Windows environment. It can be configured at both a local and domain level.
 
+Group Policy is managed from the *Group Policy Management Console*, custom applications, or using PowerShell [GroupPolicy](https://docs.microsoft.com/en-us/powershell/module/grouppolicy/?view=windowsserver2022-ps) module on the domain controller or host.
+
 *If a GPO is compromised, an attacker could gain privileges to move laterally, escalate their privileges, or even full domain compromise.*
+
+**Processing Precedence**:
+1. *Local Group Policy* : Defined directly on the host. Overwritten by higher levels.
+2. *Site Policy* : Specific to the Enterprise Site a host resides in. Useful for site specific setups (eg. Access Control to certain systems in a certain site).
+3. *Domain-wide Policy* : Any settings that you want applied across the entire domain (eg. password policies, desktop wallpapers).
+4. *Organisational Unit (OU)* : Affect the users and computers in a specific OU.
+5. *OU Policies within other OU's* : Special permissions for specific OUs within a larger OU (eg. Security Analysts within the IT department)
+
+![[Pasted image 20250312083026.png|800]]
+
+> An '*Enforced*' GPO (A setting on a GPO - AKA `No Override`) means that is will NOT be overwritten by later GPOs and instead always enforced.
+> If an OU has the *Block Inheritance* option enabled, it will not be subject to the GPOs higher up the chain.
+
+When a GPO is created, it will take a period (*default is every 90 mins +/- 30 min offset for users and computers*) of time to take effect. The random offset is to prevent clients overwhelming the domain controller with Group Policy requests.
+> This can be changed in the `Computer Configuration` settings.
+
+If we have access to modify a GPO, we can potentially use this to carry out attacks eg:
+- Add additional rights to a compromised user 
+- Adding a local administrator
+- Scheduling malicious tasks that modify group membership
+- Reverse shell connections
+- Installing malware throughout a domain
+
+> [[BloodHound]] can be useful for finding these privilege relationships.
