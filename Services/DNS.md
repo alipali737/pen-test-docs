@@ -139,6 +139,12 @@ There are four steps to enumerating subdomains:
 | [puredns](https://github.com/d3mondev/puredns)          | Powerful and flexible DNS brute-forcing tool, capable of resolving and filtering results effectively.                           |
 | [gobuster](https://github.com/OJ/gobuster)              | Directory/File, DNS and VHost busting tool written in Go.                                                                       |
 | [Subbrute](https://github.com/TheRook/subbrute)         | Allows for self-defined resolvers                                                                                               |
+#### Brute forcing subdomains for using /etc/hosts file for DNS resolution
+First setup your hosts file for the domain, then use [[ffuf]] with a local resolver
+```bash
+ffuf -w [wordlist] -u http://[ip] -H "Host: FUZZ.[domain].[tld]" [match/filter conditions]
+```
+
 ## Potential Capabilities
 - Link computer names & IP addresses
 - Determine services associated with a domain
