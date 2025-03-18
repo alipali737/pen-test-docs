@@ -412,6 +412,9 @@ Tools like [SharpGPOAbuse](https://github.com/FSecureLABS/SharpGPOAbuse) could l
 whoami /priv
 ```
 
+## Configuring Active Directory with PowerShell
+This reference https://learn.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2022-ps is incredibly useful.
+
 ## Active Directory Hardening
 > More AD best security practices [here](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory)
 ### Password Rotation with LAPS
