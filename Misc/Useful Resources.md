@@ -26,6 +26,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - [Router Default Credentials](https://www.softwaretestinghelp.com/default-router-username-and-password-list/) : List of default credentials for many routers
 - [FileInfo.com](https://fileinfo.com/filetypes/) : Descriptions of most file types
 	- Example for creating a word list of all archive extensions: `curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt`
+- [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames) : Username lists
 
 ## PrivEsc
 - [Privilege Escalation Awesome Scripts SUITE (PEASS)](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) : Suite of scripts relating to privilege escalation
@@ -42,3 +43,5 @@ debugInConsole: false # Print debug info in Obsidian console
 - [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) : Generate a list of potential usernames from a list of real names
 - [crackstation.net](https://crackstation.net/) : A useful website for cracking un-salted hashes (incl. NTLM) via a rainbow table
 - [Draw.io](https://draw.io/) : Useful for network diagrams
+- [linkedin2username](https://github.com/initstring/linkedin2username) : Create usernames from data pulled from linkedin
+- 
