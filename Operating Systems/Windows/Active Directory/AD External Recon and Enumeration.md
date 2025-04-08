@@ -21,4 +21,4 @@ The purpose of this phase is to identify any information that can give us a *lay
 - *Social Media* : Searching LinkedIn, X, Facebook, or the regions major social media sites, blogs, and news to gain any relevant information on the organisation
 - *Public-Facing Company Websites* : Often the organisation's own website can be a gold mine: News articles, embedded documents, "About us", and "Contact Us" pages
 - *Cloud & Dev Storage Spaces* : [GitHub](https://github.com/), [AWS S3 buckets & Azure Blog storage containers](https://grayhatwarfare.com/), [Google searches using "Dorks"](https://www.exploit-db.com/google-hacking-database)
-- *Breach Data Sources* : 
+- *Breach Data Sources* : [HaveIBeenPwned](https://haveibeenpwned.com/) to determine if any corporate email accounts appear in public breach data, [Dehashed](https://www.dehashed.com/) to search for corporate emails with cleartext passwords or hashes we can try to crack offline. We can then try these passwords against any exposed login portals (Citrix, RDS, OWA, 0365, VPN, VMware Horizon, custom applications, etc.) that may use AD authentication.
