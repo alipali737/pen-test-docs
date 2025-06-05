@@ -31,9 +31,30 @@ The purpose of this phase is to identify any information that can give us a *lay
 - *Vulnerable hosts and services* : Anything that could be a quick win for a foothold
 
 ### Step 1 : Identify Hosts
-#### Network Inspection (Passive)
-[[Wireshark]] and network inspectors like [[TCPDump]] allow us to listen to the network and gain information on its setup.
+#### Network Packet Inspection (Passive)
+[[Wireshark]] and network inspectors like [[TCPDump]] allow us to listen to the network and gain information on its setup. `pktmon.exe` can be found on most windows 10 systems and can be used for a similar purpose.
+> Make sure to check you are using the right interface that is connected to the internal network (`ifconfig/ipconfig`)
+```bash
+sudo -E wireshark
+sudo tcpdump -i <interface>
+```
 > This is particularly important in black-box tests
 - *What hosts are communicating?* : potential targets
 - *What types of traffic is being used?* : services that are being used
 - [[Network Addressing#Address Resolution Protocol (ARP)|ARP]], [Multicast DNS (MDNS)](https://en.wikipedia.org/wiki/Multicast_DNS), and other [layer two](https://www.juniper.net/documentation/us/en/software/junos/multicast-l2/topics/topic-map/layer-2-understanding.html) packets can quickly give away hosts
+Many of these tools can save traffic in the `PCAP` format (*which can be viewed in wireshark*) so its a good idea to save any traffic you view to review it again later of add to a report.
+
+[[Responder]] is a tool for listening, analysing, and poisoning a variety of protocols (incl. [LLMNR](https://en.wikipedia.org/wiki/Link-Local_Multicast_Name_Resolution), [[SMB & RPC|NBT-NS]], and [MDNS](https://en.wikipedia.org/wiki/Multicast_DNS)).
+![[Responder#Analyse only mode]]
+
+#### ICMP Active checks
+These checks involve actually sending traffic on the network and are therefore active enumeration.
+[Fping](https://fping.org/) is like the `ping` command but provides some additional utilities, one of which is the ability to give it a host list. ICMP is not perfect but will give an initial idea of which hosts are responding.
+
+```bash
+fping -asgq <CIDR network>
+```
+> *a* : show targets that are alive
+> *s* : print the stats at the end
+> *g* : generate a target list from a CIDR network
+> *q* : quiet - don't show results for each target (only shows compiled results at the end)

