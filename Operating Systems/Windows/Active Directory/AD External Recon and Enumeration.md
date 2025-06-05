@@ -48,6 +48,8 @@ Many of these tools can save traffic in the `PCAP` format (*which can be viewed 
 ![[Responder#Analyse only mode]]
 
 #### ICMP Active checks
+> ICMP packet responses are often blocked by windows defender, in this case, a full TCP scan must be performed instead using [[Nmap#Host Discovery]] but this will take a while.
+
 These checks involve actually sending traffic on the network and are therefore active enumeration.
 [Fping](https://fping.org/) is like the `ping` command but provides some additional utilities, one of which is the ability to give it a host list. ICMP is not perfect but will give an initial idea of which hosts are responding.
 
@@ -58,3 +60,20 @@ fping -asgq <CIDR network>
 > *s* : print the stats at the end
 > *g* : generate a target list from a CIDR network
 > *q* : quiet - don't show results for each target (only shows compiled results at the end)
+
+[[Nmap]] can also be used for this purpose of sending ICMP packets for active host identification
+```bash
+sudo nmap <CIDR network> -sn -PE --disable-arp-ping
+```
+> *-sn* : perform a ping sweep (for host identification)
+> *-PE* : send ICMP packets
+> *--disable-arp-ping* : by default nmap uses ARP packets to identify hosts
+
+#### Nmap Scanning
+[[Nmap]] is an extremely powerful tool for network manipulation and recon, it can be very loud though (depending on performance profile & features used). Once a list of targets has been identified, we can enumerate these hosts further to determine services running on them. This could present valuable information, critical hosts, and identify potentially vulnerable hosts to probe later.
+
+For AD domains, its important to focus on common services such as [[DNS]], [[SMB & RPC]], [[LDAP]], and [[Kerberos]] etc.
+```bash
+sudo nmap -v -A -iL hosts.txt -oN ~/Scans/host-enum
+```
+> this will perform an aggressive scan on the top 1000 common ports on each of the hosts and save the results
