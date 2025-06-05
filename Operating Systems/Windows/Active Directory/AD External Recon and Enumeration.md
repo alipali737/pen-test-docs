@@ -22,3 +22,18 @@ The purpose of this phase is to identify any information that can give us a *lay
 - *Public-Facing Company Websites* : Often the organisation's own website can be a gold mine: News articles, embedded documents, "About us", and "Contact Us" pages
 - *Cloud & Dev Storage Spaces* : [GitHub](https://github.com/), [AWS S3 buckets & Azure Blog storage containers](https://grayhatwarfare.com/), [Google searches using "Dorks"](https://www.exploit-db.com/google-hacking-database) Tools like [Trufflehog](https://github.com/trufflesecurity/truffleHog) and sites like [Greyhat Warfare](https://buckets.grayhatwarfare.com/) are fantastic resources for finding these breadcrumbs.
 - *Breach Data Sources* : [HaveIBeenPwned](https://haveibeenpwned.com/) to determine if any corporate email accounts appear in public breach data, [Dehashed](https://www.dehashed.com/) to search for corporate emails with cleartext passwords or hashes we can try to crack offline. We can then try these passwords against any exposed login portals (Citrix, RDS, OWA, 0365, VPN, VMware Horizon, custom applications, etc.) that may use AD authentication.
+
+## Initial Enumeration of an AD Domain
+**Looking for key information**:
+- *AD Users* : can be used later for password spraying
+- *AD Joined Machines* : Domain controllers, workstations, file, database, web and mail servers etc
+- *Key Services* : Kerberos, NetBIOS, LDAP, DNS, SMB etc
+- *Vulnerable hosts and services* : Anything that could be a quick win for a foothold
+
+### Step 1 : Identify Hosts
+#### Network Inspection (Passive)
+[[Wireshark]] and network inspectors like [[TCPDump]] allow us to listen to the network and gain information on its setup.
+> This is particularly important in black-box tests
+- *What hosts are communicating?* : potential targets
+- *What types of traffic is being used?* : services that are being used
+- [[Network Addressing#Address Resolution Protocol (ARP)|ARP]], [Multicast DNS (MDNS)](https://en.wikipedia.org/wiki/Multicast_DNS), and other [layer two](https://www.juniper.net/documentation/us/en/software/junos/multicast-l2/topics/topic-map/layer-2-understanding.html) packets can quickly give away hosts
