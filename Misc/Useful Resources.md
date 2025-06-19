@@ -41,6 +41,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ## Misc
 - [Username Anarchy](https://github.com/urbanadventurer/username-anarchy) : Generate a list of potential usernames from a list of real names
+- [Statistically likely usernames](https://github.com/insidetrust/statistically-likely-usernames) : A username list for enumeration
 - [crackstation.net](https://crackstation.net/) : A useful website for cracking un-salted hashes (incl. NTLM) via a rainbow table
 - [Draw.io](https://draw.io/) : Useful for network diagrams
 - [linkedin2username](https://github.com/initstring/linkedin2username) : Create usernames from data pulled from linkedin
