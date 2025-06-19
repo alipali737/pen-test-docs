@@ -80,4 +80,4 @@ sudo nmap -v -A -iL hosts.txt -oN ~/Scans/host-enum
 
 ### Step 2 : Identifying Users
 #### Kerbrute - Internal AD Username Enumeration
-[[Kerbrute]] is a stealthy domain account enumeration tool. Kerberos pre-authentication failures do no trigger logs or alerts so its really good for a stealthy approach.
+![[Kerbrute#Summary]]
