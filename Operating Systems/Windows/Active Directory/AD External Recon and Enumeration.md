@@ -2,7 +2,7 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 4 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
@@ -47,7 +47,7 @@ Many of these tools can save traffic in the `PCAP` format (*which can be viewed 
 [[Responder]] is a tool for listening, analysing, and poisoning a variety of protocols (incl. [LLMNR](https://en.wikipedia.org/wiki/Link-Local_Multicast_Name_Resolution), [[SMB & RPC|NBT-NS]], and [MDNS](https://en.wikipedia.org/wiki/Multicast_DNS)).
 ![[Responder#Analyse only mode]]
 
-#### ICMP Active checks
+#### ICMP Pings (Active)
 > ICMP packet responses are often blocked by windows defender, in this case, a full TCP scan must be performed instead using [[Nmap#Host Discovery]] but this will take a while.
 
 These checks involve actually sending traffic on the network and are therefore active enumeration.
@@ -69,7 +69,7 @@ sudo nmap <CIDR network> -sn -PE --disable-arp-ping
 > *-PE* : send ICMP packets
 > *--disable-arp-ping* : by default nmap uses ARP packets to identify hosts
 
-#### Nmap Scanning
+#### Nmap Scanning (Active)
 [[Nmap]] is an extremely powerful tool for network manipulation and recon, it can be very loud though (depending on performance profile & features used). Once a list of targets has been identified, we can enumerate these hosts further to determine services running on them. This could present valuable information, critical hosts, and identify potentially vulnerable hosts to probe later.
 
 For AD domains, its important to focus on common services such as [[DNS]], [[SMB & RPC]], [[LDAP]], and [[Kerberos]] etc.
@@ -77,3 +77,6 @@ For AD domains, its important to focus on common services such as [[DNS]], [[SMB
 sudo nmap -v -A -iL hosts.txt -oN ~/Scans/host-enum
 ```
 > this will perform an aggressive scan on the top 1000 common ports on each of the hosts and save the results
+
+### Step 2 : Identifying Users
+#### 
