@@ -34,10 +34,36 @@ A Name Resolution (NR) example:
 > This could happen if a user simply mistyped the share name for instance.
 ## Installation
 Git clone: https://github.com/lgandx/Responder
+
+Any of the rogue servers can be disabled via the config file (`/usr/share/responder/Responder.conf`) if needed.
+The tool should also be run as Root for best results as it needs to be able to access ports:
+- 137/udp - [[SMB & RPC]]
+- 138/udp - [[SMB & RPC]]
+- 53/udp - [[DNS]]
+- 389/udp+tcp [[LDAP]]
+- 1433/tcp [[MSSQL]]
+- 1434/udp - 
+- 80/tcp
+- 135/tcp
+- 139/tcp
+- 445/tcp
+- 21/tcp
+- 3141/tcp
+- 25/tcp
+- 110/tcp
+- 587/tcp
+- 3128/tcp
+- 5355/udp
+- 5353/udp
 ## Documentation
 **Cheatsheet:** 
 **Website:** https://github.com/lgandx/Responder
 ## Usage
+### Access responder's captured information
+Responder writes its captured info to it's logs (stdout & log files). The log files can often be found under `/usr/share/responder/logs` and will write a log file per host. Hashes are also saved to files with the format `[MODULE_NAME]-[HASH_TYPE]-[CLIENT_IP].txt`.
+
+You can also configure a SQLite DB in the config file (`/usr/share/responder/Responder.conf`).
+
 ### Default poisoning
 ```bash
 $ python3 Responder.py -I <interface_name>
@@ -66,7 +92,8 @@ sudo responder --interface <interface> --analyze
 
 ### Useful Flags
 
-| Flag | Summary                                                                                                     | Use case                                                                               |
-| :--: | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-|  -A  | Analysis mode, will display if any NBT-NS, BROWSER, and LLMNR requests are being made but won't poison them | Useful if we want to remain passive on the network and not disrupt the flow of traffic |
-|  -w  | Will start the WPAD ()                                                                                      |                                                                                        |
+| Flag | Summary                                                                                                     | Use case                                                                                                                                        |
+| :--: | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+|  -A  | Analysis mode, will display if any NBT-NS, BROWSER, and LLMNR requests are being made but won't poison them | Useful if we want to remain passive on the network and not disrupt the flow of traffic                                                          |
+|  -w  | Will start the [WPAD](https://en.wikipedia.org/wiki/Web_Proxy_Auto-Discovery_Protocol) proxy server         | If a browser has Auto-detect settings enabled, then this proxy server will capture all HTTP requests sent by the browsers (good for large orgs) |
+|  -f  | Attempt to fingerprint the remote host's OS & version                                                       | Useful for identifying host system information                                                                                                  |
