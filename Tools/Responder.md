@@ -42,19 +42,19 @@ The tool should also be run as Root for best results as it needs to be able to a
 - 53/udp - [[DNS]]
 - 389/udp+tcp [[LDAP]]
 - 1433/tcp [[MSSQL]]
-- 1434/udp - 
-- 80/tcp
-- 135/tcp
-- 139/tcp
-- 445/tcp
-- 21/tcp
-- 3141/tcp
-- 25/tcp
-- 110/tcp
-- 587/tcp
-- 3128/tcp
-- 5355/udp
-- 5353/udp
+- 1434/udp - [[MSSQL]]
+- 80/tcp - *HTTP*
+- 135/tcp - [[WMI]]
+- 139/tcp - [[SMB & RPC|NetBIOS]]
+- 445/tcp - [[SMB & RPC|CIFS]]
+- 21/tcp - [[FTP]]
+- 3141/tcp - ???
+- 25/tcp - [[SMTP]]
+- 110/tcp - [[IMAP & POP3|POP3]]
+- 587/tcp - [[SMTP]]
+- 3128/tcp - ??? (Possibly a HTTP proxy)
+- 5355/udp - [[LLMNR]]
+- 5353/udp - [[LLMNR]]
 ## Documentation
 **Cheatsheet:** 
 **Website:** https://github.com/lgandx/Responder

@@ -31,5 +31,6 @@ Ports are between 0-65,535.
 | 2049 (TCP)              | [[NFS]]                                | Network File Share                                                        |
 | 3306 (TCP)              | [[MySQL]]                              | MySQL Server                                                              |
 | 3389 (TCP)              | [[RDP]]                                | Remote desktop                                                            |
+| 5355 (UDP)              | [[LLMNR]]                              | Link-Local Multicast Name Resolution                                      |
 | 5985 (TCP)              | [[WinRM]] (HTTP)                       | Windows remote management                                                 |
 | 5986 (TCP)              | [[WinRM]] (HTTPS)                      | Windows remote management                                                 |

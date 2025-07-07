@@ -14,6 +14,7 @@ When LLMNR fails, NBT-NS (137/udp) will be used to identify hosts via their `Net
 
 **Standard Port:** 
 - 5355/udp
+- 5353/udp
 
 ## How it works
 
