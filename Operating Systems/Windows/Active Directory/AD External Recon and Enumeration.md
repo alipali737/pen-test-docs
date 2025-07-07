@@ -81,3 +81,5 @@ sudo nmap -v -A -iL hosts.txt -oN ~/Scans/host-enum
 ### Step 2 : Identifying Users
 #### Kerbrute - Internal AD Username Enumeration
 ![[Kerbrute#Summary]]
+
+### Step 3 : Gaining a foothold

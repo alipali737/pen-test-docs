@@ -38,6 +38,7 @@ Git clone: https://github.com/lgandx/Responder
 **Cheatsheet:** 
 **Website:** https://github.com/lgandx/Responder
 ## Usage
+### Default poisoning
 ```bash
 $ python3 Responder.py -I <interface_name>
 $ python3 Responder.py -I eth0
@@ -62,3 +63,10 @@ This allows us to view NBT-NS, BROWSER, and LLMNR requests without responding
 sudo responder -I <interface> -A
 sudo responder --interface <interface> --analyze
 ```
+
+### Useful Flags
+
+| Flag | Summary                                                                                                     | Use case                                                                               |
+| :--: | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+|  -A  | Analysis mode, will display if any NBT-NS, BROWSER, and LLMNR requests are being made but won't poison them | Useful if we want to remain passive on the network and not disrupt the flow of traffic |
+|  -w  | Will start the WPAD ()                                                                                      |                                                                                        |
