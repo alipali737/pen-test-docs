@@ -10,6 +10,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ## Summary
 Responder is an LLMNR, NBT-NS, and MDNS poisoner tool with build in rogue authentication server deployment. The auth servers can be used to steal NTLM & LM hashes, HTTP basic auth etc. Responder will listen on protocol ports and then response on behalf of the servers the victim is looking for and capture their credentials/hashes.
 
+> The windows alternative to thus is [[Inveigh]], which comes as powershell (discontinued) and a C# version
+
 Supports dual IPv6/IPv4 stack.
 
 - *SMB* Auth server supports *NTLMv1*, and *NTLMv2* hashes with Extended Security NTLMSSP. Supports SMBv2 by default.

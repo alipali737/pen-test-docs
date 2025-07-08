@@ -11,11 +11,11 @@ A common way to extract credentials for user accounts in AD environments is thro
 ![[LLMNR#Summary]]
 
 As LLMNR/NBT-NS is asking the local network, ANY host can respond (*including our malicious one*). [[Responder]] can be used to perform this poisoning by replying to these requests and then on, hosts will send their requests to our rogue system. This allows responder to also capture any authentication [[AD Authentication#NTHash (NTLM)|NetNTLM]] hash (which we can offline brute). We can also use the hash as is against different hosts or services (eg. LDAP). 
-> [Inveigh](https://github.com/Kevin-Robertson/Inveigh) and [[Metasploit]] can also both be used for these poisoning attacks in the case Responder isn't/can't be used
+> [[Inveigh]] (Windows) and [[Metasploit]] can also both be used for these poisoning attacks in the case Responder isn't/can't be used
 
 LLMNR/NBT-NS spoofing, combined with a lack of SMB signing can often lead to administrative access on hosts within the domain.
 
-### Example Steps
+## Example Steps
 1. Host A attempts to connect to a print server @`\\print01.inlanefreight.local` but accidentally typos the address
 2. The DNS server states it doesn't know the host
 3. Host A, then uses LLMNR to broadcast to all hosts if anyone knows the location of their typo'd address
@@ -23,3 +23,5 @@ LLMNR/NBT-NS spoofing, combined with a lack of SMB signing can often lead to adm
 5. Host A believes this response and sends the username and NTLMv2 hash to responder
 
 ![[Responder#Default poisoning]]
+
+## Remediation
