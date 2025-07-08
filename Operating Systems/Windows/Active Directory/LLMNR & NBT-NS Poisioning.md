@@ -25,3 +25,24 @@ LLMNR/NBT-NS spoofing, combined with a lack of SMB signing can often lead to adm
 ![[Responder#Default poisoning]]
 
 ## Remediation
+- Disable LLMNR and NBT-NS (*this could have breaking changes so worth a slow rollout*)
+	- This can be disabled in **Group Policy** (`Computer Configuration > Administrative Templates > Network > DNS Client > Turn OFF Multicast Name Resolution`)
+	- NBT-NS cannot be disabled via **Group Policy**, so it must be disabled on each host (`Control Panel > Network and Sharing Center > Change adapter settings > Properties > Internet Protocol Version 4 > Properties > Advanced > WINS > Disable NetBIOS over TCP/IP`)
+	- We could set a startup script via GPO to do this:
+```powershell
+$regkey = "HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces"
+Get-ChildItem $regkey |foreach { Set-ItemProperty -Path "$regkey\$($_.pschildname)" -Name NetbiosOptions -Value 2 -Verbose}
+```
+- Filter traffic to block LLMNR/NetBIOS traffic
+- Enable SMB Signing to prevent NTLM relay attacks
+- [[Intrusion Detection]] systems can also help prevent this vulnerability
+- Network segmentation for hosts that require LLMNR or NetBIOS can also help
+
+## Detection
+Its hard to detect this method but we could inject fake requests for non-existent hosts across the network and alert if anything responds (indicating it is trying to spoof it).
+> Writeup in this [blog post](https://www.praetorian.com/blog/a-simple-and-effective-way-to-detect-broadcast-name-resolution-poisoning-bnrp/)
+
+We can also monitor traffic for ports 5355/udp & 137/udp and event IDs [4697](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4697) and [7045](https://www.manageengine.com/products/active-directory-audit/kb/system-events/event-id-7045.html).
+
+Finally, we can monitor the registry key `HKLM\Software\Policies\Microsoft\Windows NT\DNSClient` for any changes to the `EnableMulticast` option.
+> `0` means LLMNR is disabled
