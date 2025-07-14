@@ -143,10 +143,45 @@ The concept involves attempting a single password against multiple accounts. We 
 
 > If we are using multiple passwords, its really important that we have a delay (could be a couple hours) or something similar to ensure we don't lock out accounts. If we can identify under what conditions an account gets locked out it means we can avoid this and avoid any disruptions to the customer.
 
+> IMPORTANT: the most important thing aside from not locking out accounts, is to log everything we do (that way a client can cross-reference if needed):
+> - Accounts targeted
+> - Domain Controller used in the attack
+> - Time(s) of the spray
+> - Date(s) of the spray
+> - Password(s) attempted
 ### Building a username list
 - OSINT for users
 - [[Kerbrute]] with something like [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames)
 - Identifying username formats (*often from OSINT - look at document metadata as this can sometimes forget to be scrubbed before published*) then generate all possible combinations (*with bash or some script*)
+
+#### AD - SMB - NULL Session
+
+```bash
+enum4linux -U [ip] | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+
+crackmapexec smb [ip] --users
+
+rpcclient -U "" -N [ip]
+rpcclient $> enumdomusers
+```
+
+#### AD - LDAP - Anonymous Bind
+```bash
+ldapsearch -H [ip] -x -b "DC=..." -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d" "
+
+./winddapsearch.py --dc-ip [ip] -u "" -U
+```
+
+#### AD - Kerbrute
+```bash
+kerbrute userenum -d [domain] --dc [dc-ip] [wordlist]
+```
+> Recommended resolution to this: [[Kerbrute#Username enumeration]]
+
+#### AD - SMB - Credentialed
+```
+crackmapexec smb [ip] -u [username] -p [password] --users
+```
 
 ### Identifying the password policy
 
