@@ -73,7 +73,7 @@ htb-student:x:1000:1000:,,,:/home/htb-student:/bin/bash
 #### /etc/security/opasswd
 A file used by [[Linux#Pluggable Authentication Modules (PAM)|PAM]] to store old passwords. This can be a security weakness as if we get a user's old passwords, we might be able to determine a pattern and guess their current password. This file does by default require admin privs to read.
 
-### Windows
+### Windows-specific attacks
 Windows [Windows client authentication process](https://docs.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication) tends to be more complicated than with Linux systems, consisting with many different modules that the various processes required to authenticate a client. Additionally, there are many different authentication processes, such as Kerberos auth.
 ![[Windows#Local Security Authority (LSA)]]
 ![[Pasted image 20241218082951.png]]
@@ -136,6 +136,38 @@ $ grep -E '^.{6,}$' [file_in] > [file_out]
 
 # Limit the list to only passwords starting with capitals 
 $ grep -E '^([A-Z])' [file_in] > [file_out]
+```
+
+## Password Spraying
+The concept involves attempting a single password against multiple accounts. We may have acquired a password and so we want to try it against all other users we can find to potentially find any password re-use. As we are only attempting 1 (or very few) password(s) against a number of accounts, we are unlikely to get the accounts locked out for multiple incorrect attempts.
+
+> If we are using multiple passwords, its really important that we have a delay (could be a couple hours) or something similar to ensure we don't lock out accounts. If we can identify under what conditions an account gets locked out it means we can avoid this and avoid any disruptions to the customer.
+
+### Building a username list
+- OSINT for users
+- [[Kerbrute]] with something like [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames)
+- Identifying username formats (*often from OSINT - look at document metadata as this can sometimes forget to be scrubbed before published*) then generate all possible combinations (*with bash or some script*)
+
+### Identifying the password policy
+
+#### AD - SMB - Credentialed
+```bash
+crackmapexec smb [ip] -u [username] -p [password] --pass-pol
+```
+> this can also be done with the [[SMB & RPC#MSRPC / RPCclient|rpcclient]] with the `getdompwinfo` command
+
+#### AD - SMB - NULL Session
+SMB Null sessions can give us complete listings of users, groups, hosts, account attributes, and the domain password policy. They are incredibly dangerous and are often introduced by insecure configurations that have been kept even through upgrades.
+Tools like: [[enum4linux]], [[CrackMapExec]], and [[SMB & RPC#MSRPC / RPCclient|rpcclient]] can all be used to interact with these NULL sessions.
+```bash
+rpcclient -U "" -N [ip]
+
+rpcclient $> querydominfo
+rpcclient $> getdompwinfo
+```
+
+```bash
+enum4linux -P [ip]
 ```
 
 ## Windows
