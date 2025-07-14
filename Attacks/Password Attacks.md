@@ -150,6 +150,13 @@ The concept involves attempting a single password against multiple accounts. We 
 
 ### Identifying the password policy
 
+In Active Directory, the property `password complexity` means that you must have 3/4 of:
+- an uppercase letter
+- lowercase letter
+- number
+- special character
+eg. `Welcome1` or `Password1` would both satisfy (*uppercase*, *lowercase*, and *number*)
+
 #### AD - SMB - Credentialed
 ```bash
 crackmapexec smb [ip] -u [username] -p [password] --pass-pol
@@ -158,7 +165,7 @@ crackmapexec smb [ip] -u [username] -p [password] --pass-pol
 
 #### AD - SMB - NULL Session
 SMB Null sessions can give us complete listings of users, groups, hosts, account attributes, and the domain password policy. They are incredibly dangerous and are often introduced by insecure configurations that have been kept even through upgrades.
-Tools like: [[enum4linux]], [[CrackMapExec]], and [[SMB & RPC#MSRPC / RPCclient|rpcclient]] can all be used to interact with these NULL sessions.
+Tools like: [[enum4linux-ng]], [[CrackMapExec]], and [[SMB & RPC#MSRPC / RPCclient|rpcclient]] can all be used to interact with these NULL sessions.
 ```bash
 rpcclient -U "" -N [ip]
 
@@ -167,9 +174,29 @@ rpcclient $> getdompwinfo
 ```
 
 ```bash
-enum4linux -P [ip]
+enum4linux-ng -P [ip]
 ```
 
+**From Windows**
+```batch
+net use \\[host]\[share] "" /u:""
+```
+
+#### AD - LDAP - Anonymous Bind
+[LDAP anonymous binds](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/anonymous-ldap-operations-active-directory-disabled) allow unauthenticated users to retrieve information about a domain like an SMB NULL Session. Its very rare as this is legacy (pre-2003) but can occasionally be seen.
+```bash
+ldapsearch -H [ip] -x -b "DC=..." -s sub "*" | grep -m 1 -B 10 pwdHistoryLength
+```
+
+#### AD - Windows - Credentialed
+```batch
+net accounts
+```
+
+```PowerShell
+import-module .\PowerView.ps1
+Get-DomainPolicy
+```
 ## Windows
 
 ### Attacking SAM

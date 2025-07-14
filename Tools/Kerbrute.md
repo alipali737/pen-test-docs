@@ -30,3 +30,5 @@ ls dist/
 $ kerbrute userenum -d <domain> --dc <domain-controller-ip> <wordlist> -o <output-file>
 $ kerbrute userenum -d EXAMPLE.LOCAL --dc 1.2.3.4 usernames.txt -o valid_ad_users
 ```
+> A useful wordlist to use is any of these : [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames)
+

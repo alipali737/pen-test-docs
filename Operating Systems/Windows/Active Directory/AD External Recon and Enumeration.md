@@ -81,5 +81,10 @@ sudo nmap -v -A -iL hosts.txt -oN ~/Scans/host-enum
 ### Step 2 : Identifying Users
 #### Kerbrute - Internal AD Username Enumeration
 ![[Kerbrute#Summary]]
+#### SMB NULL Sessions / LDAP Anonymous Binds
+These can let us list users within a domain : [[Password Attacks#AD - SMB - NULL Session]]
+
+#### Pre-authenticated user
+We can also use an already known user to gather the information as we have the privileges to query the domain. We could find a user through a tool like [[Responder]] with [[LLMNR & NBT-NS Poisoning]].
 
 ### Step 3 : Gaining a foothold
