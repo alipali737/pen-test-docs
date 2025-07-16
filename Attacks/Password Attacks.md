@@ -192,6 +192,8 @@ In Active Directory, the property `password complexity` means that you must have
 - special character
 eg. `Welcome1` or `Password1` would both satisfy (*uppercase*, *lowercase*, and *number*)
 
+Its very important to make customers aware of DoS attacks if the domain password lockout policy is overly restrictive and requires admin intervention to unlock accounts manually.
+
 #### AD - SMB - Credentialed
 ```bash
 crackmapexec smb [ip] -u [username] -p [password] --pass-pol
@@ -278,6 +280,18 @@ The free Microsoft tool [Local Administrator Password Solution (LAPS)](https://w
 sudo crackmapexec smb --local-auth [subnet] -u administrator -H [hash] | grep +
 ```
 > `--local-auth` means that we only attempt to login once on each machine, this avoids us LOCKING OUT USERS. Without this, the tool will attempt to authenticate via the domain, not the machine, which would quickly cause a lockout.
+
+### General remediation against password spraying
+There is very few ways to completely mitigate the risks of password spraying but it can be made incredibly difficult via a few means:
+- *Multi-factor Authentication* : Having MFA could stop an attacker gaining access to an account, but it would still give away if a set of credentials are valid (and they could be reused elsewhere)
+- *Restricting Access* : Ensure the least privilege policy is enforced and users don't have excessive access to services they don't need (minimises attack surface).
+- *Reducing Impact of Successful Exploitation* : Network segmentation, separate admin accounts, application-specific permissions etc would all reduce the impact of successful compromise.
+- *Password Hygiene* : Educating users on difficult to guess passwords (eg. complex phrases). Password filters and policies can enforce complex passwords.
+
+### Detecting password sprays
+The Domain Controller's security log will log lots of [4625: An account failed to log on](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625) over a short period.
+Kerberos logging should be enabled and event [4771: Kerberos pre-authentication failed](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4771) may indicate an LDAP password spraying attempt.
+This [post](https://www.hub.trimarcsecurity.com/post/trimarc-research-detecting-password-spraying-with-security-event-auditing) talks about detecting password spraying using Windows Security Event Logging
 
 ## Windows
 
