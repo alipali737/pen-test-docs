@@ -86,5 +86,3 @@ These can let us list users within a domain : [[Password Attacks#AD - SMB - NULL
 
 #### Pre-authenticated user
 We can also use an already known user to gather the information as we have the privileges to query the domain. We could find a user through a tool like [[Responder]] with [[LLMNR & NBT-NS Poisoning]].
-
-### Step 3 : Gaining a foothold
