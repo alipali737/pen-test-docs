@@ -476,6 +476,23 @@ An application whitelist can be implemented to prevent the use of unauthorised a
 
 It uses a rule based system and can be deployed in audit mode first to test the impact before enforcing the rules.
 
+A lot of these applications can be bypassed eg:
+- `PowerShell.exe` may be blocked but the other [PowerShell executable locations](https://www.powershelladmin.com/wiki/PowerShell_Executables_File_System_Locations) may not be:
+- `%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe`
+- `PowerShell_ISE.exe`
+
+> This will show us all the policies in place in AppLocker
+```PowerShell
+PS C:\> Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+```
+
+### PowerShell Constrained Language Mode
+The PowerShell [Constrained Language Mode](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/) locks down many features needed to use PowerShell effectively, such as: blocking COM objects, only allowing approved .NET types etc.
+
+```PowerShell
+PS C:\> $ExecutionContext.SessionState.LanguageMode
+```
+
 ### Local Group Policy
 Group Policy allows administrators to set, configure, and adjust a verity of settings. In a domain environment, group policies are maintained centrally (at a domain controller) and all domain-joined machines (Group Policy objects (GPOs)) will use these settings.
 
@@ -486,6 +503,10 @@ Defender includes a cloud-delivered protection in addition to its real-time scan
 
 Windows Defender takes advantage of its embedded setting in the OS, allowing it to perform more efficiently than many alternatives whilst still providing effective protections.
 
+This command will show us is `RealTimeProtectionEnabled` is `True`, implying Windows Defender is active.
+```PowerShell
+PS C:\> Get-MpComputerStatus
+```
 ### New Technology LAN Manager (NTLM)
 ![[Active Directory#NTLM Authentication]]
 
@@ -509,3 +530,22 @@ Includes the *Local Security Authority Server Service* (*LSASS*) process. It is 
 If a Domain Controller is used, these accounts and policies are stored in Active Directory and apply to the domain where the controller is located. The LSA also provides means to check access, permissions, and generating monitoring messages.
 ### LSASS
 ![[Password Attacks#Local Security Authority Server Service (LSASS)]]
+
+### Local Administrator Password Solution (LAPS)
+This is a program used to randomise local administrator passwords and rotate them on local hosts. This is used as a defence against lateral movement and prevent administrator password reuse across multiple hosts.
+
+Find which groups can read LAPS passwords for which hosts:
+```PowerShell
+PS C:\> Find-LAPSDelegatedGroups
+```
+
+Find any users or groups with read access:
+```PowerShell
+PS C:\> Find-AdmPwdExtendedRights
+```
+> any users with `all extended rights` can read LAPS passwords and may also be less protected
+
+View passwords (if we have access) and their expiries:
+```PowerShell
+PS C:\> Get-LAPSComputers
+```
