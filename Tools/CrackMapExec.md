@@ -12,7 +12,6 @@ A post-exploitation tool for assessing the security of *large Active Directory n
 
 > A community open-source version is [NetExec](https://github.com/Pennyw0rth/NetExec) which is based on the original CME by its original contributors
 > https://www.netexec.wiki/
-
 ## Installation
 ```
 sudo apt-get -y install crackmapexec
@@ -24,6 +23,35 @@ sudo apt-get -y install crackmapexec
 ## Usage
 ```bash
 crackmapexec <proto> <target-ip> -u <user or userlist> -p <pass or passlist> -d .
+```
+
+### User Enumeration
+We can enumerate a host for users. By targeting a Domain Controller and using credentials from a user, we can enumerate all domain users.
+```bash
+crackmapexec smb [ip] -u [user] -p [pass] --users
+```
+
+### Group Enumeration
+We can also obtain the groups on a host/domain similarly to above.
+```bash
+crackmapexec smb [ip] -u [user] -p [pass] --groups
+```
+
+### Currently logged on users
+We can assert which users are currently logged in on a server
+```shell
+crackmapexec smb [ip] -u [user] -p [pass] --loggedon-users
+```
+
+### List SMB Shares
+```bash
+crackmapexec smb [ip] -u [user] -p [pass] --shares
+```
+
+### Crawl a SMB share
+This allows us to use the `spider_plus` module to crawl a share and save the results to `/tmp/cme_spider_plus/<ip>`. We can then comb through the json results and identify any files we might want to look further at (eg. ones that could contain credentials).
+```bash
+crackmapexec smb [ip] -u [user] -p [pass] -M spider_plus --share '[shareName]'
 ```
 
 ### Password Spraying a domain using Pass-the-Hash
@@ -38,11 +66,6 @@ The `--local-auth` can also be added if we want to attempt to login via local cr
 > If we discover systems all using the same administrator password, we could recommend the use of the [Local Administrator Password Solution (LAPS)](https://www.microsoft.com/en-us/download/details.aspx?id=46899) which randomises the local admin password and can also rotate it on fixed intervals.
 
 The `-x` flag can be used to execute a command too
-
-### List SMB Shares
-```bash
-crackmapexec smb [ip] -u [user] -p [pass] --shares
-```
 
 ### Extracting Hashes from SAM Database
 **Remote dumping** of the LSA secrets & SAM databases can also be done via tools like `crackmapexec` using a local administrator account:
