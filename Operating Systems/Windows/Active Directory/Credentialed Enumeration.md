@@ -31,7 +31,10 @@ All of the methods in this page focus on further enumeration once a foothold has
 ![[SMB & RPC#MSRPC / RPCclient]]
 
 ### Impacket Toolkit
-
+#### PSEXEC
+ `psexec.py` is effectively a clone of the Sysinternals psexec executable but works slightly differently as its on linux. The tool works by:
+ 1. Uploading a randomly-named exe to the `ADMIN$` share on the target host
+ 2. It then registers the service via RPC and the Windows Service Control Manager
 
 ### Windappsearch
 
