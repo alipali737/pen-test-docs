@@ -69,11 +69,12 @@ The Samba SMB daemon can be restarted with `systemctl`
 
 RPC lets us execute a procedure (eg. a function) in a local or remote process. We can use `MS-RPCE` which is RPC over SMB (using SMB named pipes). As we can only gain limited information from tools like `nmap` for SMB services, we can use `RPCclient` to manually inspect the service.
 
+With RPC we can often see the [Relative Identifier (RID)](https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/security-identifiers) for each user. This can be combined as: `[domain-SID]-[userRID]` to create their full SID.
+SIDs are explained in [[Windows#Security Identifier (SID)]].
+
 ```bash
 # Authenicate with Null session (anonymous user)
-rpcclient -U "" [Target]
-
-Enter WORKGROUP\'s password:
+rpcclient -U "" -N [Target]
 rpcclient $> 
 ```
 

@@ -19,8 +19,44 @@ sudo pip3 install smbmap
 **Cheatsheet:** 
 **Website:** https://github.com/ShawnDEvans/smbmap
 ## Usage
+>For many of the commands, a domain doesn't have to be provided if you aren't in an AD environment.
 ### Check user's access to shares
 ```bash
 smbmap -u [user] -p [pass] -d [domain] -H [ip]
 ```
 > Can be pointed at a domain controller for AD
+### Recursive list of a share
+```bash
+# Dirs & Files listed
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -R '[shareName]'
+
+# Directories only
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -R '[shareName]' --dir-only
+```
+
+### Non-recursive list of a share's root
+```bash
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -r '[shareName]' -q
+```
+
+### Recursive filename pattern search
+```bash
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -R '[shareName]' -A '([pattern])'
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -R '[shareName]' -A '(password|config)'
+```
+
+### File content searching
+```bash
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -F '[pattern]'
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -F '[1-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]'
+```
+
+### Get host version info
+```bash
+smbmap --host-file [hosts] -v
+```
+
+### Command Execution
+```bash
+smbmap -u [user] -p [pass] -d [domain] -H [ip] -x '[cmd]'
+```
