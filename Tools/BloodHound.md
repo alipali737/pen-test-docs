@@ -17,15 +17,25 @@ There are two main collectors:
 - [BloodHound.py](https://github.com/fox-it/BloodHound.py) : for running on a Linux host (*a.k.a `bloodhound-python`*)
 
 ## Installation
-```bash
-pip install bloodhound-ce
-#The BloodHound.py CE ingestor will add a command line tool `bloodhound-ce-python` to your PATH.
-
-# Sharphound
-# https://github.com/SpecterOps/BloodHound-Legacy/tree/master/Collectors
-```
+### BloodHound.py
+`pip install bloodhound-ce`
+The BloodHound.py CE ingestor will add a command line tool `bloodhound-ce-python` to your PATH.
+### Sharphound
+https://github.com/SpecterOps/BloodHound-Legacy/tree/master/Collectors
+### BloodHound GUI
+https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart
 
 ## Documentation
-**Cheatsheet:** 
+**Cheatsheet:** [custom Cypher queries](https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/)
 **Website:** https://github.com/SpecterOps/BloodHound
 ## Usage
+### Collecting from Linux
+```bash
+sudo bloodhound-ce-python -u '[user]' -p '[pass]' -ns [dc-ip] -d [domain] -c all
+```
+> `-c` is the collection method, `all` gives us the most data
+
+### Start bloodhound GUI
+```bash
+bloodhound-cli
+```

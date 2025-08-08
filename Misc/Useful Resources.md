@@ -27,6 +27,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - [FileInfo.com](https://fileinfo.com/filetypes/) : Descriptions of most file types
 	- Example for creating a word list of all archive extensions: `curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt`
 - [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames) : Username lists
+- https://wadcoms.github.io/ : Interactive cheatsheet for commands
 
 ## PrivEsc
 - [Privilege Escalation Awesome Scripts SUITE (PEASS)](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) : Suite of scripts relating to privilege escalation

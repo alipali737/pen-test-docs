@@ -11,6 +11,8 @@ All of the methods in this page focus on further enumeration once a foothold has
 - A domain user's cleartext password
 - A NTLM password hash
 - SYSTEM access on a domain-joined host
+
+The https://wadcoms.github.io/ cheatsheet can be really helpful here.
 ## From Linux
 ### CrackMapExec
 ![[CrackMapExec#Summary]]
@@ -53,3 +55,5 @@ wmiexec [domain]/[user]:'[pass]'@[ip]
 ![[Windapsearch#Search for Privileged Users]]
 
 ### Bloodhound
+![[BloodHound#Summary]]
+![[BloodHound#Collecting from Linux]]
