@@ -48,6 +48,8 @@ wmiexec [domain]/[user]:'[pass]'@[ip]
 ```
 > It will create a lot of event ID: [4688: A new process has been created](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4688) as it creates a separate cmd.exe for each command run. This is normal in some orgs but could be a tip-off. It also runs under the context of the user, not `SYSTEM`.
 ### Windappsearch
-
+![[Windapsearch#Summary]]
+![[Windapsearch#Search for Domain Admins]]
+![[Windapsearch#Search for Privileged Users]]
 
 ### Bloodhound
