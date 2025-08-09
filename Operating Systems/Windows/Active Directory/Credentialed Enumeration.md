@@ -194,5 +194,6 @@ Snaffler.exe -s -d inlanefreight.local -o snaffler.log -v data
 .\Snaffler.exe -d [domain] -s -v data
 ```
 
-### BloodHound
+### BloodHound / SharpHound
 ![[BloodHound#Summary]]
+![[BloodHound#Collecting from Windows]]

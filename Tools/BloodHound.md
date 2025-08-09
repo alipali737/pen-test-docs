@@ -16,6 +16,8 @@ There are two main collectors:
 - [SharpHound collector](https://github.com/BloodHoundAD/BloodHound/tree/master/Collectors) : for running on a Windows host
 - [BloodHound.py](https://github.com/fox-it/BloodHound.py) : for running on a Linux host (*a.k.a `bloodhound-python`*)
 
+> IMPORTANT: Sometimes when looking at hosts in BloodHound, we might see some that aren't 'live', this means they have been powered off but still have AD records, we may choose to suggest as a best practice they clean up old records for AD. 
+
 ## Installation
 ### BloodHound.py
 `pip install bloodhound-ce`
@@ -34,6 +36,12 @@ https://bloodhound.specterops.io/get-started/quickstart/community-edition-quicks
 sudo bloodhound-ce-python -u '[user]' -p '[pass]' -ns [dc-ip] -d [domain] -c all
 ```
 > `-c` is the collection method, `all` gives us the most data
+
+### Collecting from Windows
+```PowerShell
+.\SharpHound.exe -c All --zipfilename [resultsFile]
+```
+> we can then exfiltrate the data to our VM to visualise it: [[Operating Systems/Windows/File Transfer|File Transfer]]
 
 ### Start bloodhound GUI
 ```bash
