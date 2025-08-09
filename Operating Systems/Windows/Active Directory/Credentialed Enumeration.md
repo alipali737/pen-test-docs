@@ -57,3 +57,51 @@ wmiexec [domain]/[user]:'[pass]'@[ip]
 ### Bloodhound
 ![[BloodHound#Summary]]
 ![[BloodHound#Collecting from Linux]]
+
+## From Windows
+### ActiveDirectory PowerShell Module
+> Using this module on a host, rather than dropping a tool in, can make us blend in more.
+
+To see what modules are currently installed:
+```PowerShell
+Get-Module
+```
+
+To load the AD module:
+```PowerShell
+Import-Module ActiveDirectory
+```
+#### Get domain info
+```PowerShell
+Get-ADDomain
+```
+> this includes useful info such as: *domain SID*, *domain function level*, *child domains*, *name* etc
+#### Get users (+ filter)
+```PowerShell
+Get-ADUser
+```
+If we want to filter for users that might be susceptible to Kerberoasting:
+```PowerShell
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipleName
+```
+#### Verify domain trust relationships
+```PowerShell
+Get-ADTrust -Filter *
+```
+> this lets us explore the trust relationships of various domains and child-domains the domain has
+#### Group enumeration
+```PowerShell
+Get-ADGroup -Filter * | select name
+```
+We can then take these names and get specific information on particular ones:
+```PowerShell
+Get-ADGroup -Identity "[groupName]"
+```
+#### Group Membership
+```PowerShell
+Get-ADGroupMember -Identity "[groupName]"
+```
+> this will tell us who is in a particular group
+
+### PowerView
+[PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon) is a tool for PowerShell that serves to gain situational awareness in 
