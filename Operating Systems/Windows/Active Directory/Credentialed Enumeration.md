@@ -291,3 +291,72 @@ qwinsta
 | `wmic group list /format:list`                                                           | Information on local groups                                                         |
 | `wmic sysaccount list /format:list`                                                      | Dumps information about any system accounts that are being used as service accounts |
 | `wmic ntdomain get Caption,Description,DnsForestName,DomainName,DomainControllerAddress` | Gives domain, child domain, and forest information                                  |
+### Net Commands
+[Net](https://docs.microsoft.com/en-us/windows/win32/winsock/net-exe-2) commands can be useful when attempting to enumerate information from the domain. Typically, [Net](https://docs.microsoft.com/en-us/windows/win32/winsock/net-exe-2) is monitored by EDRs and can quickly give us away.
+
+| **Command**                                     | **Description**                                                                                                              |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `net accounts`                                  | Information about password requirements                                                                                      |
+| `net accounts /domain`                          | Password and lockout policy                                                                                                  |
+| `net group /domain`                             | Information about domain groups                                                                                              |
+| `net group "Domain Admins" /domain`             | List users with domain admin privileges                                                                                      |
+| `net group "domain computers" /domain`          | List of PCs connected to the domain                                                                                          |
+| `net group "Domain Controllers" /domain`        | List PC accounts of domains controllers                                                                                      |
+| `net group <domain_group_name> /domain`         | User that belongs to the group                                                                                               |
+| `net groups /domain`                            | List of domain groups                                                                                                        |
+| `net localgroup`                                | All available groups                                                                                                         |
+| `net localgroup administrators /domain`         | List users that belong to the administrators group inside the domain (the group `Domain Admins` is included here by default) |
+| `net localgroup Administrators`                 | Information about a group (admins)                                                                                           |
+| `net localgroup administrators [username] /add` | Add user to administrators                                                                                                   |
+| `net share`                                     | Check current shares                                                                                                         |
+| `net user <ACCOUNT_NAME> /domain`               | Get information about a user within the domain                                                                               |
+| `net user /domain`                              | List all users of the domain                                                                                                 |
+| `net user %username%`                           | Information about the current user                                                                                           |
+| `net use x: \computer\share`                    | Mount the share locally                                                                                                      |
+| `net view`                                      | Get a list of computers                                                                                                      |
+| `net view /all /domain[:domainname]`            | Shares on the domains                                                                                                        |
+| `net view \computer /ALL`                       | List shares of a computer                                                                                                    |
+| `net view /domain`                              | List of PCs of the domain                                                                                                    |
+> Using `net1` will still run net but can sometimes evade monitoring
+
+### Dsquery
+[Dsquery](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc732952(v=ws.11)) is a CLI for finding AD objects. It can do similar queries to [[BloodHound]] & [[#PowerView]], but sometimes these tools aren't available. `dsquery` will exist on any host with `Active Directory Services Role` installed, and the `dsquery` DLL exists on all modern Windows systems by default now (`C:\Windows\System32\dsquery.dll`).
+
+Once we are able to run CMD or PS as the `SYSTEM` context, we can use `dsquery`.
+#### Show users
+```PowerShell
+dsquery user
+```
+#### Show computers
+```PowerShell
+dsquery computer
+```
+#### Wildcard searching
+```PowerShell
+dsquery * "CN=Users,DC=INLANEFREIGHT,DC=LOCAL"
+```
+#### LDAP Queries
+```PowerShell
+# Looks for users with the `PASSWD_NOTREQD` attribute
+dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=32))" -attr distinguishedName userAccountControl
+
+# Look for all DCs in the domain, limiting to five results
+dsquery * -filter "(userAccountControl:1.2.840.113556.1.4.803:=8192)" -limit 5 -attr sAMAccountName
+```
+> `userAccountControl:1.2.840.113556.1.4.803:` Specifies that we are looking at the [User Account Control (UAC) attributes](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties) for an object
+> `=8192` represents the decimal bitmask we want to match in this search. This decimal number corresponds to a corresponding UAC Attribute flag that determines if an attribute like `password is not required` or `account is locked` is set. These values can compound which then changes the number.
+
+| UAC Value | Meaning                             |
+| --------- | ----------------------------------- |
+| 1         | Login Script Will Execute           |
+| 2         | Account is disabled                 |
+| 32        | Password not required               |
+| 64        | Password cant change                |
+| 128       | Encrypted text password allowed     |
+| 512       | Normal user account                 |
+| 2048      | Inter-domain Trust account          |
+| 4096      | Domain Workstation or Member server |
+| 8192      | Domain Controller                   |
+| 65536     | Password does not expire            |
+| 524288    | Trusted for impersonation           |
+| 1048576   | Account may not be impersonated     |
