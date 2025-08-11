@@ -31,5 +31,5 @@ WMI allows read and write access to almost all settings on Windows systems. It i
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Connect via wmiexec | wmiexec.py [user]:[pass]@[ip] "hostname" | [wmiexec.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py) |
 More Commands: [[Credentialed Enumeration#Windows Management Instrumentation (WMI)]]
-### Nmap Scripts
-- 
+CheatSheet: [cheatsheet](https://gist.github.com/xorrior/67ee741af08cb1fc86511047550cdaf4)
+Official docs: [WMI documentation](https://docs.microsoft.com/en-us/windows/win32/wmisdk/using-wmi)

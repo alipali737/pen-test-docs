@@ -280,4 +280,14 @@ qwinsta
 
 ### Windows Management Instrumentation (WMI)
 ![[WMI#Summary]]
-#### 
+
+| Command                                                                                  | Description                                                                         |
+| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `wmic qfe get Caption,Description,HotFixID,InstalledOn`                                  | Prints the patch level and description of the hotfixes applied                      |
+| `wmic computersystem get Name,Domain,Manufacturer,Model,Username,Roles /format:list`     | Displays basic host information to include any attributes within the list           |
+| `wmic process list /format:list`                                                         | Lists all processes on the host                                                     |
+| `wmic ntdomain list /format:list`                                                        | Displays domain information & DCs                                                   |
+| `wmic useraccount list /format:list`                                                     | Information about all local accounts and any domain accounts logged into the device |
+| `wmic group list /format:list`                                                           | Information on local groups                                                         |
+| `wmic sysaccount list /format:list`                                                      | Dumps information about any system accounts that are being used as service accounts |
+| `wmic ntdomain get Caption,Description,DnsForestName,DomainName,DomainControllerAddress` | Gives domain, child domain, and forest information                                  |
