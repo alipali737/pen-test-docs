@@ -256,8 +256,28 @@ Get-MpComputerStatus
 ```
 > This PowerShell command can tell us useful information to report, such as: AV configuration and scan intervals. It can also give us the version so we can possibly bypass it in future attacks.
 
-### Checking if a user is logged in with us
+#### Checking if a user is logged in with us
 If another user is logged into the same host, some of our actions could alert them of our presence, possibly costing us our foothold.
 ```PowerShell
 qwinsta
+
+ SESSIONNAME       USERNAME                 ID  STATE   TYPE        DEVICE
+ services                                    0  Disc
+>console           forend                    1  Active
+ rdp-tcp                                 65536  Listen
 ```
+> This shows us that we are the only ones logged in (using the `forend` user)
+
+#### Network Information
+| Networking Commands                  | Description                                                                                                       |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `arp -a`                             | Lists all known hosts in the arp table                                                                            |
+| `ipconfig /all`                      | Prints our adapter settings for the host, can help with mapping networking segments                               |
+| `route print`                        | Displays the routing table (IPv4 & IPv6) identifying known networking and layer three routes shared with the host |
+| `netsh advfirewall show allprofiles` | Displays the status of the host's firewall.                                                                       |
+> Anything that appears in the routing table has been accessed frequently enough for a route to be created (or an administrator has added it). These are potential targets for lateral movement.
+> [[Network Addressing#Address Resolution Protocol (ARP)]]
+
+### Windows Management Instrumentation (WMI)
+![[WMI#Summary]]
+#### 

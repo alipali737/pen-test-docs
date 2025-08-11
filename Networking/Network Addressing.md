@@ -188,7 +188,32 @@ arp -a
 ? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
 ? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet]
 ```
+```PowerShell
+PS C:\htb> arp -a
 
+Interface: 172.16.5.25 --- 0x8
+  Internet Address      Physical Address      Type
+  172.16.5.5            00-50-56-b9-08-26     dynamic
+  172.16.5.130          00-50-56-b9-f0-e1     dynamic
+  172.16.5.240          00-50-56-b9-9d-66     dynamic
+  224.0.0.22            01-00-5e-00-00-16     static
+  224.0.0.251           01-00-5e-00-00-fb     static
+  224.0.0.252           01-00-5e-00-00-fc     static
+  239.255.255.250       01-00-5e-7f-ff-fa     static
+
+Interface: 10.129.201.234 --- 0xc
+  Internet Address      Physical Address      Type
+  10.129.0.1            00-50-56-b9-b9-fc     dynamic
+  10.129.202.29         00-50-56-b9-26-8d     dynamic
+  10.129.255.255        ff-ff-ff-ff-ff-ff     static
+  224.0.0.22            01-00-5e-00-00-16     static
+  224.0.0.251           01-00-5e-00-00-fb     static
+  224.0.0.252           01-00-5e-00-00-fc     static
+  239.255.255.250       01-00-5e-7f-ff-fa     static
+  255.255.255.255       ff-ff-ff-ff-ff-ff     static
+```
+
+Process of ARP:
 1. Pings on the broadcast address to all devices on the network asking if they have the IP address being queried
 2. The device with that address will respond with its MAC address
 

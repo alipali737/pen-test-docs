@@ -16,9 +16,6 @@ WMI allows read and write access to almost all settings on Windows systems. It i
 - 135/tcp : initial communication
 - After connection, communication is moved to a random port
 
-| service name | releases link | notes |
-| ------------ | ------------- | ----- |
-|              |               |       |
 ## How it works
 
 
@@ -33,6 +30,6 @@ WMI allows read and write access to almost all settings on Windows systems. It i
 | Goal                | Command(s)                               | Refs                                                                                     |
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Connect via wmiexec | wmiexec.py [user]:[pass]@[ip] "hostname" | [wmiexec.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py) |
-
+More Commands: [[Credentialed Enumeration#Windows Management Instrumentation (WMI)]]
 ### Nmap Scripts
 - 
