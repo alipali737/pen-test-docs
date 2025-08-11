@@ -351,8 +351,6 @@ dsquery * -filter "(userAccountControl:1.2.840.113556.1.4.803:=8192)" -limit 5 -
 > `1.2.840.113556.1.4.1941` is used for filters that apply to the Distinguished Name of an object, and will search through all ownership and membership entries.
 > `=8192` represents the decimal bitmask we want to match in this search. This decimal number corresponds to a corresponding UAC Attribute flag that determines if an attribute like `password is not required` or `account is locked` is set. These values can compound which then changes the number.
 
-dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.804:=2)(!userAccountControl:1.2.840.113556.1.4.804:=512))" -attr distinguishedName userAccountControl
-
 | UAC Value | Meaning                             |
 | --------- | ----------------------------------- |
 | 1         | Login Script Will Execute           |
