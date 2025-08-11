@@ -236,4 +236,28 @@ Get-host
 Name    : ConsoleHost
 Version : 2.0 <- Downgraded to v2.0
 ```
-> The best place to look for if we are not appearing in logs is: 
+> The best place to look for if we are not appearing in logs is: *Event Viewer > Applications and Services Logs > Microsoft > Windows > PowerShell > Operational*
+> *Applications and Services Logs > Windows PowerShell* is also a good place to check.
+
+We would expect to see the last command issued was the downgrade, and then nothing should be logged afterwards because [Script Block Logging](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_logging_windows?view=powershell-7.2) only works in version 3.0+.
+
+### Checking Defences
+We can use the [netsh](https://docs.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-contexts) and [sc](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/sc-query) utilities to gain a better feel for what defences are in place.
+#### Check Firewall
+```PowerShell
+netsh advfirewall show allprofiles
+```
+#### Check if defender is running
+```batch
+sc query windefend
+```
+```PowerShell
+Get-MpComputerStatus
+```
+> This PowerShell command can tell us useful information to report, such as: AV configuration and scan intervals. It can also give us the version so we can possibly bypass it in future attacks.
+
+### Checking if a user is logged in with us
+If another user is logged into the same host, some of our actions could alert them of our presence, possibly costing us our foothold.
+```PowerShell
+qwinsta
+```
