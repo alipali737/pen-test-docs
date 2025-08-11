@@ -336,6 +336,7 @@ dsquery computer
 dsquery * "CN=Users,DC=INLANEFREIGHT,DC=LOCAL"
 ```
 #### LDAP Queries
+> These [[LDAP]] queries can be used in any tool that supports LDAP queries.
 ```PowerShell
 # Looks for users with the `PASSWD_NOTREQD` attribute
 dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=32))" -attr distinguishedName userAccountControl
@@ -343,8 +344,14 @@ dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountContro
 # Look for all DCs in the domain, limiting to five results
 dsquery * -filter "(userAccountControl:1.2.840.113556.1.4.803:=8192)" -limit 5 -attr sAMAccountName
 ```
-> `userAccountControl:1.2.840.113556.1.4.803:` Specifies that we are looking at the [User Account Control (UAC) attributes](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties) for an object
+> The query is made up as: `<attributes-to-query>:<OID-match-strings>:<bitmask>`
+> `userAccountControl` Specifies that we are looking at the [User Account Control (UAC) attributes](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties) for an object
+> `1.2.840.113556.1.4.803` is the [Object Identifiers (OIDs)](https://ldap.com/ldap-oid-reference-guide/), it means the bitmask must completely match.
+> `1.2.840.113556.1.4.804` is to show any attribute match if any bit in the chain matches (useful for if an object has multiple attributes set)
+> `1.2.840.113556.1.4.1941` is used for filters that apply to the Distinguished Name of an object, and will search through all ownership and membership entries.
 > `=8192` represents the decimal bitmask we want to match in this search. This decimal number corresponds to a corresponding UAC Attribute flag that determines if an attribute like `password is not required` or `account is locked` is set. These values can compound which then changes the number.
+
+dsquery * -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.804:=2)(!userAccountControl:1.2.840.113556.1.4.804:=512))" -attr distinguishedName userAccountControl
 
 | UAC Value | Meaning                             |
 | --------- | ----------------------------------- |
