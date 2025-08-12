@@ -80,7 +80,7 @@ Get-ADDomain
 ```PowerShell
 Get-ADUser
 ```
-If we want to filter for users that might be susceptible to Kerberoasting:
+If we want to filter for users that might be susceptible to [[Kerberoasting]]:
 ```PowerShell
 Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipleName
 ```
@@ -104,7 +104,7 @@ Get-ADGroupMember -Identity "[groupName]"
 > this will tell us who is in a particular group
 
 ### PowerView
-[PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon) is a tool for PowerShell that serves to gain situational awareness in an AD environment. It provides similar information to BloodHound, providing ways to identify logged in users, enumerate domain information (eg. users, groups, ACLs, trusts), as well as perform file hunting and kerberoasting.
+[PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon) is a tool for PowerShell that serves to gain situational awareness in an AD environment. It provides similar information to BloodHound, providing ways to identify logged in users, enumerate domain information (eg. users, groups, ACLs, trusts), as well as perform file hunting and [[Kerberoasting]].
 > it requires more manual effort to determine misconfigurations and relationships than a tool like [[BloodHound]] but can be very valuable still.
 
 |**Command**|**Description**|
@@ -165,8 +165,8 @@ Get-DomainTrustMapping
 Test-AdminAccess -ComputerName [computerName]
 ```
 > this will show us if our current user is an admin on the local machine. This can be really useful to test for many computers to see if we can access any other local administrators
-#### Finding users who are vulnerable to Kerberoasting
-The SPN attribute can suggest a user is vulnerable to kerberoasting, we can filter for this:
+#### Finding users who are vulnerable to [[Kerberoasting]]
+The [[Active Directory#Service Principal Name (SPN)|SPN]] attribute can suggest a user is vulnerable to [[Kerberoasting]], we can filter for this:
 ```PowerShell
 Get-DomainUser -SPN -Properties samaccountname,ServicePrincipleName
 ```
