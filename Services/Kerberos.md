@@ -64,9 +64,4 @@ Once setup we can use a tool like [[Evil-Winrm]] with Kerberos authentication.
 - Identifying Domain Controllers (as they will have this port exposed)
 
 ## Enumeration Checklist
-
-| Goal | Command(s) | Refs |
-| ---- | ---------- | ---- |
-|      |            |      |
-### Nmap Scripts
-- 
+- [[Kerberoasting]]
