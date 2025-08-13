@@ -18,7 +18,14 @@ Some key features include:
 - Requesting tickets for accounts passwords set between a specific date range
 - Placing a limit on the number of tickets requested
 - Performing AES kerberoasting
+### A word on encryption
+Kerberos can use a variety of encryption algorithms (eg. RC4, AES-128, AES-265). In most cases, we want to focus on `RC4` encrypted tickets as that algorithm is easier to crack.
+A ticket is prefixed with `$krb5tgs$23$*`, where `23` is `RC4` (type 23):
+- RC4 : type 23 : hashcat `13100`
+- AES-128 : type 17 : hashcat `19600`
+- AES-256 : type 18 : hashcat `19700`
 
+> RECOMMENDATION: Force AES encryption for kerberos tickets (can be done in AD config)
 ## Installation
 ```
 
@@ -31,4 +38,9 @@ Some key features include:
 ### Kerberoast accounts that have admin
 ```PowerShell
 .\Rubeus.exe kerberoast /ldapfilter:'admincount=1' /nowrap
+```
+
+### Kerberoast a specific user
+```PowerShell
+.\Rubeus.exe kerberoast /user:[user] /nowrap
 ```
