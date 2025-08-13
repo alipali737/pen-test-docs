@@ -98,4 +98,10 @@ cat [outputfile].csv
 ### Non-managed service accounts
 Using long and complex passwords or pass phrases can drastically reduce the risk of passwords being cracked. A better recommendation is to use [Managed Service Accounts (MSA)](https://techcommunity.microsoft.com/t5/ask-the-directory-services-team/managed-service-accounts-understanding-implementing-best/ba-p/397009), and [Group Managed Service Accounts (gMSA)](https://docs.microsoft.com/en-us/windows-server/security/group-managed-service-accounts/group-managed-service-accounts-overview), which use very complex passwords, and automatically rotate on a set interval (like machine accounts) or accounts set up with [[Windows#Local Administrator Password Solution (LAPS)|LAPS]].
 
-When Kerberoasting is being performed, an abnormal number of `TGS-REQ` and `TGS-REP` requests and responses will be made. This could be an 
+### Looking for an abnormal number of TGS requests
+When Kerberoasting is being performed, an abnormal number of `TGS-REQ` and `TGS-REP` requests and responses will be made. This could be an indication of automated tools being used. Monitoring can be enabled by selecting [Audit Kerberos Service Ticket Operations](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-kerberos-service-ticket-operations) within Group Policy.
+
+Doing so will generate two separate event IDs: [4769](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4769): A Kerberos service ticket was requested, and [4770](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4770): A Kerberos service ticket was renewed. 10-20 Kerberos TGS requests for a given account can be considered normal in a given environment. A large amount of 4769 event IDs from one account within a short period may indicate an attack.
+
+### Restrict usage of RC4 encryption
+Restricting the use of weak encryption algorithms can also play a part in increasing the time it would take to crack them passwords, when combined with complex passwords, this can make it unfeasible to crack passwords 
