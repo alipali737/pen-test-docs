@@ -150,6 +150,8 @@ Each [Access Control Entry (ACE)](https://docs.microsoft.com/en-us/windows/win32
 
 ### Discretional ACL (DACL)
 DACLs define which security principals are granted or denied access to an object; it contains a list of ACEs. When a process tries to access a securable object, the system authorises based on the DACL.
+> No access is granted is a DACL has no ACEs
+> All access is granted if no DACL is present
 
 ### System ACL (SACL)
 Allows admins to log access attempts that are made to secured objects. ACEs specify the types of access attempts that cause the system to generate a record in the security event log.
