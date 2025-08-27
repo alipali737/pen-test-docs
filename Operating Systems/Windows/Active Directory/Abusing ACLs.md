@@ -19,7 +19,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ![[Pasted image 20250826144004.png]]
 ## ACL Enumeration
 We can enumerate the ACLs of a domain/system to potentially gain further internal access. This can be done with [[Credentialed Enumeration#PowerView|PowerView]] and [[BloodHound]].
-### Find all domain objects a user controls
+### Find all domain objects an SID controls
+> this works for anything with an SID eg. users, groups, computers
 ```PowerShell
 Import-Module .\PowerView.ps1
 $sid = Convert-NameToSid [user]
@@ -27,6 +28,8 @@ Get-DomainObjectACL -ResolveGUIDs -Identity * | ? {$_.SecurityIdentifier -eq $si
 ```
 > This gets all domain object ACLs, then matches the SecurityIdentifier field to the SID we provided.
 > `-ResolveGUIDs` ensures that the ACL types are in a human readable formate rather than their GUIDs
+
+> This command can take a bit of time, especially in large AD environments
 #### Performing this without PowerView
 > [Get-ADUser](https://docs.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps)
 > [Get-Acl](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-acl?view=powershell-7.2)
@@ -45,4 +48,10 @@ foreach($line in [System.IO.File]::ReadLines("<domain_users>")) {get-acl "AD:\$(
 ```PowerShell
 $guid = "<guid>"
 Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).ConfigurationNamingContext)" -Filter {ObjectClass -like 'ControlAccessRight'} -Properties * | Select Name,DisplayName,DistinguishedName,rightsGuid | ? {$_.rightsGuid -eq $guid} | fl
+```
+
+### Identifying nested group
+If a group is nested in another group, any users in the sub-group will obtain the rights given by the parent group. This can lead to excessive rights for users.
+```PowerShell
+Get-DomainGroup -Identity "<group_name>" | select memberof
 ```
