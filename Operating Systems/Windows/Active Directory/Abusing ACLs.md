@@ -17,3 +17,32 @@ debugInConsole: false # Print debug info in Obsidian console
 - [AddSelf](https://bloodhound.specterops.io/resources/edges/add-self#addself) : Shows security groups that a user can add themselves too.
 - [GenericAll](https://bloodhound.specterops.io/resources/edges/generic-all#genericall) : Grants full control over a target object. If we have access to a computer that is using [[Windows#Local Administrator Password Solution (LAPS)|LAPS]] then we can get access to the password and obtain local administrator.
 ![[Pasted image 20250826144004.png]]
+## ACL Enumeration
+We can enumerate the ACLs of a domain/system to potentially gain further internal access. This can be done with [[Credentialed Enumeration#PowerView|PowerView]] and [[BloodHound]].
+### Find all domain objects a user controls
+```PowerShell
+Import-Module .\PowerView.ps1
+$sid = Convert-NameToSid [user]
+Get-DomainObjectACL -ResolveGUIDs -Identity * | ? {$_.SecurityIdentifier -eq $sid}
+```
+> This gets all domain object ACLs, then matches the SecurityIdentifier field to the SID we provided.
+> `-ResolveGUIDs` ensures that the ACL types are in a human readable formate rather than their GUIDs
+#### Performing this without PowerView
+> [Get-ADUser](https://docs.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps)
+> [Get-Acl](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-acl?view=powershell-7.2)
+
+**Create a list of domain users**
+```PowerShell
+Get-ADUser -Filter * | Select-Object -ExpandProperty SamAccountName > ad_users.txt
+```
+
+**Get ACL information for each user**
+```PowerShell
+foreach($line in [System.IO.File]::ReadLines("<domain_users>")) {get-acl "AD:\$(Get-ADUser $line)" | Select-Object Path -ExpandProperty Access | Where-Object {$_.IdentityReference -match 'INLANEFREIGHT\\<target_user>'}}
+```
+
+**Manually resolve the ObjectType GUID**
+```PowerShell
+$guid = "<guid>"
+Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).ConfigurationNamingContext)" -Filter {ObjectClass -like 'ControlAccessRight'} -Properties * | Select Name,DisplayName,DistinguishedName,rightsGuid | ? {$_.rightsGuid -eq $guid} | fl
+```
