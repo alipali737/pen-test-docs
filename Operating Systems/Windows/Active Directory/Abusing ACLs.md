@@ -95,3 +95,16 @@ Set-DomainObject -Credential $Cred -Identity [target_user] -SET @{serviceprincip
 # We should also clean up the changed SPN
 Set-DomainObject -Credential $Cred -Identity [target_user] -Clear serviceprinciplename -Verbose
 ```
+
+## Remediation and Detection
+### Regular auditing for dangerous ACLs
+- Regularly check for dangerous ACL configurations and remove them
+- Train up admin staff to use tools like bloodhound to identify dangerous attack paths
+
+### Monitor group membership
+- High-importance groups should be monitored for any changes that could indicate an attack
+- Look out for nested groups and identify whether they are needed
+
+### Audit and monitor for ACL changes
+- Automate the monitoring and alerting for potentially dangerous changes in ACLs
+- Enable [Advanced Security Audit Policy](https://docs.microsoft.com/en-us/archive/blogs/canitpro/step-by-step-enabling-advanced-security-audit-policy-via-ds-access)
