@@ -39,5 +39,12 @@ Services like remote sessions using PowerShell and event log merging require *Wi
 | Footprinting              | nmap [ip] -sV -sC -p5985,5986                                                      | [[Nmap]]         |
 | Cracking user credentials | crackmapexec [proto] [target-ip] -u [user or userlist] -p [pass or passlist]       | [[CrackMapExec]] |
 | Test a WinRM connection   | *(powershell)* Test-WSMan <br><br>*(linux)* evil-winrm -i [ip] -u [user] -p [pass] | [[Evil-Winrm]]   |
-### Nmap Scripts
-- 
+### Establish WinRM Session from Windows
+```PowerShell
+$password = ConvertTo-SecureString "[pass]" -AsPlainText -Force
+$cred = new-object System.Management.Automation.PSCredential ("[domain]\[user]", $password)
+Enter-PSSession -ComputerName [host] -Credential $cred
+```
+
+### Establish WinRM Session from Linux
+![[Evil-Winrm#Usage]]

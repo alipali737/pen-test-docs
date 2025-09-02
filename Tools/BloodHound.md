@@ -47,3 +47,13 @@ sudo bloodhound-ce-python -u '[user]' -p '[pass]' -ns [dc-ip] -d [domain] -c all
 ```bash
 bloodhound-cli
 ```
+
+## Custom Cypher Queries
+### Find WinRM Users
+```cypher
+MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:CanPSRemote*1..]->(c:Computer) RETURN p2
+```
+### Find SQL Admins
+```cypher
+MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:SQLAdmin*1..]->(c:Computer) RETURN p2
+```

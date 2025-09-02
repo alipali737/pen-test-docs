@@ -167,3 +167,15 @@ EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmi
 - ms-sql-hasdbaccess
 - ms-sql-dac
 - ms-sql-dump-hashes
+
+### From Windows
+[PowerUpSQL](https://github.com/NetSPI/PowerUpSQL) is a PowerShell toolkit for interacting with SQL. It has a useful [cheat sheet](https://github.com/NetSPI/PowerUpSQL/wiki/PowerUpSQL-Cheat-Sheet) too.
+```PowerShell
+Import-Module .\PowerUpSQL.ps1
+```
+```PowerShell
+Get-SQLInstanceDomain
+```
+```PowerShell
+Get-SQLQuery -Verbose -Instance "[ip],[port]" -username "[domain]\[user]" -password "[pass]" -query '[sql_query]'
+```

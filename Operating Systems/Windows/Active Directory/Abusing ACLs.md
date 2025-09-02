@@ -96,8 +96,6 @@ Set-DomainObject -Credential $Cred -Identity [target_user] -SET @{serviceprincip
 Set-DomainObject -Credential $Cred -Identity [target_user] -Clear serviceprinciplename -Verbose
 ```
 
-### Enumerate a 
-
 ## DCSync
 DCSync is a technique for stealing an AD password database using the built-in *Directory Replication Service Remote Protocol*. This protocol allows DCs to replicate domain data. This attack could allow us to mimic a DC and retrieve user NTLM password hashes.
 
