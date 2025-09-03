@@ -6,6 +6,57 @@ maxLevel: 3 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
+## The 'Double Hop' Problem
+When we use passwords to authenticate, that NTLM hash is stored in our session. Storing the hash in the session allows us to seamlessly pass it between resources for further authentication (*during lateral movement for example*). However, Kerberos tickets are instead tied to a specific resource and cannot be reused for other resources. This introduces the double hop problem.
+
+The issue often occurs when using WinRM/Powershell since the default authentication method only provides a ticket to access a specific resource. Although we may have the correct rights to view additional resources, we may still be denied if we present this kerberos ticket (*eg. the ticket gives us access to a host, but we want to then access a remote share from that host*).
+
+Often, we gain an initial shell by targeting an application on a single host or using credentials with a tool such as `PSExec`. These both would very likely perform authentication over SMB or LDAP, meaning the user's NTLM hash would be stored in memory. However, when we use WinRM to authenticate over two or more connections, the user's password is never cached as we are using Kerberos tickets rather than a password for authentication.
+
+**Network Authentication Process**
+1. ATK-HOST connects to DEV-01 using [[Evil-Winrm]]
+2. This passes the user's [[Kerberos#Ticket Granting Service (TGS)|TGS]] to the DEV-01 system but not the [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] (which would be used to generate subsequent tickets for other resources)
+3. When DEV-01 attempts to communicate with DC-01 using `PowerView`, it is denied.
+4. As no TGT was provided in the first hop, DEV-01 cannot create any new tickets for the user so we aren't able to use the user's context on DC-01
+
+> If a server has `unconstrained delegation` enabled, then the user's TGT is sent and cached on the target machine so the double hop problem doesn't occur.
+
+### Workaround - PSCredential Object
+If we connect to a remote server with domain credentials, then try to run PowerView (*which interacts with another server - the DC*):
+```PowerShell
+*Evil-WinRM* PS C:\Users\backupadm\Documents> import-module .\PowerView.ps1
+
+|S-chain|-<>-127.0.0.1:9051-<><>-172.16.8.50:5985-<><>-OK
+|S-chain|-<>-127.0.0.1:9051-<><>-172.16.8.50:5985-<><>-OK
+*Evil-WinRM* PS C:\Users\backupadm\Documents> get-domainuser -spn
+Exception calling "FindAll" with "0" argument(s): "An operations error occurred.
+"
+At C:\Users\backupadm\Documents\PowerView.ps1:5253 char:20
++             else { $Results = $UserSearcher.FindAll() }
++                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : DirectoryServicesCOMException
+```
+
+We can see that we get an error as we can't pass our authentication to the DC. We can also prove we only have the TGS ticket cached on the machine:
+```PowerShell
+*Evil-WinRM* PS C:\Users\backupadm\Documents> klist
+
+Current LogonId is 0:0x57f8a
+
+Cached Tickets: (1)
+
+#0> Client: backupadm @ INLANEFREIGHT.LOCAL
+    Server: academy-aen-ms0$ @ # <-- This shows the name of the machine this ticket is for, its the one we connected too
+    KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+    Ticket Flags 0xa10000 -> renewable pre_authent name_canonicalize
+    Start Time: 6/28/2022 7:31:53 (local)
+    End Time:   6/28/2022 7:46:53 (local)
+    Renew Time: 7/5/2022 7:31:18 (local)
+    Session Key Type: AES-256-CTS-HMAC-SHA1-96
+    Cache Flags: 0x4 -> S4U
+    Kdc Called: DC01.INLANEFREIGHT.LOCAL
+```
 
 ## Kerberos
 ![[Kerberos#Summary]]
