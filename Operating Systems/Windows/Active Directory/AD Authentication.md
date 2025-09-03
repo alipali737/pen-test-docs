@@ -22,7 +22,7 @@ Often, we gain an initial shell by targeting an application on a single host or 
 > If a server has `unconstrained delegation` enabled, then the user's TGT is sent and cached on the target machine so the double hop problem doesn't occur.
 
 ### Workaround - PSCredential Object
-If we connect to a remote server with domain credentials, then try to run PowerView (*which interacts with another server - the DC*):
+If we connect to a remote server (`academy-aen-ms0`) with domain credentials, then try to run PowerView (*which interacts with another server - the DC*):
 ```PowerShell
 *Evil-WinRM* PS C:\Users\backupadm\Documents> import-module .\PowerView.ps1
 
@@ -47,7 +47,7 @@ Current LogonId is 0:0x57f8a
 Cached Tickets: (1)
 
 #0> Client: backupadm @ INLANEFREIGHT.LOCAL
-    Server: academy-aen-ms0$ @ # <-- This shows the name of the machine this ticket is for, its the one we connected too
+    Server: academy-aen-ms0$ @ # <-- This shows the name of the machine this ticket is for, its the one we connected too. Its not a TGT
     KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
     Ticket Flags 0xa10000 -> renewable pre_authent name_canonicalize
     Start Time: 6/28/2022 7:31:53 (local)
@@ -58,6 +58,29 @@ Cached Tickets: (1)
     Kdc Called: DC01.INLANEFREIGHT.LOCAL
 ```
 
+To get around this, we can create a PSCredential object that contains our user's credential and then pass that with PowerView:
+```PowerShell
+*Evil-WinRM* PS C:\Users\backupadm\Documents> $SecPassword = ConvertTo-SecureString '!qazXSW@' -AsPlainText -Force
+*Evil-WinRM* PS C:\Users\backupadm\Documents> $Cred = New-Object System.Management.Automation.PSCredential('INLANEFREIGHT\backupadm', $SecPassword)
+
+*Evil-WinRM* PS C:\Users\backupadm\Documents> get-domainuser -spn -credential $Cred | select samaccountname
+```
+
+### Workaround - Register PSSession Configuration
+Sometimes we don't want to or a tool doesn't let us provide a PSCredential object, so instead we can register a PSSession. If we are already on a domain-joined windows host, then we can use the existing information about our session. If we connect to the first host
+```PowerShell
+Enter-PSSession -ComputerName ACADEMY-AEN-DEV01.INLANEFREIGHT.LOCAL -Credential inlanefreight\backupadm
+```
+We are now connected to the first host but we are in the same issue as before, we don't have a cached TGT. To resolve this, we can register a new session configuration using [Register-PSSessionConfiguration](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-pssessionconfiguration?view=powershell-7.2).
+```PowerShell
+Register-PSSessionConfiguration -Name backupadmsess -RunAsCredential inlanefreight\backupadm
+```
+We then need to restart our session with `Restart-Service WinRM` in our current PSSession and enter into the new session.
+```PowerShell
+Restart-Service WinRM
+Enter-PSSession -ComputerName DEV01 -Credential INLANEFREIGHT\backupadm -ConfigurationName backupadmsess
+```
+Now our TGT will be cached and we can interact with other resources.
 ## Kerberos
 ![[Kerberos#Summary]]
 ![[Kerberos#How it works]]
