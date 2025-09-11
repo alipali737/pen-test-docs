@@ -21,5 +21,14 @@ This is also an attack that targets exchange servers, focusing on the `PushSubsc
 The exchange service runs as SYSTEM and is over-privileged by default (*has WriteDacl on the domain pre-2019 Cumulative Update*). We can use this to relay to LDAP and dump the [[Windows#NTDS|NTDS]] database, or we can relay and authenticate to other hosts within the domain.
 
 ## PrinterBug
-We can connect to the spool's named pipe with the `RpcOpenPrinter` method, and use `RpcRemoteFindFirstPrinterChangeNotificationEx` method, forcing the server to authenticate to any host provided over SMB. The service runs as SYSTEM and can be leveraged to grant the necessary privileges for a [[Abusing ACLs#DCSync|DCSync]] attack. [this](http://web.archive.org/web/20200919080216/https://github.com/cube0x0/Security-Assessment) tool can be used with the `Get-SpoolStatus` module.
+We can connect to the spool's named pipe with the `RpcOpenPrinter` method, and use `RpcRemoteFindFirstPrinterChangeNotificationEx` method, forcing the server to authenticate to any host provided over SMB. The service runs as SYSTEM and can be leveraged to grant the necessary privileges for a [[Abusing ACLs#DCSync|DCSync]] attack. [This](http://web.archive.org/web/20200919080216/https://github.com/cube0x0/Security-Assessment) tool can be used with the `Get-SpoolStatus` module.
 
+## Enumerating DNS Records
+Tools like [adidnsdump](https://github.com/dirkjanm/adidnsdump) can be really useful to identify interesting DNS entries for servers. This could give meaning to non-descriptive server host names or potentially suggest the purpose or services a host may be running.
+> Background and explanation of the tool can be found in this [post](https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/).
+
+```Bash
+adidnsdump -u [domain]\\[user] ldap://[dc-ip] -r
+
+head records.csv
+```

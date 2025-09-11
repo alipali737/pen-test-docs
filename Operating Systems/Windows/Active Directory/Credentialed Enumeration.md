@@ -102,7 +102,18 @@ Get-ADGroup -Identity "[groupName]"
 Get-ADGroupMember -Identity "[groupName]"
 ```
 > this will tell us who is in a particular group
-
+#### Finding Sensitive Information in the Description Field
+```PowerShell
+Get-DomainUser * | Select-Object samaccountname,description | Where-Object {$_.Description -nq $null}
+```
+#### Check for PASSWD_NOTREQD
+```PowerShell
+Get-DomainUser -UACFilter PASSWD_NOTREQD | Select-Object samaccountname,useraccountcontrol
+```
+#### Check SMB Shares and SYSVOL Scripts
+```PowerShell
+ls \\[hostname]\SYSVOL\[domain]\scripts
+```
 ### PowerView
 [PowerView](https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon) is a tool for PowerShell that serves to gain situational awareness in an AD environment. It provides similar information to BloodHound, providing ways to identify logged in users, enumerate domain information (eg. users, groups, ACLs, trusts), as well as perform file hunting and [[Kerberoasting]].
 > it requires more manual effort to determine misconfigurations and relationships than a tool like [[BloodHound]] but can be very valuable still.
