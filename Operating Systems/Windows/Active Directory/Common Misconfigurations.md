@@ -46,3 +46,28 @@ We can also use [Get-NPUsers.py](https://github.com/SecureAuthCorp/impacket/blob
 ```bash
 GetNPUsers.py [DOMAIN]/ -dc-ip [dc-ip] -no-pass -usersfile [users]
 ```
+
+## Abusing GPOs
+GPOs can be used to:
+- move laterally
+- escalate privileges
+- create machine persistence
+- compromise domains
+
+We can use enumeration tools like [[Credentialed Enumeration#PowerView|PowerView]] and [[BloodHound]] but there is also a number of other tools ([group3r](https://github.com/Group3r/Group3r), [ADRecon](https://github.com/sense-of-security/ADRecon), [PingCastle](https://www.pingcastle.com/), among others).
+### View GPOs
+```PowerShell
+# PowerView
+Get-DomainGPO | select displayname
+```
+```PowerShell
+# Built-In (if Group Policy Management Tools are installed)
+Get-GPO -All | Select DisplayName
+```
+### Enumerate Domain User GPO Rights
+```PowerShell
+$sid=Convert-NameToSid "Domain Users"
+Get-DomainGPO | Get-ObjectAcl | ?{$_.SecurityIdentifier -eq $sid}
+```
+
+[SharpGPOAbuse](https://github.com/FSecureLABS/SharpGPOAbuse) is a great tool for abusing these misconfigurations.
