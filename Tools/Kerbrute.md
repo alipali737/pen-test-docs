@@ -35,6 +35,8 @@ $ kerbrute userenum -d EXAMPLE.LOCAL --dc 1.2.3.4 usernames.txt -o valid_ad_user
 ```
 > A useful wordlist to use is any of these : [statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames)
 
+This will also retrieve any AS-REP that can be used for offline cracking - [[Common Misconfigurations#ASREPRoasting]]
+
 ## Remediation
 ### Username enumeration
 Username enumeration creates the event ID: [4768: A Kerberos authentication ticket (TGT) was requested](https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4768). This is only triggered if [Kerberos event logging](https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/enable-kerberos-event-logging) is enabled via Group Policy. SIEM tools can look for an abnormal influx in this event ID, which could indicate an enumeration attack.

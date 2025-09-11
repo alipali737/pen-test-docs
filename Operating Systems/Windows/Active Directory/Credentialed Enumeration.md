@@ -102,14 +102,6 @@ Get-ADGroup -Identity "[groupName]"
 Get-ADGroupMember -Identity "[groupName]"
 ```
 > this will tell us who is in a particular group
-#### Finding Sensitive Information in the Description Field
-```PowerShell
-Get-DomainUser * | Select-Object samaccountname,description | Where-Object {$_.Description -nq $null}
-```
-#### Check for PASSWD_NOTREQD
-```PowerShell
-Get-DomainUser -UACFilter PASSWD_NOTREQD | Select-Object samaccountname,useraccountcontrol
-```
 #### Check SMB Shares and SYSVOL Scripts
 ```PowerShell
 ls \\[hostname]\SYSVOL\[domain]\scripts
@@ -181,7 +173,14 @@ The [[Active Directory#Service Principal Name (SPN)|SPN]] attribute can suggest 
 ```PowerShell
 Get-DomainUser -SPN -Properties samaccountname,ServicePrincipleName
 ```
-
+#### Finding Sensitive Information in the Description Field
+```PowerShell
+Get-DomainUser * | Select-Object samaccountname,description | Where-Object {$_.Description -nq $null}
+```
+#### Check for PASSWD_NOTREQD
+```PowerShell
+Get-DomainUser -UACFilter PASSWD_NOTREQD | Select-Object samaccountname,useraccountcontrol
+```
 ### SharpView
 This is a .NET port of PowerView (*as the original PV is officially deprecated, but still useful*). 
 > SharpView can be really useful when PowerShell has been hardened or we need to try avoid it.
