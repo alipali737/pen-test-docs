@@ -134,6 +134,25 @@ Get-DomainUser -Identity * | ? {$_.useraccountcontrol -like '*ENCRYPTED_TEXT_PWD
 ![[Mimikatz#Abusing ACLs DCSync DCSync]]
 
 
+## SID History
+The [sidHistory](https://docs.microsoft.com/en-us/windows/win32/adschema/a-sidhistory) attribute can have old SID's (*from another domain during a migration scenario*) added to ensure a new account doesn't lose its previous accesses when migrated. Through SID History injection, we can add the SID for administrators or domain admins to an account we control, thus gaining privileges which could lead to a [[#DCSync]] attack or TGT.
+
+### Child -> Parent Domain compromise (ExtraSids attack)
+We can use this same attribute from a compromised child domain to gain access to a group in the parent domain. We need the following information:
+- The KRBTGT account hash for the child domain (*Use [[Abusing ACLs#DCSync | Mimikatz dcsync]] to gain the NT hash for the `krbtgt` account*)
+- The SID for the child domain (*[[Credentialed Enumeration#PowerView|PowerView]] `Get-DomainSID`*)
+- The name of a target user in the child domain (does not need to exist)
+- The FQDN of the child domain
+- The SID of the target group in the parent domain (*`activedirectory`'s `Get-ADGroup -Identity '[target-group]' -Server '[parent-domain]'`*)
+
+> we can use `ls \\[FQDN-in-parent-domain]\c$` to prove we can't access it
+
+We can then use [[Mimikatz]] to create the golden ticket:
+![[Mimikatz#Create a Golden Ticket]]
+We can now access any resource in the parent domain (*depending on the target group though*)
+This can also be done with [[Rubeus]] too: 
+![[Rubeus#Create a golden ticket]]
+
 ## Remediation and Detection
 ### Regular auditing for dangerous ACLs
 - Regularly check for dangerous ACL configurations and remove them

