@@ -153,6 +153,14 @@ We can now access any resource in the parent domain (*depending on the target gr
 This can also be done with [[Rubeus]] too: 
 ![[Rubeus#Create a golden ticket]]
 
+We can then perform something like a [[#DCSync]] attack if we have chosen a group with strong enough permissions (eg. `Enterprise Admins`)
+
+**Linux**
+This can also be done in linux:
+- we can use [[#Using secretsdump.py|secretsdump.py]] to perform a DCSync attack to get the nthash for krbtgt.
+- We can use `lookupsid.py [domain]/[our-user]@[child-dc-ip] | grep 'Domain SID'` to get the child domain SID
+- 
+
 ## Remediation and Detection
 ### Regular auditing for dangerous ACLs
 - Regularly check for dangerous ACL configurations and remove them
