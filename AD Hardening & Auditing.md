@@ -103,3 +103,8 @@ It uses a terminal user interface menu to select what options we want to use to 
 group3r.exe -f <outfile.log>
 ```
 > We must specify either `-s` for stdout or `-f` for file output
+
+The tool will present `findings` which can be more interesting paths or objects that other tools may overlook.
+
+## ADRecon
+If we aren't trying to be stealthy, [ADRecon](https://github.com/adrecon/ADRecon) is a really valuable tool which can help us gain a large amount of data quickly. Some minor points in here might be worth point out to a customer. It will generate a HTML report, and CSV files but requires Excel to be installed.
