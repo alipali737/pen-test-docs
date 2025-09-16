@@ -86,3 +86,20 @@ Misconfigurations, legacy versions, new and emerging threats, and vulnerabilitie
 - *Credentialed Enumeration* - `TA0006` - Monitoring for unusual activity from user accounts: movement of files, multiple RDP requests etc can all help tip off defenders
 - *LOTL* - `N/A` - Harder to spot but can be compared to user behaviour and baseline network traffic. Watch for command shells
 - *Kerberoasting* - `T1558/003` - Use strong encryption schemes, use Group Managed service accounts, periodic auditing of permissions and group memberships
+
+## Creating a snapshot view of an AD Environment
+Using [AD Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/adexplorer), we can create a point in time snapshot of an AD environment. This can be useful for offline viewing and comparison. This can be useful for a before and after view of what changed during the test.
+
+## Using PingCastle to map and graph an AD
+[PingCastle](https://www.pingcastle.com/documentation/) is a tool like [[BloodHound]] but it offers additional reports that can give us a better understanding of the security posture of the environment. It uses the [Capability Maturity Model Integration](https://en.wikipedia.org/wiki/Capability_Maturity_Model_Integration) (CMMI) system to score several security elements in the environment and highlight any weaker areas.
+> If there is an issue starting the tool, you can change the system date to before 31st July 2023 in control panel (Set the date and time)
+
+It uses a terminal user interface menu to select what options we want to use to scan the environment and map it.
+`healthcheck` is the default option that will produce a baseline security report, but we can also use the `scanner` to look at more advanced searches such as vulnerability susceptibility, shares, trusts etc.
+
+## Auditing Group Policy with Group3r
+[Group3r](https://github.com/Group3r/Group3r) is a tool for finding vulnerabilities in AD associated with Group Policy. It must be run from a domain-joined host with a domain user (or in the context of a domain user `runas /netonly`).
+```Batch
+group3r.exe -f <outfile.log>
+```
+> We must specify either `-s` for stdout or `-f` for file output
