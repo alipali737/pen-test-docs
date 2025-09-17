@@ -549,3 +549,43 @@ View passwords (if we have access) and their expiries:
 ```PowerShell
 PS C:\> Get-LAPSComputers
 ```
+
+### Credential Manager
+[Credential Manager](https://learn.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication#windows-vault-and-credential-manager) is a feature added to windows that allows users and applications to securely store credentials relevant to other hosts or websites. There is no public documentation on exactly how it works but it stores credentials in specially encrypted folders under the user and system profiles:
+- `%UserProfile%\AppData\Local\Microsoft\Vault\`
+- `%UserProfile%\AppData\Local\Microsoft\Credentials\`
+- `%UserProfile%\AppData\Roaming\Microsoft\Vault\`
+- `%ProgramData%\Microsoft\Vault`
+- `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault`
+Each vault folder contains a `Policy.vpol` file with AES keys (128 or 256) that is protected by [[Password Attacks#Attacking LSASS|DPAPI]]. The AES keys are used to encrypt stored credentials. Newer versions of windows also use *Credential Guard* to further protect the DPAPI master keys by storing them in secured memory enclaves ([Virtualization-based Security](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs)).
+
+> Microsoft most often refers to the protected stores as *Credential Lockers* (formerly *Windows Vault*). Credential Manager is the user-facing API.
+
+You can store either:
+- *Web credentials* : Creds associated with websites and online accounts. Used by Internet Explorer and Legacy versions of Edge.
+- *Windows credentials* : Used to store login tokens for various services such as OneDrive, local network resources, services, and shared directories
+
+> Backups can be taken as `.crd` files and encrypted with a user-supplied password.
+
+#### Attacking Credential Manager
+We can use [cmdkey](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmdkey) to enumerate the credentials stored in the current user's profile:
+```Batch
+cmdkey /list
+```
+> Credentials have several fields this command will display:
+> - `Target` : the resource or account name this cred is for
+> - `Type` : the kind of credential, `Generic` is common for general credentials, `Domain Password` is for domain user logons
+> - `User` : the user account associated with the credential
+> - `Persistence` : some credentials will have `Local Machine Persistence`, this means they survive reboots
+
+If we find a credential a domain user credential with `Interactive`, we can likely use it with `runas`:
+```batch
+Target: Domain:interactive=SRV01\mcharles
+Type: Domain Password
+User: SRV01\mcharles
+
+C:\> runas /savecred /user:SRV01\mcharles cmd
+```
+
+We can also extract via [[Mimikatz]]:
+![[Mimikatz#Extracting from Credential Manager]]
