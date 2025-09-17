@@ -36,5 +36,5 @@ We can also use display filters to search for string eg. `http contains passw`.
 
 Pcredz can be run by either cloning the repo and installing the deps, or running the docker container - [Install](https://github.com/lgandx/PCredz?tab=readme-ov-file#install)
 ```bash
-./Pcredz` -f demo.pcapng -t -v
+python3 ./Pcredz -f demo.pcapng -t -v
 ```
