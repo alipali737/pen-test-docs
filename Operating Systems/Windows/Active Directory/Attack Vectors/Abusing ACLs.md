@@ -109,7 +109,7 @@ Get-DomainUser -Identity [user] | select samaccountname,objectsid,memberof | fl
 This will give us the `DC` identifier that we need eg. `DC=INLANEFREIGHT,DC=LOCAL` and it will also give us the user's `SID`.
 ```PowerShell
 $sid = "[user_sid]"
-Get-DomainObjectAcl "[DC_identifier]" -ResolveGUIDs | ? {($_.ObjectAceType -match 'Replication-Get')} | ?{$_.SecurityIdentifier -match $sid} | select AceQualifier, ObjectDN, ActiveDirectoryRights,SecurityIdentifier,ObjectAceType | fl
+Get-DomainObjectAcl "[DC=...]" -ResolveGUIDs | ? {($_.ObjectAceType -match 'Replication-Get')} | ?{$_.SecurityIdentifier -match $sid} | select AceQualifier, ObjectDN, ActiveDirectoryRights,SecurityIdentifier,ObjectAceType | fl
 ```
 This will then show us all the replication permissions for that user. We are looking for `DS-Replication-Get-Changes-All`.
 
