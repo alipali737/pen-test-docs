@@ -81,6 +81,14 @@ Restart-Service WinRM
 Enter-PSSession -ComputerName DEV01 -Credential INLANEFREIGHT\backupadm -ConfigurationName backupadmsess
 ```
 Now our TGT will be cached and we can interact with other resources.
+
+We can also use the PSCredentials like above and PSSession together:
+```PowerShell
+$user = "[domain]\[user]"  
+$Password = ConvertTo-SecureString "[pass]" -AsPlainText -Force  
+$credentials = New-Object System.Management.Automation.PSCredential ($user, $Password)
+Enter-PSSession -ComputerName "[target]" -Credential $credentials
+```
 ## Kerberos
 ![[Kerberos#Summary]]
 ![[Kerberos#How it works]]
