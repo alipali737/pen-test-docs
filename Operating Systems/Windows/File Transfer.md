@@ -183,7 +183,7 @@ Copy-Item -Path <remote path> -Destination <local path> -FromSession $Session
 ## Using RDP
 You can mount a drive as part of RDP
 ```bash
-xfreerdp /v:10.10.10.132 /d:<domain> /u:<user> /p:<password> /drive:<local path>,<remote path>
+xfreerdp /v:10.10.10.132 /d:<domain> /u:<user> /p:<password> /drive:<name>,<local path>
 ```
 
 ## Encrypting Files with AES
