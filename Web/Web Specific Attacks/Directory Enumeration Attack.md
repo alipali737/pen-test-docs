@@ -11,3 +11,6 @@ Can also be done with the python based software `dirsearch`:
 ```bash
 (Kali@Kali) $ dirsearch -u https://www.example.com
 ```
+
+## Using ffuf
+![[ffuf#Directory Fuzzing]]
