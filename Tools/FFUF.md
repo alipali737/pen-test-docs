@@ -54,9 +54,16 @@ FILTER OPTIONS:
 - `seclists/Discovery/Web-Content/web-extensions.txt` : extension fuzzing
 - `seclists/Discovery/Web-Content/burp-parameter-names.txt` : param discovery
 ## Usage
+A general order to do things is:
+- Sub-domains
+- Vhosts
+- Directories
+- Pages
+- Parameters
+
 #### Adding a host to /etc/hosts
 ```bash
-sudo sh -c 'echo "[ip]  [host]" >> /etc/hosts'
+sudo sh -c 'echo "[ip] [host]" >> /etc/hosts'
 ```
 
 ### Directory Fuzzing
@@ -115,5 +122,10 @@ ffuf -w params.txt:FUZZ -u https://example.com/admin.php -X POST -d 'FUZZ=key'
 Often, we will need custom-wordlists when fuzzing parameter values. Sometimes we can find pre-made lists (eg. usernames, passwords etc). Other times we will need to create our own. 
 Eg. To create a sequential ID list
 ```bash
-for i in $(seq 1 1000); do echo $1 >> ids.txt; done
+for i in $(seq 1 1000); do echo $i >> ids.txt; done
+```
+
+We can then fuzz just like in [[#Parameter Fuzzing - POST]] but fuzzing the value, not the key.
+```bash
+ffuf -w values.txt:FUZZ -u https://example.com/admin.php -X POST -d 'id=FUZZ'
 ```
