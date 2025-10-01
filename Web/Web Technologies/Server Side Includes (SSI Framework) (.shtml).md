@@ -1,3 +1,12 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
 SSI is a simple interpreted **server-side scripting language**. Most useful for including the contents of one or more files into a webpage on a webser, using its `#includes` directive.
 
 #### Supported on:

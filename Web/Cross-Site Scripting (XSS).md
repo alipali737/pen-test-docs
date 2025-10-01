@@ -1,3 +1,12 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
 Cross-Site Scripting is a type of injection where JavaScript code can be injected into a website. A XSS attack is where an attacker has embedded malicious code, often in the form of a browser-side script that is then sent to an unsuspecting user when they request the webpage.
 
 These attacks can occur anywhere a web application uses input from a user within the output it generates without validating or encoding it. The malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site. These scripts can even rewrite the content of the HTML page.

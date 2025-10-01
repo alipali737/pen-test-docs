@@ -6,6 +6,7 @@ maxLevel: 3 # Include headings up to the specified level
 includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
+
 SSTI is when user input is accepted as a value in a template that is used in the webpage's response. This means an attacker can submit native template syntax to inject a malicious payload into a template, which is then executed server-side.
 
 This can pose the possibility for RCE for an attacker.
