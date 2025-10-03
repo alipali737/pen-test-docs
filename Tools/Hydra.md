@@ -35,8 +35,13 @@ hydra [login_options] [password_options] [attack_options] [service_options]
 
 ### HTTP Post
 ```bash
-[domain] http-post-form "/[path]:[data]:[failed_when]"
+[domain] http-post-form "/[path]:[data]:[conditition]"
 www.example.com http-post-form "/login.php:user=^USER^&pass=^PASS^:F=incorrect"
+```
+> For the condition, we can either use `F=` for failure strings or `S=` for success (although failure is more common). This can also be status codes, eg. `S=302` if it redirects after success.
+### HTTP Basic Auth
+```
+hydra -l user -P passwords.txt www.example.com http-get /
 ```
 
 ### Multiple Targets
