@@ -139,11 +139,23 @@ grep -E '^([A-Z])' [file_in] > [file_out]
 
 # At least 1 capital
 grep -E '[A-Z]' [file_in] > [file_out]
+
+# At least 2 special characters from a set
+grep -E '([!@#$%^&*].*){2,}' [file_in] > [file_out]
 ```
 
 Get the number of passwords in a list with:
 ```bash
 wc -l [list]
+```
+
+## Common User Passwords Profiler (CUPP)
+CUPP is a tool for generating highly personalised password wordlists for a specific target. It takes information that you have gathered (eg. OSINT) and generates potential passwords.
+```bash
+sudo apt install cupp -y
+```
+```bash
+cupp -i
 ```
 
 ## Password Spraying
@@ -243,6 +255,17 @@ import-module .\PowerView.ps1
 Get-DomainPolicy
 ```
 
+#### Linux - Username Anarchy
+Username Anarchy is a script that generates a variety of different format usernames for a user
+```bash
+# You must have ruby installed
+sudo apt install ruby -y
+
+git clone https://github.com/urbanadventurer/username-anarchy.git
+
+
+./username-anarchy Jane Smith > jane_smith_usernames.txt
+```
 ### Performing the spray
 #### AD - RPC - rpcclient
 ```bash
