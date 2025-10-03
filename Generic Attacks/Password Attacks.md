@@ -203,6 +203,18 @@ kerbrute userenum -d [domain] --dc [dc-ip] [wordlist]
 crackmapexec smb [ip] -u [username] -p [password] --users
 ```
 
+#### Linux - Username Anarchy
+Username Anarchy is a script that generates a variety of different format usernames for a user
+```bash
+# You must have ruby installed
+sudo apt install ruby -y
+
+git clone https://github.com/urbanadventurer/username-anarchy.git
+
+
+./username-anarchy Jane Smith > jane_smith_usernames.txt
+```
+
 ### Identifying the password policy
 
 In Active Directory, the property `password complexity` means that you must have 3/4 of:
@@ -255,17 +267,6 @@ import-module .\PowerView.ps1
 Get-DomainPolicy
 ```
 
-#### Linux - Username Anarchy
-Username Anarchy is a script that generates a variety of different format usernames for a user
-```bash
-# You must have ruby installed
-sudo apt install ruby -y
-
-git clone https://github.com/urbanadventurer/username-anarchy.git
-
-
-./username-anarchy Jane Smith > jane_smith_usernames.txt
-```
 ### Performing the spray
 #### AD - RPC - rpcclient
 ```bash
