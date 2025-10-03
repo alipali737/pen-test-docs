@@ -132,10 +132,18 @@ The [DefaultCreds-Cheat-Sheet](https://github.com/ihebski/DefaultCreds-cheat-she
 
 ```bash
 # Limit the list to only passwords of 6+ chars
-$ grep -E '^.{6,}$' [file_in] > [file_out]
+grep -E '^.{6,}$' [file_in] > [file_out]
 
 # Limit the list to only passwords starting with capitals 
-$ grep -E '^([A-Z])' [file_in] > [file_out]
+grep -E '^([A-Z])' [file_in] > [file_out]
+
+# At least 1 capital
+grep -E '[A-Z]' [file_in] > [file_out]
+```
+
+Get the number of passwords in a list with:
+```bash
+wc -l [list]
 ```
 
 ## Password Spraying
