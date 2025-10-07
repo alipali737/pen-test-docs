@@ -26,13 +26,12 @@ Either you can use the built in pre-configured browser or we can configure a nor
 1. Once using the proxy, navigate to http://burp and download the CA certificate
 2. Then import the certificate into the browser (eg. firefox - about:preferences#privacy>view-certificates>authorities)
 3. We need to make sure to trust the CA certificate to identify email users and websites.
-### Automatic Modification
+### Automatic Request Modification
 In the (*Proxy>Options>Match and Replace*) we can define criteria to automatically match and modify the requests. 
 > This can be useful if we want to change a header for example in every request.
 > This method can also be performed on the response too by adding another rule
 
 ### Proxy with other tools
-
 #### [[Proxychains]]
 As [[Proxychains]] supports HTTP proxying, we can setup a proxy in the config: `http 127.0.0.1 8080` which will direct any network traffic produced when using proxychains through Burp.
 
