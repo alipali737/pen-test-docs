@@ -19,6 +19,7 @@ First the establishment of the *Security Association* (SA) between two points ma
 1. A secure channel is created between two endpoints using either a Pre-Shared Key (`PSK`) or certificates, using either Main mode (which uses three pairs of messages) or Aggressive mode.
 2. Although not mandatory, Extended Authentication Phase is when the identify of the user attempting to connect is verified by username and password.
 3. Negotiation of parameters for securing data with ESP and AH happens next. It allows for using different algorithms to the first phase, ensuring *Perfect Forward Secrecy* (*PFS*)
+![[Pasted image 20251007163020.png]]
 ## Enumeration Checklist
 ### Identify valid transformations
 IPSec can be configured to only accept one or a few transformations (these are combinations of values). Each transformation contains a number of attributes like:
@@ -69,5 +70,16 @@ or with [[Nmap]] script `ike-version`
 ### Finding the correct ID (group name)
 To be able to capture a hash we need to use the valid transformation supporting aggressive mode and the correct ID (group name). We will likely have to brute-force the group name.
 ```bash
-ike-scan -P -M -A -n fakeID []
+ike-scan -P -M -A -n fakeID [ip]
 ```
+> this method will only work if it DOES NOT send back a hash, if it does, then its likely creating a fake hash for our fake user so it won't be good for brute-forcing.
+
+If no hash is returned from above, we can proceed with :
+```bash
+while read line; do (echo "Found ID: $line" && sudo ike-scan -M -A -n $line <IP>) | grep -B14 "1 returned handshake" | grep "Found ID:"; done < /usr/share/wordlists/external/SecLists/Miscellaneous/ike-groupid.txt
+```
+> We can also use the [dictionary of ikeforce](https://github.com/SpiderLabs/ikeforce/blob/master/wordlists/groupnames.dic) or https://book.hacktricks.wiki/files/vpnIDs.txt which is a combination of both without duplicates
+
+Alternatively, we can try:
+- [iker.py](https://github.com/isaudits/scripts/blob/master/iker.py) which uses `ike-scan` but follows its own method to find a valid ID based on the output of ike-scan
+- [ikeforce.py](https://github.com/SpiderLabs/ikeforce) which will try to use different exploits to distinguish between valid and non-valid IDs (can have false positives/negatives)
