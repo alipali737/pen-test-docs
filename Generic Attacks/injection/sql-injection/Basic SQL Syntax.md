@@ -1,3 +1,12 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
 SQL syntax can differ between RDBMS but they all follow the [ISO Standard](https://en.wikipedia.org/wiki/ISO/IEC_9075).
 
 SQL can be used to perform the following actions:
@@ -9,7 +18,7 @@ SQL can be used to perform the following actions:
 - Assign permissions to these users
 
 ## Database Interaction
-#### Authentication
+### Authentication
 ```bash
 mqsql -u root -p
 ```
@@ -20,7 +29,7 @@ By default the `localhost` address will be used if not passed, otherwise a host 
 
 The default port for MySQL/MariaDB is (`3306`)
 
-#### Creating the DB
+### Creating the DB
 Once authentiacted you can create a database with:
 ```sql
 CREATE DATABASE users;
@@ -30,7 +39,7 @@ CREATE DATABASE users;
 
 SQL expects all queries to end with a `;`
 
-#### Listing all DB's
+### Listing all DB's
 ```sql
 SHOW DATABASES;
 ```
@@ -47,7 +56,7 @@ You will get a list of all the available databases
 +--------------------+
 ```
 
-#### Selecting a DB
+### Selecting a DB
 ```sql
 USE users;
 
