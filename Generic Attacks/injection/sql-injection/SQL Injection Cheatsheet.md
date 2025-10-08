@@ -53,12 +53,13 @@ This will return something like this:
 | ------------- | ------------ | ---------- | ---------- |
 | MyDatabase    | dbo          | Products   | BASE TABLE |
 | MyDatabase    | dbo          | Users      | BASE TABLE |
-| OtherDatabase | public       | Feedback   | BASE TABLE | 
+| OtherDatabase | public       | Feedback   | BASE TABLE |
 
 Finding columns is simple after this:
 ```sql
 SELECT * FROM information_schema.columns WHERE table_name = 'Users'
 ```
+> Table layout : https://dev.mysql.com/doc/mysql-infoschema-excerpt/8.0/en/information-schema-columns-table.html
 
 Equivalent information for *Oracle*:
 ```sql
