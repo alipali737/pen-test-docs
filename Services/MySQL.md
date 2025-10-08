@@ -41,12 +41,12 @@ sudo apt install mysql-server -y
 - *information schema* (*information_schema*) : metadata database
 - *mysql* : system database that information required by MySQL Server
 - *performance schema* (*performance_schema*) : feature for monitoring MySQL Server execution at a low level
+## [[Basic SQL Syntax]]
 
 ## Potential Capabilities
 - Potentially gain access to sensitive information in the database
 - View sensitive logs and error outputs that could indicate further attack possibilities
 - RCE by writing files to executable directories
-
 ### RCE (Writing files)
 MySQL doesn't have a way to directly execute code (unlike [[MSSQL#RCE]]), but you can write files, meaning you could write a file to an executable dir (eg. a web server root) and then execute it through the web server. If the mysql service has enough privileges, it can write using `SELECT INTO OUTFILE`.
 ```sql

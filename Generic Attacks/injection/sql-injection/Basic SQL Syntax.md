@@ -20,7 +20,7 @@ SQL can be used to perform the following actions:
 ## Database Interaction
 ### Authentication
 ```bash
-mqsql -u root -p
+mysql -u [user] -p -h [host/ip] -P [port]
 ```
 ***Note:** we do not pass the `-p` with the password as the password could be stored in plain text in the bash_history file. Instead it will prompt us to securely enter the password.*
 ***Tip:** if a password is passed, there should be no space eg. `-p<password>`*
