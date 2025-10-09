@@ -20,6 +20,9 @@ Web scanner tools can be used for this purpose for quick and efficient detection
 - `#` : `%23`
 - `;` : `%3B`
 - `)` : `%29`
+- `-- `
+
+Sometimes we might find that we can escape with `'` but the query needs to be valid so it may need `')` to correctly balance and terminate the brackets (it may need multiple brackets). Then we can comment out the rest of the query and run UNIONS (`')-- `). 
 
 ## Discovering System Information
 - There is often variables and tables that come as default for many SQL implementations that details the versions and technologies used
