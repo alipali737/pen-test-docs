@@ -34,7 +34,10 @@ git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
 - `heuristic (basic) test shows that GET parameter 'id' might be injectable (possible DBMS: 'MySQL')` : means that the get parameter needs to be tested further and it has attempted to guess the DBMS provider based on output.
 - `heuristic (XSS) test shows that GET parameter 'id' might be vulnerable to cross-site scripting (XSS) attacks` : SQLMap also quickly runs XSS tests. Its nice to have when running against large websites, *two birds with one stone*.
 - `reflective value(s) found and filtering out` : a warning to say that some parts of the payload can be seen in the output so they need to be filtered out before comparing the original page content (*SQLMap does this filtering automatically*).
-- 
+- `GET parameter 'id' appears to be 'AND boolean-based blind - WHERE or HAVING clause' injectable (with --string="luther")` : This means that SQLMap believes this parameter is a boolean-based blind injection. The `with --string="luther"` is important as it shows that its using this consistent value as its source of TRUE and FALSE responses; this is good as we don't need to use advanced internal mechanisms which could be more susceptible to false-positives.
+- `time-based comparison requires a larger statistical model, please wait...(done)` : uses a statistical model for the recognition of regular and (deliberately) delayed target responses. To use this model, SQLMap must collect a large number of responses.
+- `automatically extending ranges for UNION query injection technique tests as there is at least on other (potential) technique found` : it takes a large number of requests needed to be able to recognise usable UNION payloads, compared to other techniques. It is capped by default but this cap it extended if there is a good chance of vulnerability.
+- `Get parameter 'id' is vulnerable. Do you want to keep testing the others (if any)?` : if we are doing a pentest then we want to test everything, not just find a single vulnerability.
 
 ## Usage
 ```bash
