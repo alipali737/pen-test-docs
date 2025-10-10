@@ -27,4 +27,24 @@ git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
 ## Documentation
 **Cheatsheet:** 
 **Website:** https://github.com/sqlmapproject/sqlmap
+
+## Important log messages
+- `Target URL content is stable` : means that the responses are fairly consistent meaning its easier to spot the effects of SQLi attempts
+- `GET parameter 'id' appears to be dynamic` : `dynamic` means that changes made to its value, change the output in the response (opposite is `static`)
+- `heuristic (basic) test shows that GET parameter 'id' might be injectable (possible DBMS: 'MySQL')` : means that the get parameter needs to be tested further and it has attempted to guess the DBMS provider based on output.
+- `heuristic (XSS) test shows that GET parameter 'id' might be vulnerable to cross-site scripting (XSS) attacks` : SQLMap also quickly runs XSS tests. Its nice to have when running against large websites, *two birds with one stone*.
+- `reflective value(s) found and filtering out` : a warning to say that some parts of the payload can be seen in the output so they need to be filtered out before comparing the original page content (*SQLMap does this filtering automatically*).
+- 
+
 ## Usage
+```bash
+sqlmap -h # Basic options (most common)
+sqlmap -hh # Advanced options
+```
+
+### GET Parameters
+```bash
+sqlmap -u "https://example.com/index.php?id=1" --batch
+```
+> `--batch` skips all user-input, automatically choosing based on the default options
+>
