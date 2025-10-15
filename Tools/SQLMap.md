@@ -44,10 +44,10 @@ git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
 sqlmap -h # Basic options (most common)
 sqlmap -hh # Advanced options
 ```
-
+> A useful trick is to take a HTTP request in 
 ### GET Parameters
 ```bash
 sqlmap -u "https://example.com/index.php?id=1" --batch
 ```
 > `--batch` skips all user-input, automatically choosing based on the default options
->
+
