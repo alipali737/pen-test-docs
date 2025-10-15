@@ -61,3 +61,12 @@ sqlmap -u "https://example.com/login.php" --data 'username=test&password=*'
 
 ### Avoiding Detection
 The `--random-agent` will change the `user-agent` header to use a regular browser value (*it picks from an internal database at random*). The `--mobile` simulates a mobile browser.
+
+### Display Errors
+`--parse-errors` will attempt to parse DBMS errors and display them as part of the logging.
+
+### Store the traffic
+If we want to save a copy of the traffic we can use `-t`. This can be useful for debugging as it will show us all requests made.
+
+### Using a proxy
+If we need to redirect traffic through a proxy (eg. [[Burp Suite]]) then we can use `--proxy`
