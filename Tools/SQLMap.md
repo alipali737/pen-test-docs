@@ -44,10 +44,20 @@ git clone --depth 1 https://github.com/sqlmapproject/sqlmap.git sqlmap-dev
 sqlmap -h # Basic options (most common)
 sqlmap -hh # Advanced options
 ```
-> A useful trick is to take a HTTP request in 
+> A useful trick is to take a HTTP request from a browser, `copy as cURL` and then paste that directly into `sqlmap` as it takes the same format.
+> It can also use a request file using `-r [filename]` so we can save requests as files from [[Burp Suite]] and then use them with `sqlmap`.
 ### GET Parameters
 ```bash
 sqlmap -u "https://example.com/index.php?id=1" --batch
 ```
 > `--batch` skips all user-input, automatically choosing based on the default options
 
+### POST Parameters
+```bash
+sqlmap -u "https://example.com/login.php" --data 'username=test&password=*'
+```
+> The `*` indicates that tests should only use the marked parameter, otherwise they will try all
+> We can also specify a particular parameter with `-p username`
+
+### Avoiding Detection
+The `--random-agent` will change the `user-agent` header to use a regular browser value (*it picks from an internal database at random*). The `--mobile` simulates a mobile browser.
