@@ -97,6 +97,22 @@ A good initial enumeration command:
 sqlmap -u "..." --banner --current-user --current-db --is-dba
 ```
 
+### File Reading / Writing
+These actions are often locked behind specific privileges but sometimes we are able to read/write files on the server.
+For reading, we write the contents of a file to a table and then get the table. We should check if we are dba (`--is-dba`) as they are most likely to have the appropriate permissions for this.
+```bash
+sqlmap -u "..." --file-read "/etc/passwd"
+```
+> This will then tell us where it wrote the file too eg. `~/.sqlmap/output/[host]/files/_etc_passwd`
+
+File writing is often a lot more locked down than reading but can occasionally be done as the DBMS sometimes needs to do this.
+```bash
+sqlmap -u "..." --file-write "shell.php" --file-dest "/var/www/html/shell.php"
+```
+
+### OS Command Execution
+sqlmap will try a variety of techniques to gain an OS shell (eg. writing a webshell like above, writing SQL commands that execute OS commands, or even things like `xp_cmdshell` in MSSQL). We can request a shell using `--os-shell`.
+
 ### Password Cracking
 SQLMap automatically searches for anything that resembles a hash and automatically attempts to crack them with its internal engine. It supports a plethora of hash algorithms and an internal dictionary of millions of passwords. The `--passwords` flag is a shortcut for grabbing the DB users' password hashses and cracking them.
 
