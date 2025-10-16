@@ -68,5 +68,30 @@ The `--random-agent` will change the `user-agent` header to use a regular browse
 ### Store the traffic
 If we want to save a copy of the traffic we can use `-t`. This can be useful for debugging as it will show us all requests made.
 
+### Verbose
+Verbose has 6 levels depending on how much you wish to log at each level.
+
 ### Using a proxy
 If we need to redirect traffic through a proxy (eg. [[Burp Suite]]) then we can use `--proxy`
+
+### Specifying custom Prefix / Suffix
+```bash
+sqlmap -u "..." --prefix="')" --suffix="-- -"
+```
+
+### Level / Risk
+An `sqlmap` payload contains two things, the **vector** (*the actual SQL code being injected*) eg. `UNION ALL SELECT 1,2,VERSION()` and the **boundaries** (*the injection mechanism*) eg. prefix: `'))` suffix: `-- -`.
+`--level` is a value (1-5, default 1) that extends both the vectors and boundaries being tested, the lower the expected chance of success, the higher the required level to test it.
+`--risk` is a value (1-3, default 1) that extends the vectors set based on their risk of causing problems (eg. data loss and DoS).
+
+### Success Criteria
+Sometimes we need to specify manually the success criteria:
+- `--code` can be used to specify which status code is a successful injection
+- `--titles` can be used to base the comparison on the webpage `<title>` field
+- `--strings` can be used to fixate detection on the occurrence of a string in the response
+- `--text-only` strips out all the HTML tags for hidden content and only does matches against the visible (textual) content on the page
+
+### Specifying a technique
+`--technique` you can specify the SQLi technique you want to use.
+
+### U
