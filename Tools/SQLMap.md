@@ -93,5 +93,12 @@ Sometimes we need to specify manually the success criteria:
 
 ### Specifying a technique
 `--technique` you can specify the SQLi technique you want to use.
+![[#Summary]]
 
-### U
+
+### Union SQLi Tuning
+There are some extra parameters that can be specified for Union SQLi:
+- `--union-cols` can be used to specify which number of columns to use
+- `--union-char` can be used to specify an alternative value (instead of `NULL` or a random integer) to use in the columns
+- `--union-from` can be used to specify a FROM table
+
