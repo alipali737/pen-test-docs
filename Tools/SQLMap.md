@@ -59,6 +59,9 @@ sqlmap -u "https://example.com/login.php" --data 'username=test&password=*'
 > The `*` indicates that tests should only use the marked parameter, otherwise they will try all
 > We can also specify a particular parameter with `-p username`
 
+### Extracting Data
+The `--dump` flag will attempt to exfiltrate content out from the specified data after an SQLi mechanism has been discovered
+
 ### Avoiding Detection
 The `--random-agent` will change the `user-agent` header to use a regular browser value (*it picks from an internal database at random*). The `--mobile` simulates a mobile browser.
 
@@ -102,3 +105,7 @@ There are some extra parameters that can be specified for Union SQLi:
 - `--union-char` can be used to specify an alternative value (instead of `NULL` or a random integer) to use in the columns
 - `--union-from` can be used to specify a FROM table
 
+### Focusing on specific content
+`-D` specifies the database to enumerate
+`-T` specifies the table to enumerate
+`-C` specifies the colum(s) to enumerate
