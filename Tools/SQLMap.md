@@ -136,7 +136,6 @@ Sometimes we need to specify manually the success criteria:
 `--technique` you can specify the SQLi technique you want to use.
 ![[#Summary]]
 
-
 ### Union SQLi Tuning
 There are some extra parameters that can be specified for Union SQLi:
 - `--union-cols` can be used to specify which number of columns to use (*this can be a range*)
@@ -144,6 +143,57 @@ There are some extra parameters that can be specified for Union SQLi:
 - `--union-from` can be used to specify a FROM table
 
 ### Focusing on specific content
-`-D` specifies the database to enumerate
-`-T` specifies the table to enumerate
-`-C` specifies the colum(s) to enumerate
+- `-D` specifies the database to enumerate
+- `-T` specifies the table to enumerate
+- `-C` specifies the colum(s) to enumerate
+
+### Bypassing Web Application Protections
+#### Anti-CSRF Token Bypass
+`--csrf-token=[token]` will add the token (we can get this by visiting the website). Alternatively we can include it in the data for a POST request, sqlmap will detect it and ask the user if they want to use it in future requests.
+SQLMap will look for new tokens in returned requests to continue the attack with the next token.
+#### Unique Value Bypass
+If there is a parameter that needs to be unique every time a request is sent, then the `--randomize=[param]` flag can be used.
+#### Calculated Parameter Bypass
+Sometimes we will need to calculate a parameter's value, eg. `h=MD5(username)`. We can use the `--eval="[python code]"` to calculate these values:
+```bash
+sqlmap -u "http://example.com/index.php?id=1&h=abc..123" --eval="import hashlib; h=hashlib.md5(id).hexdigest()"
+```
+#### IP Address Concealing
+We can use a proxy or Tor:
+- `--proxy="http://127.0.0.1:8080"`
+- `--proxy-file` : can be used if we have multiple
+- `--tor` : this will make SQLMap check your local system for the proxy tor will create (if its installed and running), `--check-tor` can be used to validate before an attack
+#### WAF Bypass
+SQLMap automatically tries to identify if a WAF is present and then what one. This happens automatically but can be skipped with `--skip-waf`.
+#### User-agent Blacklist Bypass
+By default SQLMap uses `User-agent: sqlmap/1.4.9 (http://sqlmap.org)` as its user-agent. This is often blacklisted so `--random-agent` should be used instead.
+#### Tamper Scripts
+The most popular bypass used in SQLMap, these are python scripts that modify the requests to bypass certain WAFs or IPSs. Many scripts are available that do many different things, a popular example is [between](https://github.com/sqlmapproject/sqlmap/blob/master/tamper/between.py) which changes `>` to `NOT BETWEEN # and #` and `=` to `BETWEEN # AND #`. These can often bypass blacklisted characters and primitive protections. These can be chained together with the `--tamper=[scripts]` flag, these will be executed in a predefined order as some scripts can mess with each other if done in the wrong order.
+
+Some notable tamper scripts (`--list-tampers` will show all):
+
+|**Tamper-Script**|**Description**|
+|---|---|
+|`0eunion`|Replaces instances of UNION with e0UNION|
+|`base64encode`|Base64-encodes all characters in a given payload|
+|`between`|Replaces greater than operator (`>`) with `NOT BETWEEN 0 AND #` and equals operator (`=`) with `BETWEEN # AND #`|
+|`commalesslimit`|Replaces (MySQL) instances like `LIMIT M, N` with `LIMIT N OFFSET M` counterpart|
+|`equaltolike`|Replaces all occurrences of operator equal (`=`) with `LIKE` counterpart|
+|`halfversionedmorekeywords`|Adds (MySQL) versioned comment before each keyword|
+|`modsecurityversioned`|Embraces complete query with (MySQL) versioned comment|
+|`modsecurityzeroversioned`|Embraces complete query with (MySQL) zero-versioned comment|
+|`percentage`|Adds a percentage sign (`%`) in front of each character (e.g. SELECT -> %S%E%L%E%C%T)|
+|`plus2concat`|Replaces plus operator (`+`) with (MsSQL) function CONCAT() counterpart|
+|`randomcase`|Replaces each keyword character with random case value (e.g. SELECT -> SEleCt)|
+|`space2comment`|Replaces space character ( ) with comments `/|
+|`space2dash`|Replaces space character ( ) with a dash comment (`--`) followed by a random string and a new line (`\n`)|
+|`space2hash`|Replaces (MySQL) instances of space character ( ) with a pound character (`#`) followed by a random string and a new line (`\n`)|
+|`space2mssqlblank`|Replaces (MsSQL) instances of space character ( ) with a random blank character from a valid set of alternate characters|
+|`space2plus`|Replaces space character ( ) with plus (`+`)|
+|`space2randomblank`|Replaces space character ( ) with a random blank character from a valid set of alternate characters|
+|`symboliclogical`|Replaces AND and OR logical operators with their symbolic counterparts (`&&` and `\|`)|
+|`versionedkeywords`|Encloses each non-function keyword with (MySQL) versioned comment|
+|`versionedmorekeywords`|Encloses each keyword with (MySQL) versioned comment|
+#### Miscellaneous Bypasses
+Chunked transfer encoding (`--chunked`) will split POST requests body into so-called "chunks". This splits up potentially blacklisted SQL keywords into chunks so they try to go unnoticed across the network.
+A similar thing can be done in GET requests with *HTTP parameter pollution* which splits the payload across multiple parameters named the same thing (eg. `?id=1&id=UNION&id=SELECT&id=username,password&id=FROM&id=users`) which are then concatenated by the target platform if supported (eg. `ASP`).
