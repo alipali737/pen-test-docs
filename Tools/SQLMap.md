@@ -101,7 +101,7 @@ Sometimes we need to specify manually the success criteria:
 
 ### Union SQLi Tuning
 There are some extra parameters that can be specified for Union SQLi:
-- `--union-cols` can be used to specify which number of columns to use
+- `--union-cols` can be used to specify which number of columns to use (*this can be a range*)
 - `--union-char` can be used to specify an alternative value (instead of `NULL` or a random integer) to use in the columns
 - `--union-from` can be used to specify a FROM table
 
