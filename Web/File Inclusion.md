@@ -77,8 +77,17 @@ We can avoid this by prefixing our input with a `/` so its `/../../../../etc/pas
 ```php
 include($_GET["lang"] . ".php");
 ```
-// TODO:
+In modern PHP web applications this is very hard to bypass and could restrict us to only reading files with the appended suffix. However, this may still allow us to read source code for example (*which we could still run vuln scans on to find other issues we could exploit*).
 
+With older PHP apps (*pre-v5.3*) there are still some techniques that could be used. In some versions, defined strings had a max length of 4096 chars, anything more would be truncated, so we could pass a longer string and have it truncated. PHP also used to remove trailing `.`'s and `/`'s in paths. PHP and Linux also ignore multiple prefixed `/`'s (`////etc/passwd`). PHP also disregards any current directory shortcuts in the middle of strings: `/etc/./passwd`.
+> For this truncation technique to work, we have to start with a non-existent directory
+
+This command creates the full string:
+```bash
+echo -n "non_existing_directory/../../../etc/passwd/" && for i in {1..2048}; do echo -n "./"; done
+```
+
+Before PHP v5.5, a *null byte injection* vulnerability was present. When a null byte (`%00`) was added to the end of a string, PHP would terminate it and not consider anything afterwards. We could use a payload such as `/etc/passwd%00`, which would then become `include("/etc/passwd%00.php");`, it would still get processed as `/etc/passwd`. 
 ### Second-Order Attacks
 Another common method, but slightly more advanced is a *Second-Order Attack*. This is where a web application insecurely pulls files from a back-end server based on user-controlled parameters. For example, a web app could get a user's profile picture from `/profile/$username/avatar.png`. The user themselves doesn't control the actual query but they do control their username, thus if their username was `../../../etc/password`, this would become `/profile/../../../etc/password/avatar.png`. This in itself isn't isn't the full attack but could be a leading factor.
 > Developers can often trust values coming from their database but if those values are user-controlled then they can't be trusted.
@@ -94,7 +103,7 @@ We can also use `..././` or `....\/`, these will both have the same result. Addi
 #### Encoding
 We can sometimes get away with URL encoding the entire string:
 ```
-../../../etc/passwd = %2e%2e%2f%2e%2e%2f%2e%2e%2f%65%74%63%2f%70%61%73%73%77%6f%72%64
+../../../etc/passwd = %2e%2e%2f%2e%2e%2f%2e%2e%2f%65%74%63%2f%70%61%73%73%77%64
 ```
 > Burp Decoder can do this easily. We can also double encode this string to bypass other filters.
 #### Approved Paths
