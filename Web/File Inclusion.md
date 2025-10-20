@@ -116,3 +116,10 @@ if(preg_match('/^\.\/languages\/.+$/', $_GET['lang'])) {
 }
 ```
 We must first examine the application's normal behaviour to understand what paths are approved, then we can use an approved path first alongside `../` to escape it afterwards: `/languages/../../../../etc/passwd`.
+
+### PHP Filters
+These are a type of [PHP Wrapper](https://www.php.net/manual/en/wrappers.php.php), where you can pass different types of inputs and have it filtered by the filter we specify. We can use the PHP wrapper scheme `php://filter/` to access the filter wrapper. The wrapper has several parameters, but the main ones are *resource* and *read*. With *resource*, we can specify we want to apply the filter to the local file stream, whilst the *read* parameter allows us to specify we want to apply the resource.
+
+There is four types of filters available to us here: [String Filters](https://www.php.net/manual/en/filters.string.php), [Conversion Filters](https://www.php.net/manual/en/filters.convert.php), [Compression Filters](https://www.php.net/manual/en/filters.compression.php), and [Encryption Filters](https://www.php.net/manual/en/filters.encryption.php). The important filter for LFI attacks is the `convert.base64-encode`, under *Conversion Filters*. We want this filter so we get the source code and not execute it instead.
+
+The first step is to [[ffuf#Page Fuzzing|fuzz]] for php files that we might want to read, we aren't limited to ones that return a `200` too, so `301`, `302`, and `403` are all valid codes to look for. Once we have a list of files we want to view, we can use `php://filter/read=convert.base64-encode/resource=config.php` (*for `config.php`*). This may ne
