@@ -161,3 +161,4 @@ We can test to see if an LFI is also an RFI by first, trying to include a local 
 > Accidental DoS : Its worth including a different page than the vulnerable one as it could become recursive and cause a DoS on the back-end.
 
 We may still however be blocked by a firewall so we might not be able to pull files from external servers.
+
