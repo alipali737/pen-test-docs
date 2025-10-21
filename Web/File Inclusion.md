@@ -151,3 +151,13 @@ The [expect](https://www.php.net/manual/en/wrappers.expect.php) wrapper allows u
 ```bash
 curl -s "http://<SERVER_IP>:<PORT>/index.php?language=expect://id"
 ```
+
+## Remote File Inclusion (RFI)
+RFI is usually not possible because the permissions required are usually disabled by default (*like PHP's `allow_url_include`*). However, when allowed we can have the application include a remotely hosted script that we can then call to potentially gain remote code execution.
+
+We can test to see if an LFI is also an RFI by first, trying to include a local file through a url, eg. `http://127.0.0.1:[port]/index.php`. If we then see it include this, we know RFI is possible.
+> This will also tell us if the first is executed or just included as text.
+
+> Accidental DoS : Its worth including a different page than the vulnerable one as it could become recursive and cause a DoS on the back-end.
+
+We may still however be blocked by a firewall so we might not be able to pull files from external servers.
