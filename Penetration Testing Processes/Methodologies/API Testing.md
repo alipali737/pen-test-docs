@@ -15,3 +15,6 @@ sslscan [host]
 
 1. Check for TLS 1.0 / 1.1 as these are insecure
 2. Check for insecure ciphers being used (*eg. SHA1 hashing is considered insecure now*)
+
+## 2 - ParamMiner
+1. Use Burp Extension ParamMiner to identify if there are any secret parameters that can be injected
