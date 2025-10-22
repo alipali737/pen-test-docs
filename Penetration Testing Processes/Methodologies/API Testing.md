@@ -18,3 +18,8 @@ sslscan [host]
 
 ## 2 - ParamMiner
 1. Use Burp Extension ParamMiner to identify if there are any secret parameters that can be injected
+
+
+
+
+https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
