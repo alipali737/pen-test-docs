@@ -218,4 +218,12 @@ PHP Sessions are stored as files in `/var/lib/php/sessions/sess_[cookievalue]` &
 We are looking for any values we are able to control as a user. We can then modify the value to some PHP code and then include the file again to execute it.
 
 ## Log Poisoning
-If we control an element of the logs (*eg. Apache and Nginx both log the `User-Agent` to the `access.log`*). 
+If we control an element of the logs (*eg. Apache and Nginx both log the `User-Agent` to the `access.log`*). Once poisoned, we can include the logs to trigger the code (*passing any arguments such as `&cmd=id`*). 
+
+The logs may need higher permissions to read but some can be read.
+> Nginx logs are readable to low privileged users by default (eg. www-data), whilst Apache logs aren't unless its older or misconfigured.
+
+> Apache : `/var/log/apache2/` & `C:\xampp\apache\logs\`
+> Nginx : `/var/log/nginx/` & `C:\nginx\log\`
+
+We should use an [LFI Wordlist](https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/LFI) of log locations and see what we can access, once we can access one we can then try poisoning it by sending malicious payloads.
