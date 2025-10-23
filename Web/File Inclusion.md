@@ -211,3 +211,11 @@ php --define phar.readonly=0 shell.php && mv shell.phar shell.jpg
 ```
 phar://shell.jpg/shell.txt&s
 ```
+
+## PHP Session Poisoning
+PHP Sessions are stored as files in `/var/lib/php/sessions/sess_[cookievalue]` & `C:\Windows\Temp\sess_[cookievalue]`. We can then include this file to examine what the session contains.
+
+We are looking for any values we are able to control as a user. We can then modify the value to some PHP code and then include the file again to execute it.
+
+## Log Poisoning
+If we control an element of the logs (*eg. Apache and Nginx both log the `User-Agent` to the `access.log`*). 
