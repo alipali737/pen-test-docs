@@ -247,3 +247,6 @@ Useful Wordlists:
 - Never let user input into any file inclusion functions or APIs.
 - Use a whitelist for user input to restrict it to only allowed files.
 - Use a mapping system to map some identifier to the files in the backend, so the user never controls the actual file path
+- Recursively replacing `../` with blank
+- Ensuring the web server is configured properly (eg. disable inclusion of remote files, locking them to their web root)
+- Running within a container
