@@ -227,3 +227,16 @@ The logs may need higher permissions to read but some can be read.
 > Nginx : `/var/log/nginx/` & `C:\nginx\log\`
 
 We should use an [LFI Wordlist](https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/LFI) of log locations and see what we can access, once we can access one we can then try poisoning it by sending malicious payloads.
+
+## Automated Detection and Scanning
+Its important to fuzz for hidden parameters eg.
+```bash
+ffuf -u "http://example.com/index.php?FUZZ=blah" -w /usr/share/wordlists/SecLists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ
+```
+Once we have a parameter, we can try fuzzing it for various LFI bypasses and common files. A work list like [LFI-Jhaddix.txt](https://github.com/danielmiessler/SecLists/blob/master/Fuzzing/LFI/LFI-Jhaddix.txt) is good for this.
+
+Useful Wordlists:
+- [burp-parameter-names.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/burp-parameter-names.txt) : Finding hidden parameters
+- [LFI-Jhaddix.txt](https://github.com/danielmiessler/SecLists/blob/master/Fuzzing/LFI/LFI-Jhaddix.txt) : Fuzzing for LFI vulnerabilities in a parameter (includes common files and bypasses)
+- [default-web-root-directory-linux.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/default-web-root-directory-linux.txt) : Possibly identify the web root of the application (linux) - need to include a page at the end to reference (eg. index.php)
+- [default-web-root-directory-windows.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/default-web-root-directory-windows.txt) : Possibly identify the web root of the application (windows) - need to include a page at the end to reference (eg. index.php)
