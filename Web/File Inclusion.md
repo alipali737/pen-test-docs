@@ -240,3 +240,10 @@ Useful Wordlists:
 - [LFI-Jhaddix.txt](https://github.com/danielmiessler/SecLists/blob/master/Fuzzing/LFI/LFI-Jhaddix.txt) : Fuzzing for LFI vulnerabilities in a parameter (includes common files and bypasses)
 - [default-web-root-directory-linux.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/default-web-root-directory-linux.txt) : Possibly identify the web root of the application (linux) - need to include a page at the end to reference (eg. index.php)
 - [default-web-root-directory-windows.txt](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/default-web-root-directory-windows.txt) : Possibly identify the web root of the application (windows) - need to include a page at the end to reference (eg. index.php)
+- [Server Logs and Config Files for Linux](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Linux) : Potential server logs or config files to include (linux)
+- [Server Logs and Config Files for Windows](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows) : Potential server logs or config files to include (windows)
+
+## LFI Prevention
+- Never let user input into any file inclusion functions or APIs.
+- Use a whitelist for user input to restrict it to only allowed files.
+- Use a mapping system to map some identifier to the files in the backend, so the user never controls the actual file path
