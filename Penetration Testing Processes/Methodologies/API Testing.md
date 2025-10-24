@@ -34,7 +34,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Identify roles and privileges that define access
 	- eg. `admin`, `user`, `guest`
 
-## 2 - Broken Object Level Authorisation ([API3:2023](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/))
+## 2 - Broken Object Level Authorisation ([API1:2023](https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/) [API3:2023](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/))
 ### 2.1 Object Access Control Manipulation
 - Modify the object reference or identifier to test unauthorised access (eg. `user_id`, `order_id`)
 - Check if users can modify other users' data (eg. `profile`, `cart`)
@@ -46,7 +46,24 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Identify request headers that contain user-specific data and manipulate it
 - Check if API properly enforces server-side verification instead of relying on client-provided identifiers
 
-### 2.3 Mass Assignment and Over-permissived API
+### 2.3 Mass Assignment and Over-permissive API
+> Excessive Data Exposure & Mass assignment (user can change/add/delete sensitive object properties)
+- Identify if API exposes object properties that should be restricted
+	- `is_admin` in request
+	- Look for hidden or omitted fields in responses
+- Send unexpected object fields in API requests to check for mass assignment vulnerabilities
+	- Try to inject fields from related objects
+	- Try to inject fields that are system-controlled such as `timestamp`, `id`, and `role`
+- Modify, assign, active/deactivate authorisation-related fields
+- Test for object deletion / modification by modifying HTTP methods (`PATCH` and `DELETE`)
+
+### 2.4 Insecure Direct Object Reference (IDOR)
+- Try incrementing/decrementing sequential IDs
+- Check previously valid IDs to check for deleted or expired object still accessible
+- Modify references to access resources of other users
+
+## 3 - Broken Function Level Authorisation ([API5:2023](https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/))
+### 3.1 Role Escalation and Privilege Abuse
 
 
 
