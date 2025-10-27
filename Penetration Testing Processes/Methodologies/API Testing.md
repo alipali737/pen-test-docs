@@ -106,8 +106,60 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Ensure CORS policies are properly restrictive
 	- Send request with foreign `Origin` header (`Origin: https://xfr-test.com`)
 	- `Access-Control-Allow-Origin` present? value = `*`? echoed origin? specific domain?
+		- Make sure request's origin is not reflected 
 	- `Access-Control-Allow-Credentials` present and true?
-	- `Access-Control-Expose-Headers`?
+	- `Access-Control-Expose-Headers`
+		- Check if any headers containing credentials are leaked
 	- `Access-Control-Allow-Methods` & `Access-Control-Allow-Headers` for preflight requests?
+- Check for weak authentication mechanisms
+	- Guessable API keys
+	- No MFA
+- Test JWT configurations
+	- Token properly signed and validated?
+	- Test JWT with weak algorithms (`none` algorithm)
+	- Downgrade attack (eg. RS256 -> HS256), set Algo to HS256 and sign using the server's public key (pub key could be at `.well-known/jwks.json`)
+	- If symmetric key, try dictionary attacks for weak secret key
+	- Kid (Key ID) header injection : path traversal, database injection, key confusion, alternative key
+		- Could point it to `/dev/null` and then sign the key with an empty string
+	- Test short-lived tokens and proper revocation mechanisms
+	- Ensure Keys, JWTs, and session tokens aren't hardcoded in source or logs
+	- Server-side denied list or a revocation mechanism?
+
+## 6 - Rate Limiting / Throttling ([API4:2023](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/) [API6:2023](https://owasp.org/API-Security/editions/2023/en/0xa6-unrestricted-access-to-sensitive-business-flows/))
+### 6.1 Reconnaissance
+- Response headers for rate limiting
+	- `X-RateLimit-Limit`
+	- `X-RateLimit-Remaining`
+	- `Retry-After`
+	- `429 Too Many Requests` responses
+- Identify sensitive or abuse-prone functionalities
+	- Authentication flow
+	- OTP/email/SMS - MFA
+	- Self-registration
+	- Search endpoints
+	- Password reset
+### 6.2 Bypass Techniques
+- Header Manipulation
+	- `X-Forwarded-For`, `X-Real-IP`, `True-Client-IP`
+	- Rotate IP headers while sending requests
+	- Change `User-Agent`, `Origin`, or `Referer`
+- Authentication Tokens
+	- Check if limits are per-user/token
+	- Use same token but from different IPs
+	- Use multiple accounts to test global vs per-user throttling
+- IP Rotation
+	- Send requests from different IPs -> test per-IP enforcement
+	- Use `tor`, `residential proxy` or `cloud IPs` to rotate origins
+- Parameter Variation
+	- Slightly change request body/query parameters within each request
+	- Add random data to avoid match detection
+- Path Manipulation
+	- Trailing slashes (`/api/resource` vs `/api/resource/`)
+	- Use encoded path `/api%2Fresource`
+- Multi-threaded/Concurrent Requests
+	- 10, 50, 100 threads and observe
+		- Consistent behaviour
+		- Server performance impact
+
 
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
