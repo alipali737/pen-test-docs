@@ -80,4 +80,28 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	 - Without auth token
 - Empty body / omit required fields to ensure API validation checks
 
+### 3.4 Horizontal and Vertical PrivEsc
+- Can a regular user access another user's actions (*horizontal esc*)
+- Can a regular user access admin actions (*vertical esc*)
+- Session hijacking or token replay to impersonate privileged user?
+
+## 4 - Bypass Techniques ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/) [API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
+- Try to access API without authentication token
+- Use expired token
+- Modify JWT and re-sign if using weak keys
+- Duplicate parameters to bypass authorisation logic
+- Check API error messages for hints about authorisation failures (eg. `Access Denied` vs `Invalid User ID`)
+
+## 5 - API Security Misconfiguration ([API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
+### 5.1 API Exposure and Sensitive Information Disclosure
+- Check if API documentation is publicly accessible
+- Look for verbose error messages that reveal internal information
+- Ensure API doesn't expose sensitive headers, tokens, or env vars
+- Check if directory listing is enabled on API file paths
+- Validate that debugging endpoints don't expose sensitive data
+	- eg. `/debug`, `/health`, `/metrics`
+
+### 5.2 Improper Authentication and Authorisation Settings
+
+
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
