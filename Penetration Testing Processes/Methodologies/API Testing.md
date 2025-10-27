@@ -161,5 +161,55 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 		- Consistent behaviour
 		- Server performance impact
 
+## 7 - Server-Side Request Forgery
+### 7.1 Identify potential SSRF endpoints
+- Look for endpoints that request remote files
+	- File downloaders / image fetchers
+	- PDF/image thumbnail generation
+	- URL preview, metadata extraction
+	- Webhooks, callbacks, pingbacks
+	- Import/Parsers
+	- URL validators, scanners
+	- S3 or storage integrations (`url`, `file_path`)
+	- SSRF sinks embedded in JSON, YAML, or XML payloads
+
+### 7.2 SSRF Payload Tests
+- Test URLs to confirm if server makes a request
+	- Public URLs (eg. `Burp Collaborator`)
+	- Internal URLs (eg. `http://127.0.0.1`, `http://[::1]`)
+
+### 7.3 Bypass Techniques for SSRF Filtering
+- IP Obfuscation
+	- Decimal: `http://21307060433` -> `127.0.0.1`
+	- Hex: `http://0x7f000001`
+	- Octal: `http://0177.0000.0000.0001`
+- Double URL encoding:
+	- `http://%25%33%31%32%37.0.0.1`
+- Redirect chains
+	- `http://attacker.com/redirect?url=http://127.0.0.1`
+- DNS rebinding payloads (host name resolves to external IP first, then internal)
+
+### 7.4 Cloud Metadata Access
+> Specific IP allows Cloud VM to access its own metadata info without an internet connection
+- AWS
+	- `http://169.254.169.254/latest/meta-data/`
+	- `http://169.254.169.254/latest/user-data`
+- GCP
+	- `http://metadata.google.internal/computeMetadata/v1/instance/`
+- Azure
+	- `http://169.254.169.254/metadata/instance?api-version=2021-01-01`
+
+### 7.5 Internal Services
+- Internal IP ranges
+	- `127.0.0.1`
+	- `192.168.x.x`
+	- `10.x.x.x`
+	- `172.16.x.x`
+- [[Common Ports]]: `80`, `443`, `8080`, `8443`, `3000`, `5000`, `2375`, `22`, `3306`
+- DNS
+	- `api.internal`
+	- `kube-dns.kube-system.svc.cluster.local`
+
+
 
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
