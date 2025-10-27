@@ -64,7 +64,20 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 
 ## 3 - Broken Function Level Authorisation ([API5:2023](https://owasp.org/API-Security/editions/2023/en/0xa5-broken-function-level-authorization/))
 ### 3.1 Role Escalation and Privilege Abuse
+- Attempt to call privileged API endpoints as a regular user
+	- eg. `/admin/deleteUser`
+- Check if a user can modify their own role/permission via the API
 
+### 3.2 Unauthorised Access to Admin API Management Functions
+- Test if regular user can perform admin-level actions
+	- eg. view logs, delete/create user accounts
+- Identify endpoints with hidden administrative functions
+- Check if admin endpoints require separate authentication beyond regular user tokens
 
+### 3.3 Testing Different HTTP methods for PrivEsc
+ - Test if unauthenticated access is given when using other HTTP methods (*Burp Intruder*)
+	 - With auth token
+	 - Without auth token
+- Empty body / omit required fields to ensure API validation checks
 
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
