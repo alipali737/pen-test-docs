@@ -104,5 +104,10 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 ### 5.2 Improper Authentication and Authorisation Settings
 - Verify all API endpoints that need authentication, enforce it
 - Ensure CORS policies are properly restrictive
+	- Send request with foreign `Origin` header (`Origin: https://xfr-test.com`)
+	- `Access-Control-Allow-Origin` present? value = `*`? echoed origin? specific domain?
+	- `Access-Control-Allow-Credentials` present and true?
+	- `Access-Control-Expose-Headers`?
+	- `Access-Control-Allow-Methods` & `Access-Control-Allow-Headers` for preflight requests?
 
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
