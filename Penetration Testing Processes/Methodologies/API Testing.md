@@ -209,7 +209,3 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - DNS
 	- `api.internal`
 	- `kube-dns.kube-system.svc.cluster.local`
-
-
-
-https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
