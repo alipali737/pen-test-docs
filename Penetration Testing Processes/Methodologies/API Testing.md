@@ -102,6 +102,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- eg. `/debug`, `/health`, `/metrics`
 
 ### 5.2 Improper Authentication and Authorisation Settings
-
+- Verify all API endpoints that need authentication, enforce it
+- Ensure CORS policies are properly restrictive
 
 https://github.ibm.com/X-Force-Red/API-Testing-Methodology/blob/main/API%20Testing%20methodology.md
