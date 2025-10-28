@@ -10,4 +10,6 @@ debugInConsole: false # Print debug info in Obsidian console
 ### Client-side validation
 - This can be bypassed by intercepting the request and sending it directly rather than via the website (eg. burp)
 
-### Deny List
+### File Extension Deny List
+- In windows, file extensions are case insensitive
+- Fuzz for if any extension variations are accepted ( [PHP](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Upload%20Insecure%20Files/Extension%20PHP/extensions.lst), [.NET](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files/Extension%20ASP), and common [Web Extensions](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-extensions.txt))
