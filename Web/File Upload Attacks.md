@@ -13,3 +13,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ### File Extension Deny List
 - In windows, file extensions are case insensitive
 - Fuzz for if any extension variations are accepted ( [PHP](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Upload%20Insecure%20Files/Extension%20PHP/extensions.lst), [.NET](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files/Extension%20ASP), and common [Web Extensions](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-extensions.txt))
+### File Extension Allow List
+- Fuzzing extensions is still useful to see what extensions are available, it may also show if any extensions are able to be bypassed 
+- Use double stacked extensions, it may be that the filter only check if it contains, not ends with
+- 
