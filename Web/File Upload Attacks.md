@@ -37,3 +37,8 @@ for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
     done
 done
 ```
+
+### Content-Type Filtering
+- As the `Content-Type` header is determined client-side, we can modify it with [[Burp Suite]]. We can fuzz using something like SecLists' [Content-Type Wordlist](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-all-content-types.txt) to find which types are allowed.
+
+### MIME-Type Filtering (File content inspection)
