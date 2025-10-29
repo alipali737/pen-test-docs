@@ -94,6 +94,27 @@ As reading files is particularly important for web applications, we might able t
 > XXE can also be used to trigger SSRF attacks.
 
 ### DoS
-Decompression 
+- *Decompression bombs* could be uploaded if the target automatically decompresses it, this could cause a denial of service of the host
+- *Pixel Flood* attacks are when an image's compression size is modified to make the system run out of memory when it attempts to allocate memory to load the image
+- *Large files* could also be uploaded to fill the storage space of the system, causing it to crash or slow down considerably
+- If *directory traversal* is possible through the upload, we could replace critical files potentially, causing the machine to crash
 
+## File Name Injections
+Sometimes we can input OS commands in file names to be reflected back via the webpage.
+- `file$(whoami).jpg`
+- `file.jpg||whoami`
+If the file was moved eg. `mv file /tmp` then our injection would get triggered.
+> We could put a variety of payloads in here eg. XSS, SQLi to try to trigger an exploit
+> `<script>alert(window.origin);</script>`
+> `file';select+sleep(5);--.jpg`
 
+We could try to upload files with the same name, or with a very long name. All of these could cause an error message that could give us information (eg. upload path).
+
+## Windows-specific Attacks
+- Reserved characters (could be treated as wildcards) : `|`, `<`, `>`, `*` or `?`
+- Reserved file names : `CON`, `COM1`, `LPT1`, or `NUL`
+- Could use [8.3 Filename Convention](https://en.wikipedia.org/wiki/8.3_filename) to overwrite existing files or refer to files that don't exist
+	- Older versions of windows couldn't handle long file names so they were shortened with `~` (eg. `thislongname.txt` -> `THI~1.txt`)
+	- We could write a file called `WEB~1.CON` to overwrite `web.conf`, which could cause other issues.
+
+## Prevention and Remediation
