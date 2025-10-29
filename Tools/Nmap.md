@@ -33,6 +33,10 @@ Nmap can take targets as IPv4/IPv6/URLs/Fully Qualified Domain Name (FQDN).
 
 > For xml output (`-oX`), you can use `xsltproc target.xml -o target.html` to create a webpage of the results.
 
+## Useful Default Scan Options
+- `--max-hostgroup=2` - this means it does only two hosts at a time but if a host in the group fails, it never writes the results back for that entire group. Setting this lower means we write the results more often.
+- `--max-retries=2` - this will speed up scans by not retrying each port 10 times.
+
 ## Most Useful Commands
 ```bash
 # Host Discovery
