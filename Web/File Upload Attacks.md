@@ -42,3 +42,18 @@ done
 - As the `Content-Type` header is determined client-side, we can modify it with [[Burp Suite]]. We can fuzz using something like SecLists' [Content-Type Wordlist](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/web-all-content-types.txt) to find which types are allowed.
 
 ### MIME-Type Filtering (File content inspection)
+- These filters work by comparing the file's content to determine its MIME-Type. This is usually done by inspecting the first few bytes of the file's content to identify the [File Signature](https://en.wikipedia.org/wiki/List_of_file_signatures) or [Magic Bytes](https://web.archive.org/web/20240522030920/https://opensource.apple.com/source/file/file-23/file/magic/magic.mime).
+- The magic bytes for *GIFs* are actually ASCII printable bytes so they can be easily added by prefixing the file with `GIF87a`, `GIF89a`, or `GIF8`.
+
+To determine what kind of filters are in place, we can try the following:
+
+| MIME-Type  | Content-Type | Extension  | Result                              |
+| ---------- | ------------ | ---------- | ----------------------------------- |
+| Allowed    | Allowed      | Allowed    | Should work fine                    |
+| Allowed    | Allowed      | Disallowed | Extension filtering                 |
+| Allowed    | Disallowed   | Allowed    | Content-Type filtering              |
+| Disallowed | Allowed      | Allowed    | MIME-Type filtering                 |
+| Allowed    | Disallowed   | Disallowed | Content-Type &/ Extension filtering |
+| Disallowed | Disallowed   | Allowed    | MIME-Type &/ Content-Type filtering |
+| Disallowed | Allowed      | Disallowed | MIME-Type &/ Extension filtering    |
+
