@@ -118,3 +118,22 @@ We could try to upload files with the same name, or with a very long name. All o
 	- We could write a file called `WEB~1.CON` to overwrite `web.conf`, which could cause other issues.
 
 ## Prevention and Remediation
+- Extension validation, this should be done by using both allow and deny lists (*allow only wanted extensions at the end, and deny malicious extensions anywhere in the file name*).
+- Front-end and back-end validation means that users can't accidentally upload unintended files, *it means that if things get blocked on the back-end, then it was intentional and will reduce false alerts*.
+- Validate that the file's content and MIME-Type matches the extension specified, and that they are allowed types
+- Hide upload locations of files, so even if a file does get uploaded, a user will never get to it directly (*use a download page instead that fetches the file itself*).
+- Check authentication for user's accessing files to prevent IDOR
+- Use security headers in the response when a user requests an uploaded file
+	- `Content-Disposition: attachment` - means it will be downloaded rather than rendered in-line
+	- `Content-Type` - ensure the browser knows how to handle the file correctly
+	- `X-Content-Type-Options: nosniff` - prevents the browser from MIME-type sniffing, which helps mitigate security risks by ensuring the browser adheres strictly to the specified `Content-Type`
+- Randomise filenames
+- Store the uploaded files in a separate sandbox (another server or container), *this makes RCE less impactful if it were to be compromised*.
+- Configure web application to prevent access outside of its restricted directories (eg. `open_basedir` in PHP)
+- Securely configure web applications in general
+- Avoid information disclosure and errors being sent the front-end
+- Limit file upload size
+- Securely implement any file processing (eg. file decompression)
+- Scan uploaded files for malicious strings and malware
+- Use a WAF
+- Update any used libraries to latest versions
