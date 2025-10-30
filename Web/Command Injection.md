@@ -34,6 +34,10 @@ ping -c 1 [user_input]
 | Code Injection                          | `'` `;` `--` `/*` `*/` `$()` `${}` `#{}` `%{}` `^` |
 | Directory Traversal/File Path Traversal | `../` `..\\` `%00`                                 |
 | Object Injection                        | `;` `&` \|                                         |
-| XQuery Injection                        | `'` `;` `--` `/*` */                               |
-| Shellcode Injection                     | \x \u %u %n                                        |
-| Header Injection                        | \n \r\n \t %0d %0a %09                             |
+| XQuery Injection                        | `'` `;` `--` `/*` `*/`                             |
+| Shellcode Injection                     | `\x` `\u` `%u` `%n`                                |
+| Header Injection                        | `\n` `\r\n` `\t` `%0d` `%0a` `%09`                 |
+## Filters
+- If we get a response back within the app itself, then its likely a filter in the code.
+	- If its a filter, we can identify what we changed in the request and then attempt to bypass each one and see if it passes (eg. )
+- If we get a different error page instead, with other information like IP or request, then its likely being blocked by a WAF.
