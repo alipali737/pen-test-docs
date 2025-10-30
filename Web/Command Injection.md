@@ -78,3 +78,15 @@ ping -c 1 [user_input]
 	- Then we can decode it with `iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('b64_string')))"`
 - Variable expansion with [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#bypass-with-variable-expansion)
 > In all these, we can swap `<<<` with `|` interchangeably depending on what is denied.
+
+## Prevention & Remediation
+- Always try to use built-in functions rather than executing system commands
+- Never use the user input directly in any system commands
+- Validate user input is in the format you expect (*Front-end and back-end*) - try to use community libraries for this instead of writing your own
+- Sanitise user input by only allowing characters you expect - try to use community libraries for this too where required
+- Use the web-server's built-in WAF (eg. *apache mod_security*) where possible, in addition to an external WAF (eg. *Cloudflare*)
+- Use the Principle of Least Privilege for the web-server user
+- Disable dangerous functions where possible
+- Limit the accessible filesystem for the web-server
+- Reject double-encoded requests or non-ASCII characters in URLs
+- Avoid using sensitive/outdated libraries and modules
