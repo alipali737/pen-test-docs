@@ -59,7 +59,8 @@ ping -c 1 [user_input]
 
 ### Bypassing Deny-listed Commands
 - Split up the command with characters that are ignored (eg. `whoami` -> `w'h'oa'm'i` - *We can't mix quote types and they must all be balanced*)
-	- `\`
-	- `$@`
+	- `\` : *Linux*
+	- `$@` : *Linux*
 	- `'`
 	- `"`
+	- `^` : *Windows*
