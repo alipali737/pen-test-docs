@@ -39,5 +39,20 @@ ping -c 1 [user_input]
 | Header Injection                        | `\n` `\r\n` `\t` `%0d` `%0a` `%09`                 |
 ## Filters
 - If we get a response back within the app itself, then its likely a filter in the code.
-	- If its a filter, we can identify what we changed in the request and then attempt to bypass each one and see if it passes (eg. )
+	- If its a filter, we can identify what we changed in the request and then attempt to bypass each one and see if it passes.
+	- Its important here to try to do one character at a time, not the entire string. This allows us to check exactly which things are being blocked.
 - If we get a different error page instead, with other information like IP or request, then its likely being blocked by a WAF.
+
+### Bypassing Space Filters
+- Use tabs instead of spaces : `%09`
+- `${IFS}`'s default value is a space so we can just replace it where we would put spaces (*Linux-Only*)
+- Brace expansion automatically adds spaces between elements when expanded (eg. `{ls,-la}` -> `ls -la`)
+- [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#bypass-without-space) has a section on writing commands without spaces
+
+### Bypassing Blacklisted Characters
+- If the character exists in another system env var, we might be able to use the `start` and `length` of that variable to extract the character
+	- **Linux Bash** : `/` is at the start of `$PATH`, so we can reference a `/` with `${PATH:0:1}`
+		- `printenv | grep "[char]"` will help us find the vars we need (*look on our own linux system*)
+	- **Windows CMD** : `%HOMEPATH:~0,-1%` -> `\`
+	- **Windows PS** : `$env:HOMEPATH[0]` (*A word in powershell is considered an array so we specify the index, we don't have to put a length*)
+		- `Get-ChildItem Env:` gives all PS environment variables
