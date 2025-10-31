@@ -11,3 +11,4 @@ IDOR vulnerabilities are incredibly common in web applications. IDOR happens whe
 IDOR primarily exists due to the lack of sufficient access control on the back-end. The direct object references are just the attack vector, the issue is the access control. Access control systems are not easy to implement and are often therefore not done, leaving a major vulnerability in the system.
 
 ## Encoding & Hashing
+Sometimes  references are encoded or hashed, if we can break/decode these we can see if they are susceptible to IDOR. There may be cases we can look through the client-side javascript to identify how the reference is being hashed/encoded and then we can create our own versions.
