@@ -12,3 +12,10 @@ IDOR primarily exists due to the lack of sufficient access control on the back-e
 
 ## Encoding & Hashing
 Sometimes  references are encoded or hashed, if we can break/decode these we can see if they are susceptible to IDOR. There may be cases we can look through the client-side javascript to identify how the reference is being hashed/encoded and then we can create our own versions.
+
+## Prevention & Remediation
+- Object-level access control mechanism (RBAC)
+- Keep access privileges on the back-end, not exposing them to the front-end user to manipulate
+- Use strong and unique references (like salted hashes or UUIDs)
+- Map objects to secure IDs on the back-end so the user cannot guess other object references
+- Do not create object references on the front-end
