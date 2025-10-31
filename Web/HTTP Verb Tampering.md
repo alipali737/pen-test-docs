@@ -25,4 +25,7 @@ This technique can also be utilised to sometimes bypass other security controls 
 
 ## Prevention
 - Don't restrict requirements like authentication to a particular HTTP method
-- Use a Deny-All Except policy inst
+- Use a *Deny-All Except* policy instead
+- Disable / Deny unwanted methods where possible
+- Check for inconsistent use of HTTP parameters across functions (eg. in PHP `$_POST['filename]` only matches `POST` requests, but `$_REQUEST['filename']` also matches `GET`).
+	- Its not that the filters don't run but they reference an empty variable so they may pass through but then later on a different method is used to reference the request
