@@ -15,6 +15,8 @@ Nmap by default conducts TCP (`-sT` or `-sS`) scans but can be requested to use 
 > If a `STATE` appears as `filtered` that means there is a firewall only allowing connections from certain addresses.
 
 [Zenmap](https://nmap.org/zenmap/) is a GUI utility for nmap.
+
+Nmap XML files can also be put into [EyeWitness](https://github.com/FortyNorthSecurity/EyeWitness) which will interrogate the web services and take screenshots of them which allows you to quickly sift through.
 ## Installation
 ```
 sudo apt install nmap
