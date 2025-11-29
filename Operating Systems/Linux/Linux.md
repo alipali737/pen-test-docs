@@ -48,9 +48,9 @@ debugInConsole: false # Print debug info in Obsidian console
 | /usr   | Contains executables, libraries, man files, etc                                           |
 | /var   | Contains variable data files such as logs, email in-boxes, web app files, cron files, etc |
 ### Important Files
-| Path        | Description                                                      |
-| ----------- | --------------------------------------------------------------- |
-| /etc/shadow Contains the hashes of all user account passwords on the system m  |
+| Path                                                                        | Description |
+| --------------------------------------------------------------------------- | ----------- |
+| /etc/shadow Contains the hashes of all user account passwords on the system |             |
 
 ## Command Cheatsheet
 |**Command**|**Description**|
