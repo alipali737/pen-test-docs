@@ -10,3 +10,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - Using [[Wafw00f]] to identify the WAF in place on the target
 
 ## 1 - Research and Identify Known Vulnerabilities in WAF software
+
+## 2 - Automated Testing
+- Burp Scanner
+- Nessus Scanner
