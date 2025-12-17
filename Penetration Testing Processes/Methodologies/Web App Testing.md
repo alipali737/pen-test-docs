@@ -25,3 +25,5 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Is there a WAF present?
 
 ### 0.4 - Map Application
+- Manual navigation
+- Burp Crawling
