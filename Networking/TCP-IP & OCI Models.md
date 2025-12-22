@@ -35,3 +35,8 @@ debugInConsole: false # Print debug info in Obsidian console
 ### TCP vs UDP
 - **TCP** is a *connection-oriented* protocol, a much more rigorus acknowledgement between a sender and a receiver happens before any data is sent. This protocol includes flow control and error recovery, and should be used when important or large amounts of data is needed to be sent with timing being less of a concern.
 - **UDP** is a much more *lightweight* protocol that doesn't require a fixed channel between the parties. It is often for less important data that just needs to be sent quickly.
+
+### TCP Handshake
+1. Client --SYN--> Server
+2. Client <--SYN-ACK-- Server
+3. Client --ACK--> Server
