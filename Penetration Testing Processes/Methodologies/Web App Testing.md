@@ -27,3 +27,15 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 0.4 - Map Application
 - Manual navigation
 - Burp Crawling
+
+### 0.5 - JavaScript Analysis
+- Retire.js CVEs
+- Look for custom JS files that aren't common third-party
+	- Endpoints
+		- `XMLHttpRequest()`
+		- AJAX HTTP Functions (`$.get()`, `$.post()`, `$.ajax()`)
+		- React HTTP (`fetch()`)
+		- `axios.get()`
+	- Information Disclosures
+	- Hidden Parameters
+	- Any weaknesses in the code
