@@ -170,4 +170,14 @@ debugInConsole: false # Print debug info in Obsidian console
 - `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
 - HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
 - `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
-- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. 
+- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. Automatic detection can introduce XSS vulnerabilities.
+- `X-Frame-Options` defines when the browser can open the site in an iframe. This prevents click-jacking and other misuse of content by third-party sites.
+
+### 4.3 - Cross-Domain Policy
+- Overly permissive cross-domain policies
+	- Server reflects a third-party `origin` in its response
+	- If `Access-Control-Allow-Credentials: true` is set (often browsers will block these insecure combos) but in theory a malicious website could take advantage of a user already being logged in to access authenticated API responses.
+
+### 4.4 - Forced Browsing / Directory Busting
+- gobuster / ffuf
+- Look for sensitive pages, errors, unreferenced content, API interfaces, raw data
