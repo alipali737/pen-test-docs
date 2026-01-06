@@ -109,9 +109,13 @@ debugInConsole: false # Print debug info in Obsidian console
 - Submit the same named parameter multiple times with the same and different values
 
 ## 2 - Session Management
-### 2.1 - Session Tracking
+### 2.1 - Session Mechanism
 - How are sessions tracked? (Cookies, Tokens, Session-less, obfuscated or encrypted form sent from client)
-- Request auth page removing items until session breaks, once value is found that controls the session, change the value 1 byte at a time and see if its 
-- 
+- Request auth page removing items until session breaks, once value is found that controls the session, change the value 1 byte at a time and see if its still accepted.
 
-### 2.2 - 
+### 2.2 - Token Generation
+- Obtain the tokens for several accounts, ideally with similar names. Record the tokens and compare them for repeat patterns (Hex, Base64 etc)
+- Generate and compare a large number of tokens and check for entropy with Burp sequencer.
+	- Try to determine any encoding
+	- Is there any components that are time-based, IP-based etc?
+	- Try Burp Intruder's "bit flipper" to sequentially modify each bit
