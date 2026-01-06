@@ -44,4 +44,12 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 1.1 - Password Policy
 - What is the policy?
 - Incomplete validation of long passwords?
-- Timeout attempts
+
+### 1.2 - Username Enumerations
+- Different application responses for usernames
+
+### 1.3 - Password Attack Prevention
+- Rate limiting for logons?
+- Account lockouts
+- Captcha limits
+- Protections against bruteforce /
