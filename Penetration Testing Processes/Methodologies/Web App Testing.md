@@ -107,3 +107,11 @@ debugInConsole: false # Print debug info in Obsidian console
 - Submit strings instead of numbers
 - Submit numbers instead of strings
 - Submit the same named parameter multiple times with the same and different values
+
+## 2 - Session Management
+### 2.1 - Session Tracking
+- How are sessions tracked? (Cookies, Tokens, Session-less, obfuscated or encrypted form sent from client)
+- Request auth page removing items until session breaks, once value is found that controls the session, change the value 1 byte at a time and see if its 
+- 
+
+### 2.2 - 
