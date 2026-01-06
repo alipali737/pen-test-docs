@@ -41,4 +41,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Any weaknesses in the code
 
 ## 1 - Authentication
-### 1.1 - Password Quality
+### 1.1 - Password Policy
+- What is the policy?
+- Incomplete validation of long passwords?
+- Timeout attempts
