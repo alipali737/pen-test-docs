@@ -119,3 +119,55 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Try to determine any encoding
 	- Is there any components that are time-based, IP-based etc?
 	- Try Burp Intruder's "bit flipper" to sequentially modify each bit
+
+### 2.3 - Token Handling
+- Insecure Transmission (note everywhere they are being transmitted)
+	- Ensure always using encrypted transmission
+	- Secure flag for cookies
+	- If mixed HTTP & HTTPS is used, ensure that a new token is created in the HTTPS section otherwise its vulnerable to interception during the HTTP area
+- Disclosure in logging
+	- Are tokens present in logging?
+- Mapping of tokens to sessions
+	- Are concurrent sessions allowed?
+	- Are tokens per-user?
+- Session Termination
+	- How long are sessions valid for?
+	- Replay previous tokens after log-outs
+	- Can a user clear all active logged on sessions themselves as a security measure?
+- Session Fixation
+	- Is a new token issued after authentication?
+- CSRF
+	- If application solely relies on HTTP cookie for transmission of session tokens, it may be vulnerable to CSRF
+	- Identify requests that perform sensitive actions (eg. change password)
+	- PoC with another user account and browser
+- Cookie Scope
+	- Review `Set-Cookie` headers for proper scoping and flags
+	- Issues can occur if cookies are scoped to parent domain, as other apps within the domain could attack these
+
+## 3 - Access Control
+### 3.1 - Requirements
+- What access control should be in place?
+	- What should a regular user be able to see and do?
+	- What should an admin be able to see and do?
+- What type of access is in place (RBAC, DAC, MAC, Permission-based)
+
+### 3.2 - Multiple Accounts
+- Vertical privilege escalation - can we access privileged areas as a low-level user?
+- Horizontal privilege segregation - can we access other users' data?
+	- Enumerate / brute-force identifiers for data in other accounts and try them
+
+### 3.3 - Insecure Methods
+- Try using other HTTP methods (eg. HEAD instead of GET) to identify if any URLs are being controlled insecurely.
+- Look for parameters and fields that can be manipulated.
+- Perform an authorised action normally, then try to repeat it with a modified or missing Referrer header as sometimes this is used in an unsafe way.
+
+## 4 - Configuration and Deployment
+### 4.1 - HTTP methods
+- Try other HTTP methods
+- What information does TRACE give?
+
+### 4.2 - HTTP Headers
+- `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
+- HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
+- `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
+- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. 
