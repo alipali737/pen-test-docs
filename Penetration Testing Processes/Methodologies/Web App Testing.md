@@ -52,4 +52,58 @@ debugInConsole: false # Print debug info in Obsidian console
 - Rate limiting for logons?
 - Account lockouts
 - Captcha limits
-- Protections against bruteforce /
+- Protections against bruteforce / automation?
+
+### 1.4 - reCAPTCHA Attacks
+- Don't send the parameter related to the captcha
+- Try other HTTP verbs
+- Covert to and from JSON
+- Send empty captcha parameter
+- Check if value of captcha is in the source code
+- Check if value is in the cookie
+- Try and old captcha value
+- Try use same value multiple times with same or different sessions
+- OCR?
+
+### 1.5 - Account Recovery
+- Weak challenge?
+- Password hints?
+- Host Header injection in recovery email?
+- Weak recovery links? (Patterns, repeatable, direct references)
+
+### 1.6 - Remember Me
+- Check for persistent cookies
+- Any patterns with similar usernames?
+- Any unique identifiers that could be stolen
+
+### 1.7 - Impersonation
+- Can it be manipulated for priv esc?
+
+### 1.8 - Username Uniqueness
+- If self-registration:
+	- Can register username multiple times? (What about passwords if this is the case?)
+	- Username enumeration might be possible
+
+### 1.9 - Credentials Predictability
+- If creds are generated automatically, are there any patterns or sequences
+
+### 1.10 - Unsafe Transmission of Creds
+- Unencrypted transfer
+- Stored in cookies or local storage (XSS target)
+- Transported in URL (could be cached, logged etc)
+
+### 1.11 - Unsafe Distribution of Creds
+- How are new accounts provisioned?
+- Do activation URLs contain patterns? Can they be used multiple times?
+
+### 1.12 - Insecure Storage of Credentials
+- If we have access to hashes, are there repeat hashes (usually weak/common passwords)?
+- Are credentials stored in browser.
+
+### 1.13 - Fail-Open Logic
+- Empty strings
+- Remove name/value pair
+- Submit long and short values
+- Submit strings instead of numbers
+- Submit numbers instead of strings
+- Submit the same named parameter multiple times with the same and different values
