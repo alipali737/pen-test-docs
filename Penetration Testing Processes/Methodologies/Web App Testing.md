@@ -39,3 +39,6 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Information Disclosures
 	- Hidden Parameters
 	- Any weaknesses in the code
+
+## 1 - Authentication
+### 1.1 - Password Quality
