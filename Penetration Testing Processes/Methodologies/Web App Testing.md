@@ -252,3 +252,4 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 5.13 - XXE Injection
 - [[XML External Entity Injection]]
 
+## 6 - Identity Management
