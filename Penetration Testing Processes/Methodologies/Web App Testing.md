@@ -230,4 +230,25 @@ debugInConsole: false # Print debug info in Obsidian console
 - If item is returned in response, try: `test</foo>` or `test<foo></foo>` then the item is being inserted into an XML-based message
 
 ### 5.10 - LDAP Injection
-- 
+- Submit an LDAP wildcard `*` and see if anything is returned
+- Try an increasing number of closing brackets `))))))))`
+- `)(cn=*` `*))(|(cn=*` `*))%00`
+- Could try adding additional attributes (comma seperated)
+	- `cn` `c` `mail` `givenname` `o` `ou` `dc` `l` `uid` `objectclass` `postaladdress` `dn` `sn`
+
+### 5.11 - XPath Injection
+- Check for different behaviour from: `' or count(parent::*[position()=1])=0 or 'a'='b` or `' or count(parent::*[position()=1])>0 or 'a'='b`
+- If param is numeric: `1 or count(parent::*[position()=1])=0` or `1 or count(parent::*[position()=1])>0`
+- If any of these cause different behaviour without causing an error, we can likely extract arbitrary data 1 byte at a time.
+- Use a series of conditions with the following form to determine the name of the current node's parent: `substring(name(parent::*[position()=1]),1,1)='a'`
+	- Once the name has been extracted, we can extract all data within the XML tree: `substring(//parentnodename[position()=1]/child::node()[parent()=1]/text(),1,1)='a'`
+
+### 5.12 - Back-end Request Injection
+- If there is anywhere an internal server name or IP address is specified in a parameter
+	- We can use an arbitrary server and port, monitoring for a timeout
+	- Try with localhost
+	- Try with our IP and watch for connections
+
+### 5.13 - XXE Injection
+- [[XML External Entity Injection]]
+
