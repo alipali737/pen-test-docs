@@ -206,4 +206,28 @@ debugInConsole: false # Print debug info in Obsidian console
 - [[File Inclusion]]
 
 ### 5.7 - SMTP Injection
+- Anything where a user's email is taken could be vulnerable
+- `<email>%0aCc:<email>` `<email>%0d%0aCc:<email>` `<email>%0aBcc:<email>` 
+- `<email>%0d%0aBcc:<email>` `%0aDATA%0afoo%0a%2e%0aMAIL+FROM:+<email>%0aRCPT+TO:+<email>`
 
+### 5.8 - Native Code Flaws
+- Buffer Overflows
+	- Use Burp Intruder's `Character Blocks` payloads to test for overflow in a string
+	- Example buffer sizes that are generally suitable to test : `1100`, `4200`, `33000`
+	- Look for anomalies in the behaviour (eg. errors, malformed responses, abruptly closed TCP connection, no response, unexpected data returned)
+- Integer Vulnerabilities
+	- Look for integer-based data, particularly length indicators, which may be used to trigger integer vulnerabilities
+	- Try sending values representing the boundary cases for the signed and unsigned versions of different size integers
+		- `0x7f and 0x80 (127 and 128)` `0xff and 0x100 (255 and 256)` `0x7ffff and 0x80000 (32767 and 32768)` `0xffff and 0x10000 (65535 and 65536)` `0x7fffffff and 0x80000000 (2147483647 and 2147483648)` `0xffffffff and 0x0 (4294967295 and 0)`
+- String Format Vulnerabilities
+	- Submitting long format specifiers (*remember to url encode `%` as `%25`*)
+	- `%n%n%n%n%n%n%n%n%n%n%n` `%s%s%s%s%s%s%s%s%s%s%s%s` 
+	- `%1n!%2n!%3n!%4n!%5n!%6n!%7n!%8n!%9n! etc...` `%1s!%2s!%3s!%4s!%5s!%6s!%7s!%8s!%9s! etc...`
+
+### 5.9 - SOAP Injection
+- Submit rogue closing tag : `</foo>` to check for errors happening if its being inserted into a SOAP message
+- If an error: `<foo></foo>` and the error should go away
+- If item is returned in response, try: `test</foo>` or `test<foo></foo>` then the item is being inserted into an XML-based message
+
+### 5.10 - LDAP Injection
+- 
