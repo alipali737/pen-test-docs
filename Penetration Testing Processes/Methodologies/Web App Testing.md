@@ -181,3 +181,29 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 4.4 - Forced Browsing / Directory Busting
 - gobuster / ffuf
 - Look for sensitive pages, errors, unreferenced content, API interfaces, raw data
+
+## 5 - Data Validation
+### 5.1 - SQL Injection
+- [[SQLMap]]
+- [[SQL Injection Cheatsheet]]
+
+### 5.2 - XXS
+- [[Cross-Site Scripting (XSS)]]
+
+### 5.3 - OS Command Injection
+- [[OS Injection]]
+- `|| ping -c 10 127.0.0.1 ; x || ping -n 10 127.0.0.1 &` - should cause a 10 second delay
+
+### 5.4 - Path Traversal
+- [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Directory%20Traversal)
+- `../../../../../../../../../../etc/passwd` & `..\..\..\..\..\..\..\..\..\..\etc\passwd`
+
+### 5.5 - Script Injection
+- Specific to whatever scripting language is injectable
+- `javascript:alert(window.origin)` `;echo 1111` `response.write 1111`
+
+### 5.6 - File Inclusion
+- [[File Inclusion]]
+
+### 5.7 - SMTP Injection
+

