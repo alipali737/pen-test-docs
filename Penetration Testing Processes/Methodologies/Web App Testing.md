@@ -253,3 +253,4 @@ debugInConsole: false # Print debug info in Obsidian console
 - [[XML External Entity Injection]]
 
 ## 6 - Identity Management
+### 6.1 - Identify Roles 
