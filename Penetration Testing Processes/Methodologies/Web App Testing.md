@@ -40,6 +40,13 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Hidden Parameters
 	- Any weaknesses in the code
 
+### 0.6 - Cryptography
+- SSLScan
+	- Weak ciphers
+	- TLS Versions
+	- Certificate expirations
+	- BEAST & CRIME
+
 ## 1 - Authentication
 ### 1.1 - Password Policy
 - What is the policy?
@@ -252,5 +259,22 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 5.13 - XXE Injection
 - [[XML External Entity Injection]]
 
-## 6 - Identity Management
-### 6.1 - Identify Roles 
+### 5.14 - File Uploads
+- Submit non-approved files and verify they are blocked
+- Check for client-side file type validation
+- Check for Content-Type HTTP validation
+- Check for file extension validation
+- Can other uploaded files be directly accessed with a specified URL / other users' files
+- Can file include code or script injection
+- Check for path checking (Archives can extract to unintended paths)
+- EICAR test file
+
+## 6 - Business Logic Abuse
+### 6.1 - Data Validation
+- Only accepts 'valid' data
+- Tamper points and business data transmissions
+- Submit invalid and fake data
+
+### 6.2 - Unrestricted usage
+- Can we execute a function multiple times in quick succession?
+- Can execute-once functions be executed multiple times (eg. duplicate requests)
