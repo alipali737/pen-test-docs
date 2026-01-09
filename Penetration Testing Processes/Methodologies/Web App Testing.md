@@ -29,7 +29,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - Burp Crawling
 
 ### 0.5 - JavaScript Analysis
-- Retire.js CVEs
+- Retire.js CVEs / check for out-dated versions
 - Look for custom JS files that aren't common third-party
 	- Endpoints
 		- `XMLHttpRequest()`
