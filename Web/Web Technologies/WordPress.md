@@ -22,4 +22,13 @@ curl -s https://example.com/ | grep wp-content
 ```
 
 ## Useful Tools
-[[WPScan]]
+[WPScan](https://github.com/wpscanteam/wpscan) is an automated scanner and enumeration tool for WordPress sites.
+```bash
+sudo gem install wpscan
+```
+For the tool to pull from external sources, we need to give it an API token for [WPVulnDB](https://wpvulndb.com/). It can be supplied with `--api-token`.
+
+```bash
+# Enumerate a site looking for WP components and potential vulnerabilities
+sudo wpscan --url [target] --enumerate --api-token [token]
+```
