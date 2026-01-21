@@ -23,7 +23,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 ## 1 - Broken Authentication ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/))
 - Identify API endpoints that handle objects, resources, or sensitive data
 	- eg. `/users/[user_id]` & `/orders/[order_id]`
-- Determine authentication methods
+- Review authentication methods
 	- Bearer token (JWT)
 	- API Keys
 	- OAuth 2.0/OpenID Connect
