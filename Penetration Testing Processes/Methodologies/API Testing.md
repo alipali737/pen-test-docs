@@ -20,10 +20,10 @@ sslscan [host]
 nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 ```
 
-## 1 - Broken Authentication ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/))
+## 1 - Broken Authentication ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/) [API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
 - Identify API endpoints that handle objects, resources, or sensitive data
 	- eg. `/users/[user_id]` & `/orders/[order_id]`
-- Review authentication methods
+- Determine authentication methods
 	- Bearer token (JWT)
 	- API Keys
 	- OAuth 2.0/OpenID Connect
@@ -33,6 +33,14 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- Basic Auth
 - Identify roles and privileges that define access
 	- eg. `admin`, `user`, `guest`
+- Test Techniques
+	- Without auth header
+	- Without auth token (`Authorization: Bearer `)
+	- With invalid auth header (`Authorization: Bearer abc`)
+	- With unauthorised auth token (modify characters / resign token with random key)
+	- Use expired token
+	- Duplicate parameters to bypass authorisation logic
+	- Check API error messages for hints about authorisation failures (eg. `Access Denied` vs `Invalid User ID`)
 
 ## 2 - Broken Object Level Authorisation ([API1:2023](https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/) [API3:2023](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/))
 ### 2.1 Object Access Control Manipulation
@@ -85,15 +93,8 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Can a regular user access admin actions (*vertical esc*)
 - Session hijacking or token replay to impersonate privileged user?
 
-## 4 - Bypass Techniques ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/) [API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
-- Try to access API without authentication token
-- Use expired token
-- Modify JWT and re-sign if using weak keys
-- Duplicate parameters to bypass authorisation logic
-- Check API error messages for hints about authorisation failures (eg. `Access Denied` vs `Invalid User ID`)
-
-## 5 - API Security Misconfiguration ([API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
-### 5.1 API Exposure and Sensitive Information Disclosure
+## 4 - API Security Misconfiguration ([API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
+### 4.1 API Exposure and Sensitive Information Disclosure
 - Check if API documentation is publicly accessible
 - Look for verbose error messages that reveal internal information
 - Ensure API doesn't expose sensitive headers, tokens, or env vars
@@ -101,7 +102,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Validate that debugging endpoints don't expose sensitive data
 	- eg. `/debug`, `/health`, `/metrics`
 
-### 5.2 Improper Authentication and Authorisation Settings
+### 4.2 Improper Authentication and Authorisation Settings
 - Verify all API endpoints that need authentication, enforce it
 - Ensure CORS policies are properly restrictive
 	- Send request with foreign `Origin` header (`Origin: https://xfr-test.com`)
@@ -117,6 +118,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Test JWT configurations
 	- Token properly signed and validated?
 	- Test JWT with weak algorithms (`none` algorithm)
+	- Can it be modified and resigned?
 	- Downgrade attack (eg. RS256 -> HS256), set Algo to HS256 and sign using the server's public key (pub key could be at `.well-known/jwks.json`)
 	- If symmetric key, try dictionary attacks for weak secret key
 	- Kid (Key ID) header injection : path traversal, database injection, key confusion, alternative key
@@ -125,8 +127,8 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- Ensure Keys, JWTs, and session tokens aren't hardcoded in source or logs
 	- Server-side denied list or a revocation mechanism?
 
-## 6 - Rate Limiting / Throttling ([API4:2023](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/) [API6:2023](https://owasp.org/API-Security/editions/2023/en/0xa6-unrestricted-access-to-sensitive-business-flows/))
-### 6.1 Reconnaissance
+## 5 - Rate Limiting / Throttling ([API4:2023](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/) [API6:2023](https://owasp.org/API-Security/editions/2023/en/0xa6-unrestricted-access-to-sensitive-business-flows/))
+### 5.1 Reconnaissance
 - Response headers for rate limiting
 	- `X-RateLimit-Limit`
 	- `X-RateLimit-Remaining`
@@ -138,7 +140,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- Self-registration
 	- Search endpoints
 	- Password reset
-### 6.2 Bypass Techniques
+### 5.2 Bypass Techniques
 - Header Manipulation
 	- `X-Forwarded-For`, `X-Real-IP`, `True-Client-IP`
 	- Rotate IP headers while sending requests
@@ -161,8 +163,8 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 		- Consistent behaviour
 		- Server performance impact
 
-## 7 - Server-Side Request Forgery
-### 7.1 Identify potential SSRF endpoints
+## 6 - Server-Side Request Forgery
+### 6.1 Identify potential SSRF endpoints
 - Look for endpoints that request remote files
 	- File downloaders / image fetchers
 	- PDF/image thumbnail generation
@@ -173,12 +175,12 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- S3 or storage integrations (`url`, `file_path`)
 	- SSRF sinks embedded in JSON, YAML, or XML payloads
 
-### 7.2 SSRF Payload Tests
+### 6.2 SSRF Payload Tests
 - Test URLs to confirm if server makes a request
 	- Public URLs (eg. `Burp Collaborator`)
 	- Internal URLs (eg. `http://127.0.0.1`, `http://[::1]`)
 
-### 7.3 Bypass Techniques for SSRF Filtering
+### 6.3 Bypass Techniques for SSRF Filtering
 - IP Obfuscation
 	- Decimal: `http://21307060433` -> `127.0.0.1`
 	- Hex: `http://0x7f000001`
@@ -189,7 +191,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- `http://attacker.com/redirect?url=http://127.0.0.1`
 - DNS rebinding payloads (host name resolves to external IP first, then internal)
 
-### 7.4 Cloud Metadata Access
+### 6.4 Cloud Metadata Access
 > Specific IP allows Cloud VM to access its own metadata info without an internet connection
 - AWS
 	- `http://169.254.169.254/latest/meta-data/`
@@ -199,7 +201,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - Azure
 	- `http://169.254.169.254/metadata/instance?api-version=2021-01-01`
 
-### 7.5 Internal Services
+### 6.5 Internal Services
 - Internal IP ranges
 	- `127.0.0.1`
 	- `192.168.x.x`
