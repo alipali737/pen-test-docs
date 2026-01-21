@@ -118,14 +118,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- Ensure Keys, JWTs, and session tokens aren't hardcoded in source or logs
 	- Server-side denied list or a revocation mechanism?
 
-### 4.3 - HTTP Headers
-- `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
-- HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
-- `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
-- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. Automatic detection can introduce XSS vulnerabilities.
-- `X-Frame-Options` defines when the browser can open the site in an iframe. This prevents click-jacking and other misuse of content by third-party sites.
-
-### 4.4 - Cross-Domain Policy
+### 4.3 - Cross-Domain Policy
 - Overly permissive cross-domain policies
 	- Server reflects a third-party `origin` in its response
 	- If `Access-Control-Allow-Credentials: true` is set (often browsers will block these insecure combos) but in theory a malicious website could take advantage of a user already being logged in to access authenticated API responses.
@@ -214,3 +207,12 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 - DNS
 	- `api.internal`
 	- `kube-dns.kube-system.svc.cluster.local`
+
+## 7 - Insecure Handling
+### 7.1 - Insecure handling of data
+- Probe URL params for insecure behaviour (Intruder)
+- Probe body data for insecure behaviour (Intruder)
+- Useful Lists
+	- [special-chars + urlencoded.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/special-chars + urlencoded.txt)
+	- [login_bypass.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/login_bypass.txt)
+	- [big-list-of-naughty-strings_no_comments.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/big-list-of-naughty-strings_no_comments.txt)
