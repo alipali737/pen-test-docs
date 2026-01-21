@@ -39,7 +39,7 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- With invalid auth header (`Authorization: Bearer abc`)
 	- With unauthorised auth token (modify characters / resign token with random key)
 	- Use expired token
-	- Duplicate parameters to bypass authorisation logic
+	- Duplicate header to bypass authorisation logic ([RFC 7230 suggests that the system should error here as the Authorization header isn't a comma separated list](https://stackoverflow.com/questions/39735299/is-an-http-client-allowed-to-send-multiple-headers-with-the-same-name))
 	- Check API error messages for hints about authorisation failures (eg. `Access Denied` vs `Invalid User ID`)
 
 ## 2 - Broken Object Level Authorisation ([API1:2023](https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/) [API3:2023](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/))
@@ -104,17 +104,8 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 
 ### 4.2 Improper Authentication and Authorisation Settings
 - Verify all API endpoints that need authentication, enforce it
-- Ensure CORS policies are properly restrictive
-	- Send request with foreign `Origin` header (`Origin: https://xfr-test.com`)
-	- `Access-Control-Allow-Origin` present? value = `*`? echoed origin? specific domain?
-		- Make sure request's origin is not reflected 
-	- `Access-Control-Allow-Credentials` present and true?
-	- `Access-Control-Expose-Headers`
-		- Check if any headers containing credentials are leaked
-	- `Access-Control-Allow-Methods` & `Access-Control-Allow-Headers` for preflight requests?
 - Check for weak authentication mechanisms
 	- Guessable API keys
-	- No MFA
 - Test JWT configurations
 	- Token properly signed and validated?
 	- Test JWT with weak algorithms (`none` algorithm)
@@ -122,10 +113,22 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- Downgrade attack (eg. RS256 -> HS256), set Algo to HS256 and sign using the server's public key (pub key could be at `.well-known/jwks.json`)
 	- If symmetric key, try dictionary attacks for weak secret key
 	- Kid (Key ID) header injection : path traversal, database injection, key confusion, alternative key
-		- Could point it to `/dev/null` and then sign the key with an empty string
+		- Could point it to `/dev/null` and then sign the key with an empty string - [Guide](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-kid-header-path-traversal)
 	- Test short-lived tokens and proper revocation mechanisms
 	- Ensure Keys, JWTs, and session tokens aren't hardcoded in source or logs
 	- Server-side denied list or a revocation mechanism?
+
+### 4.3 - HTTP Headers
+- `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
+- HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
+- `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
+- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. Automatic detection can introduce XSS vulnerabilities.
+- `X-Frame-Options` defines when the browser can open the site in an iframe. This prevents click-jacking and other misuse of content by third-party sites.
+
+### 4.4 - Cross-Domain Policy
+- Overly permissive cross-domain policies
+	- Server reflects a third-party `origin` in its response
+	- If `Access-Control-Allow-Credentials: true` is set (often browsers will block these insecure combos) but in theory a malicious website could take advantage of a user already being logged in to access authenticated API responses.
 
 ## 5 - Rate Limiting / Throttling ([API4:2023](https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/) [API6:2023](https://owasp.org/API-Security/editions/2023/en/0xa6-unrestricted-access-to-sensitive-business-flows/))
 ### 5.1 Reconnaissance
