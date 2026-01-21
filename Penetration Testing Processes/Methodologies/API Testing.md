@@ -216,3 +216,4 @@ nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 	- [special-chars + urlencoded.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/special-chars + urlencoded.txt)
 	- [login_bypass.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/login_bypass.txt)
 	- [big-list-of-naughty-strings_no_comments.txt](/Users/alecpainter/wordlists/SecLists/Fuzzing/big-list-of-naughty-strings_no_comments.txt)
+	- Burp Suite's fuzzing lists (quick & full)
