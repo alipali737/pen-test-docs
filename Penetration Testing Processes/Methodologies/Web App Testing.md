@@ -55,6 +55,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ### 1.2 - Username Enumerations
 - Different application responses for usernames
+- Timing differences?
 
 ### 1.3 - Password Attack Prevention
 - Rate limiting for logons?
@@ -117,6 +118,11 @@ debugInConsole: false # Print debug info in Obsidian console
 - Submit numbers instead of strings
 - Submit the same named parameter multiple times with the same and different values
 
+### 1.14 - Multi-factor authentication
+- Is MFA present?
+- Is MFA effective?
+- Does it allow use of weak or ineffective fallbacks if MFA isn't available?
+
 ## 2 - Session Management
 ### 2.1 - Session Mechanism
 - How are sessions tracked? (Cookies, Tokens, Session-less, obfuscated or encrypted form sent from client)
@@ -143,6 +149,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- How long are sessions valid for?
 	- Replay previous tokens after log-outs
 	- Can a user clear all active logged on sessions themselves as a security measure?
+	- Automatic logouts for inactivity?
 - Session Fixation
 	- Is a new token issued after authentication?
 - CSRF
