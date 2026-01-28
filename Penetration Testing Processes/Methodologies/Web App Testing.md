@@ -18,6 +18,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ### 0.3 - Identify Technologies
 - What technologies are in use?
+- Are any technologies out of date?
 - What is the rough system architecture?
 	- How is the front-end served?
 	- Is it public cloud?
@@ -93,6 +94,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ### 1.9 - Credentials Predictability
 - If creds are generated automatically, are there any patterns or sequences
+- Are there any default credentials for the application?
 
 ### 1.10 - Unsafe Transmission of Creds
 - Unencrypted transfer
