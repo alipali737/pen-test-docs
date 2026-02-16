@@ -13,3 +13,6 @@ These deployments often house sensitive data and are high value targets for atta
 - Default port of 8000, Management port 8089
 - Old version have default creds of `admin:changeme`
 - The enterprise trial converts to a free version after 60 days which has no authentication
+
+## Attacking
+The [splunk_shell](https://github.com/0xjpuff/reverse_shell_splunk) repo offers a way to get a reverse shell via splunk's functionality.
