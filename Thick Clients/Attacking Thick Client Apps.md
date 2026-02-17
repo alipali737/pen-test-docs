@@ -20,7 +20,7 @@ A thick client application is one that is installed locally on a computer and do
 - Insecure Storage
 - Session Management
 
-If a thick client interacts with a local or remote server, then there is still a potential for more traditional web app attacks 
+If a thick client interacts with a local or remote server, then there is still a potential for more traditional web app attacks such as the OWASP top ten.
 
 ## Recon and Enumeration
 **Goals**:
@@ -64,3 +64,26 @@ If a thick client interacts with a local or remote server, then there is still a
 - [TCPView](https://learn.microsoft.com/en-us/sysinternals/downloads/tcpview) : Windows software for listing all TCP and UDP connections and their associated processes.
 - [Burp Suite](https://portswigger.net/burp) : HTTP & WS traffic proxy
 
+## Example Testing Flows
+### Sensitive information in the application source
+Lets say you come across an executable `Restart-OracleService.exe`. But when run, it either doesn't run or produces no output:
+```batch
+C:\>.\Restart-OracleService.exe
+C:\>
+```
+
+We can use [ProcMon64 (Process Monitor)](https://learn.microsoft.com/en-us/sysinternals/downloads/procmon) to reveal that it actually creates a temp file.
+
+We could change the properties of the `Temp` directory to disallow deletions which would mean we could grab the file. This file could reveal another executable that is called `restart-service.exe`.
+
+Using ProcMon64 again we can explore it for anything interesting. Or we could throw it into [x64dbg](https://x64dbg.com/) to analyse its memory (*Options -> Preferences, then uncheck all but `Exit Breakpoint` means that we will avoid going through any loaded DLL files*).
+
+We can then open the app in x64dbg and explore what its doing in memory. Inside the `CPU` view, we can do `Follow in Memory Map`. In here we can look for interesting things in the memory maps, including its size, type, and protections.
+
+A map with size `0000000000003000`, with a type of `MAP`, and protection set to `-RW--` is rather interesting. Memory-mapped files allow apps to access large files without having to read or write the entire file into memory at once. This allows the app to read and write as if it were a regular buffer in memory. *This could be a place for hardcoded credentials to be written*.
+
+If we double click on an entry, we can view its data. Looking at the **magic bytes** can give us a good indication as to what the file might be eg. `MZ` is a [DOS MZ executable](https://en.wikipedia.org/wiki/DOS_MZ_executable).
+
+We can right click the original entry and `Dump Memory to File` in which we can do further processing on it with a tool like [Strings](https://learn.microsoft.com/en-us/sysinternals/downloads/strings) to reveal any interesting information.
+
+We might then be able to discover credentials or further decompile the executable. Eg. Run the .NET service through `de4dot` to remove any obfuscated symbols and then decompile using [dnSpy](https://github.com/dnSpy/dnSpy).
