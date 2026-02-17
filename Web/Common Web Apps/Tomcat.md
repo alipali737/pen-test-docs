@@ -99,4 +99,6 @@ This CVE is a critical RCE for some versions of Tomcat's CGI Servlet. It require
 
 This causes the CGI Servlet to parse the query string and passes it to the CGI script as arguments. This makes CGI scripts easier to write as it allows passing parameters directly rather than through stdin or env vars.
 
-However on Windows, because the CGI Servlet fails to properly validate the input from the web browser before passing it to the CGI script, this can lead to OS command injection attacks. eg. `http://example.com/cgi-bin/hello.bat?&dir`, this would execute the `dir` command due to the `&` being added.
+However on Windows, because the CGI Servlet fails to properly validate the input from the web browser before passing it to the CGI script, this can lead to OS command injection attacks. 
+
+eg. `http://example.com/cgi-bin/hello.bat?&dir`, this would execute the `dir` command due to the `&` being added.
