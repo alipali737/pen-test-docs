@@ -92,3 +92,4 @@ We can right click the original entry and `Dump Memory to File` in which we can 
 
 We might then be able to discover credentials or further decompile the executable. Eg. Run the .NET service through `de4dot` to remove any obfuscated symbols and then decompile using [dnSpy](https://github.com/dnSpy/dnSpy).
 
+ f
