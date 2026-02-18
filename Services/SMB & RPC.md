@@ -11,7 +11,7 @@ debugInConsole: false # Print debug info in Obsidian console
 *Server Message Block* (*SMB*) is a client-server protocol for regulating access to shared files, directories, or other resources (printers etc) on a network. 
 > Can also be used to communicate between system processes.
 
-Primarily used in windows, but the *Samba* project makes SMB available on Linux and Unix, enabling cross-platform communication via SMB.
+Primarily used in windows, but the *Samba* project makes SMB available on Linux and Unix, enabling cross-platform communication via SMB
 
 Samba can also act as a member or controller for an Active Directory domain.
 Each host in a network is part of a *workgroup*, this is used to identify a collection of computers and their resources on an SMB network.
