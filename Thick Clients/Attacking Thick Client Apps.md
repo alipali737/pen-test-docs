@@ -22,6 +22,10 @@ A thick client application is one that is installed locally on a computer and do
 
 If a thick client interacts with a local or remote server, then there is still a potential for more traditional web app attacks such as the OWASP top ten.
 
+Some thick-client apps are described as two-tier or three-tier architectures:
+- **Two-Tier**: Thick App <--> Database
+- **Three-Tier**: Thick App <--> Server <--> Database
+Three-tier architectures offer more security as it prevents the app from ever talking directly to the database.
 ## Recon and Enumeration
 **Goals**:
 - Identify application architecture
@@ -87,3 +91,4 @@ If we double click on an entry, we can view its data. Looking at the **magic byt
 We can right click the original entry and `Dump Memory to File` in which we can do further processing on it with a tool like [Strings](https://learn.microsoft.com/en-us/sysinternals/downloads/strings) to reveal any interesting information.
 
 We might then be able to discover credentials or further decompile the executable. Eg. Run the .NET service through `de4dot` to remove any obfuscated symbols and then decompile using [dnSpy](https://github.com/dnSpy/dnSpy).
+
