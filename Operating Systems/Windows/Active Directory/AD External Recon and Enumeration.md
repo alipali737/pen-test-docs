@@ -9,7 +9,7 @@ debugInConsole: false # Print debug info in Obsidian console
 The purpose of this phase is to identify any information that can give us a *lay of the land* within the domain's configuration. It could be looking for leaked information, breach data, username formats etc. We could potentially go even deeper and look for leaked code/repos, documents with internal links, or remotely accessible sites. Any information that can give us additional knowledge for attacking the domain.
 
 ## What to look for
-- *IP Spaces* : Valid ASN (collection of addresses) for our target, netblocks in use for the public-facing infrastructure, cloud presence and the providers, DNS records etc ([[Enumeration#Infrastructure-based Enumeration]])
+- *IP Spaces* : Valid ASN (collection of addresses) for our target, netblocks in use for the public-facing infrastructure, cloud presence and the providers, DNS records etc ([[Penetration Testing Processes/Enumeration#Infrastructure-based Enumeration]])
 - *Domain Information* : Based on IP, DNS, and site registration data. Who administers the domain? Subdomains? Publicly accessible domain services? (Mail, DNS, Websites, VPNs etc). What defences are in place? (SIEM, AV, IPS/IDS etc).
 - *Schema Format* : Organisation emails, AD usernames, password policies? Any information we can use to guess usernames?
 - *Data Disclosures* : Publicly accessible data disclosures (`.pdf`, `.ppt`, `.docx`, `.xlsx`, etc). Any documents that can give us information on the intranet configuration and services? (Sites, Shares, User metadata, critical software, hardware, etc)

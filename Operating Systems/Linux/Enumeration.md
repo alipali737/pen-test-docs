@@ -1,0 +1,54 @@
+```table-of-contents
+title: ## Table of Contents
+style: nestedList # TOC style (nestedList|nestedOrderedList|inlineFirstLevel)
+minLevel: 0 # Include headings from the specified level
+maxLevel: 3 # Include headings up to the specified level
+includeLinks: true # Make headings clickable
+debugInConsole: false # Print debug info in Obsidian console
+```
+
+## Initial Information to check
+> Scripts like [linPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS) and [LinEnum](https://github.com/rebootuser/LinEnum) are very handy tools for enumerating linux and can be run in many different ways.
+
+- User information : `whoami; id`
+- Host info : `hostname`
+- Network information : 
+	- `ifconfig`
+	- `route`
+	- `arp -a`
+	- `cat /etc/resolv.conf`
+	- `cat /etc/hosts`
+- PATH : `echo $PATH`
+- Env vars : `env`
+- OS Version : `uname -a` & `cat /etc/os-release`
+- Kernel Version : `uname -a`
+- CPU Information : `lscpu`
+- Available shells : `cat /etc/shells`
+- Any Defences in place (Fail2ban, SELinux, AppArmor etc)
+	- [Exec Shield](https://en.wikipedia.org/wiki/Exec_Shield)
+	- [iptables](https://linux.die.net/man/8/iptables)
+	- [AppArmor](https://apparmor.net/)
+	- [SELinux](https://www.redhat.com/en/topics/linux/what-is-selinux)
+	- [Fail2ban](https://github.com/fail2ban/fail2ban)
+	- [Snort](https://www.snort.org/faq/what-is-snort)
+	- [Uncomplicated Firewall (ufw)](https://wiki.ubuntu.com/UncomplicatedFirewall)
+- Running Services : `ps aux` & `ps aux | grep root`
+- Installed Packages and versions : `apt list --installed`
+- Logged in users : `ps au` (*current terminal-attached processes*)
+- Accessible home directories
+- Bash history : `history`
+- Sudo privileges : `sudo -l`
+- Config files `find / -type f -name '*.conf*' 2>/dev/null`
+- Readable shadow file : `cat /etc/shadow`
+- Users and password hashes in `/etc/passwd`
+- Groups : `cat /etc/group` & `getent group [group]`
+- Cron Jobs : `ls -la /etc/cron.daily/`
+- Unmounted file systems and additional drives : `lsblk` & `df -h` & `cat /etc/fstab | grep -v "#" | column -t` (*shows unmounted file systems*)
+- `SETUID` and `SETGID` permissions
+	- `find / -perm -4000 -type f -exec ls -la {} \; 2>/dev/null`
+	- `find / -perm -6000 -type f -exec ls -la {} \; 2>/dev/null`
+- Writable directories : `find / -path /proc -prune -o -type d -perm -o+w 2>/dev/null`
+- Writable files : `find / -path /proc -prune -o type f -perm -o+w 2>/dev/null`
+- Printers : `lpstat`
+- All hidden files : `find / -type f -name ".*" -exec ls -l {} \; 2>/dev/null | grep [user]`
+- Temporary files : `ls -l /tmp /var/tmp /dev/shm`
