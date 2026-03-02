@@ -12,7 +12,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - Priv Esc
 - Overly complex code (loops, etc)
 - Use of hardcoded values / magic numbers
-- Silent logic errors (eg. `long` being cast to `32-bit int`)
+- Silent logic errors (eg. `long` being cast to `32-bit int`, localisation issues with text manipulation)
 
 Reference CWE dangerous software weaknesses
 
