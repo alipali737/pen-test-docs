@@ -11,8 +11,11 @@ debugInConsole: false # Print debug info in Obsidian console
 - Path traversals
 - Priv Esc
 - Overly complex code (loops, etc)
+	- `High Conditional Complexity Leading to Reduced Code Comprehension`
 - Use of hardcoded values / magic numbers
 - Silent logic errors (eg. `long` being cast to `32-bit int`, localisation issues with text manipulation)
+- Unsafe validation (sanitising inputs, size validation for memory-sensitive contexts)
+- Dead code
 
 Reference CWE dangerous software weaknesses
 
