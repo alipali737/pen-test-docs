@@ -89,9 +89,12 @@ Many logs can exist on the file system, and logs are incredibly important in Lin
 > It is useful to be familiar with the structure of these logs, otherwise analysing each on individually would be inefficient. String matching can also be of value with logs to identify key information.
 
 ```bash
-$ for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
+for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
 ```
 
+```bash
+grep -rnw '/path/to/somewhere/' -e 'pattern'
+```
 ## Memory and Cache
 Many applications that work with credentials store them in-memory or in files to be reused later.
 > [mimipenguin](https://github.com/huntergregal/mimipenguin) is a tool that is able to leak the credentials for users that are stored in-memory on a linux system (*requires root permissions*)
