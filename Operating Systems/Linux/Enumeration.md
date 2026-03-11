@@ -73,3 +73,19 @@ Sometimes there are vectors we can use in these shells to run arbitrary commands
 Suppose a shell limits us to `ls -l`, we might be able to execute commands as arguments `ls -l $(pwd)`.
 
 We could use features like *command substitution (using backticks)*, *command chaining (`;` `|`)*, *using environment variables to modify commands*, and *shell functions*.
+
+List available commands with `compgen -c`.
+
+## Special Permissions
+### SETUID & SETGID
+The `setuid` permissions allows a user to execute something as another user, typically with elevated privileges. This can be seen in `ls` with an `s`.
+```bash
+-rwsr-xr-x 1 root root 16728 Sep 1 19:06 /home/hr/payroll
+```
+
+The `setgid` allows you to run a binary as if you were part of the group that created them. These can all be found with:
+```bash
+find / -user root -perm -4000 -exec ls -ldb {} \; 2>/dev/null
+
+find / -uid 0 -perm -6000 -type f 2>/dev/null
+```
