@@ -34,10 +34,10 @@ debugInConsole: false # Print debug info in Obsidian console
 	- [Uncomplicated Firewall (ufw)](https://wiki.ubuntu.com/UncomplicatedFirewall)
 - Running Services : `ps aux` & `ps aux | grep root`
 - Installed Packages and versions : `apt list --installed`
-- Logged in users : `ps au` (*current terminal-attached processes*)
+- Logged in users : `ps au` (*current terminal-attached processes*) & `lastlog` & `who`
 - Accessible home directories
 - Bash history : `history`
-- Sudo privileges : `sudo -l`
+- Sudo privileges : `sudo -l` & `sudo -V`
 - Config files `find / -type f -name '*.conf*' 2>/dev/null`
 - Readable shadow file : `cat /etc/shadow`
 - Users and password hashes in `/etc/passwd`
@@ -52,3 +52,5 @@ debugInConsole: false # Print debug info in Obsidian console
 - Printers : `lpstat`
 - All hidden files : `find / -type f -name ".*" -exec ls -l {} \; 2>/dev/null | grep [user]`
 - Temporary files : `ls -l /tmp /var/tmp /dev/shm`
+- Available binaries : `ls -l /bin /usr/bin/ /usr/sbin/`
+	- Check for potentially exploitable binaries from **GTFObins** : `for i in $(curl -s https://gtfobins.github.io/ | html2text | cut -d" " -f1 | sed '/^[[:space:]]*$/d');do if grep -q "$i" installed_pkgs.list;then echo "Check GTFO for: $i";fi;done`
