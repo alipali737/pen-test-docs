@@ -452,4 +452,7 @@ Some simple hardening for the config:
 - Consider using SELinux
 
 ### User Management
-- Limit number of accounts 
+- Limit number of user accounts and admin accounts
+- Monitor logon attempts (valid/invalid)
+- Enforce strong password policies
+- Lowest-possible privileges
