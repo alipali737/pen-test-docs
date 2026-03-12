@@ -367,3 +367,22 @@ gcc src.c -fPIC -shared -o /development/libshared.so
 ```
 
 This will then be run when we execute the program.
+
+## Python Library Hijacking
+In python there is three basic hijacking vulnerabilities that can be used:
+1. Wrong write permissions
+2. Library Path
+3. `PYTHONPATH` environment variable
+
+### Wrong write permissions
+If a python module has the wrong write permissions set for all users, we could modify the code.
+
+### Library Path
+We can list the library path order using the following:
+```bash
+python3 -c 'import sys; print("\n".join(sys.path))'
+```
+If we have write permissions to one of these paths we can potentially add in a replacement module and hijack the execution.
+
+### PYTHONPATH Environment variable
+If we have the ability to `SETENV` with sudo and call python, we can potentially modify the `PYTHONPATH` to point to our own module.
