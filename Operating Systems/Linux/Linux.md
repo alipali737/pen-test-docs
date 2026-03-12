@@ -435,3 +435,21 @@ Logs can be analysed with a variety of built-in tools (both desktop and CLI) inc
 	- `file2ban` records failed login attempts in `/var/log/fail2ban.log`
 	- `UFW` firewall logs to `/var/log/ufw.log`
 - Sometimes other security events such as file system changes or settings, may be in general logs like the `authlog` or `syslog`.
+
+## Linux Hardening
+### Updates and Patching
+Regular patching and updates can fix many exploits in out-of-date Linux kernels and packages.
+
+### Configuration Management
+Some simple hardening for the config:
+- Audit writable files and directories
+- Audit binaries with the SUID bit set
+- Ensure cron jobs and sudo privileges specify any binaries using the absolute path
+- Do not store cleartext credentials in world-readable files
+- Clean up home directories and bash history
+- Ensure custom libraries cannot be modified by low-privileged users
+- Remove unnecessary packages and services - reduce attack surface
+- Consider using SELinux
+
+### User Management
+- Limit number of accounts 
