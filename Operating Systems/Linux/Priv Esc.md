@@ -232,3 +232,4 @@ spec:
   hostNetwork: true
 ```
 > This pod YAML allows us to mount the root directory of the node
+
