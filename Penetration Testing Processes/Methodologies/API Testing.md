@@ -20,6 +20,8 @@ sslscan [host]
 nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 ```
 
+Param enumeration via burp suite.
+
 ## 1 - Broken Authentication ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/) [API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
 - Identify API endpoints that handle objects, resources, or sensitive data
 	- eg. `/users/[user_id]` & `/orders/[order_id]`
