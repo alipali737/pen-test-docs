@@ -20,7 +20,7 @@ sslscan [host]
 nuclei -l targets.txt -H [header] -p socks5://127.0.0.1:9999
 ```
 
-Param enumeration via burp suite.
+Burp Intruder / ParamMiner to discover hidden parameters.
 
 ## 1 - Broken Authentication ([API2:2023](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/) [API8:2023](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/))
 - Identify API endpoints that handle objects, resources, or sensitive data
@@ -51,7 +51,6 @@ Param enumeration via burp suite.
 - Test for non-sequential object IDs (`UUID`, random string) to see if predictable IDs allow unauthorised access
 
 ### 2.2 Parameter Manipulation Attacks
-- Burp Intruder / ParamMiner to discover hidden parameters
 - Modify parameters to access unauthorised objects (eg. `/profile?user=11` -> `/profile?user=12`)
 - Identify request headers that contain user-specific data and manipulate it
 - Check if API properly enforces server-side verification instead of relying on client-provided identifiers
