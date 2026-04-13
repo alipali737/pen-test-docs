@@ -55,4 +55,8 @@ debugInConsole: false # Print debug info in Obsidian console
 - Get all groups : `net localgroup`
 - Group info : `net localgroup [group]`
 - Pass policy & other account info : `net accounts`
-- 
+
+## Using Processes for Priv Esc
+The most common way of escalating privileges is utilising existing processes running. These don't have to be running as administrator but could also be running as another user that we could use as a foothold for gaining system privileges (eg. using `SeImpersonate`).
+
+Using `netstat -ano` we want to look for processes that are only listening on the loopback addresses (eg. not on the IP address or broadcast, meaning they are internal host only). These internal services aren't always configured securely as they aren't supposed to be network facing.
