@@ -17,6 +17,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - [LaZagne](https://github.com/AlessandroZ/LaZagne) : Password retriever
 - [Windows Exploit Suggester - Next Generation](https://github.com/bitsadmin/wesng) : uses `systeminfo` utility to suggest OS exploits
 - [Sysinternals Suite](https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite) : Built in tools such as `AccessChk`, `PipeList`, and `PsService` can all be used for enumeration
+- [Juicy Potato](https://github.com/ohpe/juicy-potato) : utilises `SeImpersonate` or `SeAssignPrimaryToken` privileges to escalate
 
 ## Situational Awareness
 ### Network Information
@@ -28,3 +29,30 @@ debugInConsole: false # Print debug info in Obsidian console
 - See Windows Defender status : `Get-MpComputerStatus`
 - List AppLocker Rules : `Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections`
 - Test AppLocker Policy : `Get-AppLockerPolicy -Local | Test-AppLockerpolicy -path C:\Windows\System32\cmd.exe -User Everyone`
+
+### Key Data Points
+- **OS name** will tell us where tools we can expect to be available (eg. Windows 10, Server 2019)
+- **OS version** could inform us if any public exploits are known for that version
+- **Running Services** will give us an idea on what to focus on, especially ones owned by higher privilege contexts
+
+### System Information
+- Running processes : `tasklist /svc` (*its important to be familiar with [Session Manager Subsystem (smss.exe)](https://en.wikipedia.org/wiki/Session_Manager_Subsystem), [Client Server Runtime Subsystem (csrss.exe)](https://en.wikipedia.org/wiki/Client/Server_Runtime_Subsystem), [WinLogon (winlogon.exe)](https://en.wikipedia.org/wiki/Winlogon), [Local Security Authority Subsystem Service (LSASS)](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service), and [Service Host (svchost.exe)](https://en.wikipedia.org/wiki/Svchost.exe), as it will allow us to filter out standard processes and look for non-standard ones*)
+- Env Vars : `set` (`PATH` is a particularly interesting one to look at.)
+- `systeminfo`:
+	- The KBs under `HostFixes` can reveal when it was last patched (*can be hidden from non-admins though*)
+	- Boot time and OS version could also give us an idea of the patch level (*if its not restarted in ages, its likely not be patched*)
+	- Can also see if its a VM too
+- If hotfixes can't be seen in the `systeminfo`, WMI might be able to view it with `wmic qfe` or PS (`Get-HotFix | ft -AutoSize`)
+- Installed Programes : `wmic product get name` or `Get-WmiObject -Class Win32_product | select Name, Version`
+- Active TCP & UDP connections : `netstat -ano`
+
+### User & Group Information
+- Logged in users : `query user`
+- Current User : `echo %USERNAME%` / `whoami`
+- Current user privs : `whoami /priv`
+- Current user group info : `whoami /groups`
+- Get all users : `net user`
+- Get all groups : `net localgroup`
+- Group info : `net localgroup [group]`
+- Pass policy & other account info : `net accounts`
+- 
