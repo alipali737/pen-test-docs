@@ -49,7 +49,7 @@ debugInConsole: false # Print debug info in Obsidian console
 ### User & Group Information
 - Logged in users : `query user`
 - Current User : `echo %USERNAME%` / `whoami`
-- Current user privs : `whoami /priv`
+- Current user privs : `whoami /priv` (*default `SeChangeNotifyPrivilege` & `SeIncreaseWorkingSetPrivilege`*)
 - Current user group info : `whoami /groups`
 - Get all users : `net user`
 - Get all groups : `net localgroup`
