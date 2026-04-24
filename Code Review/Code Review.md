@@ -22,6 +22,9 @@ Reference CWE dangerous software weaknesses
 ## Analysis Tooling
 
 [Semgrep](https://github.com/semgrep/semgrep) : Basically a regex engine that you can write custom rules for.
+Trufflehog
+Gitleaks
+SonarQube
 
 ### Java
 > A lot of Java tools often require a built version of the application, not just the source code.
