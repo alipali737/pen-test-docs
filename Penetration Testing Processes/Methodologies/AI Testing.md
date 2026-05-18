@@ -253,6 +253,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - Are contexts isolated between tenants?
 - Attempt cache poisoning
 - Attempt response mix-up attacks
+	- Does the AI mixup responses when two users / multi-session use the system at exactly the same time?
 - Test concurrency/race conditions
 
 ---
@@ -289,7 +290,9 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 9.2 - Adversarial Inputs
 - Test:
 	- Unicode attacks
+		- Use invisible whitespace unicode characters to evade filters
 	- Tokenization edge cases
+		- odd strings could cause unexpected token splits
 	- Gibberish inputs
 	- Adversarial suffixes
 -  Test known jailbreak families:
