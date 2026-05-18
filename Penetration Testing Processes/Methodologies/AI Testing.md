@@ -299,12 +299,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 # 10 - AI Infrastructure
 ### 10.1 - AI APIs
-- Standard API testing:
-	- Authentication
-	- Rate limits
-	- IDOR
-	- Mass assignment
-	- GraphQL abuse
+- Standard API testing: [[API Testing]]
 - Enumerate undocumented endpoints
 - Test streaming endpoints
 
@@ -336,77 +331,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Multi-turn coercion
 - Evaluate consistency of refusals
 
-### 11.2 - Policy Enforcement
-- Determine whether controls exist:
-	- Pre-prompt filtering
-	- Input moderation
-	- Output moderation
-	- Tool-level restrictions
-- Attempt bypasses at each layer
-
-### 11.3 - Safety Regression Testing
-- Re-test previously patched jailbreaks
-- Test across:
-	- Different models
-	- Different temperatures
-	- Different languages
-	- Long conversations
-
 ---
-
-# 12 - Monitoring & Detection
-### 12.1 - Detection Evasion
-- Attempt slow, low-noise attacks
-- Split malicious intent across turns
-- Use multilingual attacks
-- Attempt encoded payloads
-
-### 12.2 - Alerting & Telemetry
-- Are attacks logged?
-- Are anomalous prompts detected?
-- Can defenders reconstruct attack chains?
-- Is user attribution reliable?
----
-
-# 13 - AI-Specific Test Cases
-### 13.1 - Hallucination Security
-- Can hallucinated tools/endpoints be abused?
-- Can fake references influence operators?
-- Test operational trust in hallucinated output
-
-### 13.2 - Human-in-the-Loop Bypass
-- Can approval prompts be socially engineered?
-- Does AI manipulate users into unsafe actions?
-### 13.3 - Supply Chain
-- Review:
-	- Model weights
-	- Plugins
-	- MCP servers
-	- Agent frameworks
-	- Open-source dependencies
-	- Vector DB providers
-
----
-
-# 14 - Reporting
-### 14.1 - Document:
-- Exact prompts
-- Multi-turn sequences
-- Required context
-- Model/version tested
-- Temperature/settings
-- Success conditions
-- Safety impact
-- Data exposure scope
-
-### 14.2 - AI-Specific Severity
-- Consider:
-	- Autonomy level
-	- Data sensitivity
-	- Tool access
-	- Cross-user impact
-	- Reliability of exploit
-	- Human trust implications
 
 You may also want to structure findings against:
 - OWASP LLM Top 10
