@@ -47,13 +47,12 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Before model
 	- During orchestration
 	- After model output
-- Enumerate hidden/system prompts where possible
 - Determine whether prompts are logged, cached, or persisted
 	- Check prompt timings in separate and same instances to identify if caching is in place (could be used to extract information from other chats)
 
 ---
 
-# 2 - Prompt Injection
+# 2 - Prompt Injection ??
 ### 2.1 - Direct Prompt Injection
 - Attempt instruction override:
 	- "Ignore previous instructions"
@@ -110,7 +109,7 @@ debugInConsole: false # Print debug info in Obsidian console
 
 ---
 
-# 3 - Context & Memory Attacks
+# 3 - Context & Memory Attacks ??
 ### 3.1 - Context Window Manipulation
 - Flood context to push out safety instructions
 - Attempt truncation attacks
