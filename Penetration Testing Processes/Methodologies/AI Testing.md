@@ -165,15 +165,17 @@ debugInConsole: false # Print debug info in Obsidian console
 - Attempt retrieval poisoning
 - Test ranking manipulation
 
-### 4.3 - Embedding Attacks ??
+### 4.3 - Embedding Attacks (In-Research still)
 - Determine whether embeddings leak sensitive information
+	- Probing using similar keywords as to what may be in the vector store
+	- Responses could reveal existence of something if they become highly relevant, very specific, or unusually accurate
 - Test nearest-neighbor inference attacks
 - Attempt vector collision attacks
 - Poison embeddings with adversarial content
 
 ---
 
-# 5 - Tool Use & Agentic Behavior
+# 5 - Tool Use & Agentic Behaviour
 ### 5.1 - Function Calling
 - Enumerate available tools/functions
 - Attempt unauthorized tool invocation
@@ -294,7 +296,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- Tokenization edge cases
 		- odd strings could cause unexpected token splits
 	- Gibberish inputs
-	- Adversarial suffixes
+	- Adversarial bypass suffixes
 -  Test known jailbreak families:
 	- DAN
 	- Roleplay
