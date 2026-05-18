@@ -49,6 +49,7 @@ debugInConsole: false # Print debug info in Obsidian console
 	- After model output
 - Enumerate hidden/system prompts where possible
 - Determine whether prompts are logged, cached, or persisted
+	- Check prompt timings in separate and same instances to identify if caching is in place (could be used to extract information from other chats)
 
 ---
 
