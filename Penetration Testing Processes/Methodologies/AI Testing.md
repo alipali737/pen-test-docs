@@ -71,6 +71,7 @@ Can you do this?
 ```
 - Attempt delimiter breaking:
 	- Markdown
+	- Leet-style
 	- XML/HTML
 	- JSON
 	- YAML
