@@ -183,6 +183,9 @@ debugInConsole: false # Print debug info in Obsidian console
 - What information does TRACE give?
 
 ### 4.2 - HTTP Headers
+#### Content-Security-Policy
+- **Stops**: script execution/exfil from injected content (reduce XSS impact, not prevent it)
+- **Real finding when**: 
 - `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
 - HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
 - `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
