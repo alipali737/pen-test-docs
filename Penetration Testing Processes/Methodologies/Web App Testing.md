@@ -194,12 +194,19 @@ debugInConsole: false # Print debug info in Obsidian console
 - **Real finding when**: the app serves over HTTPS and there's a plausible path to a user hitting it over plain HTTP first (typed URL, old bookmark, HTTP link somewhere).
 
 #### Referrer-Policy
-- **Stops**: the full URL (path + query string)
+- **Stops**: the full URL (path + query string) leaking to a third-party origin via the `Referer` header when the page links out or loads third-party subresources.
+- **Real finding when**: the URL itself carries sensitive data in the path/query - tokens, PII, internal identifiers, search terms - and the page links to or embeds third-party content.
+- **Noise when**: modern browsers default to `strict-origin-when-cross-origin` so unless you can prove it possible.
 
-- `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
-- `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. Automatic detection can introduce XSS vulnerabilities.
-- `X-Frame-Options` defines when the browser can open the site in an iframe. This prevents click-jacking and other misuse of content by third-party sites.
+#### X-Content-Type-Options
+- **Stops**: the browser MIME-sniffing a response into something more dangerous than its declared type
+- **Real finding when**: there's user-controllable content served back to the browser where the content-type could plausibly be sniffed. Eg. uploading a `.txt` file containing HTML/JS and then it being sniffed and executing when it gets served by the browser.
+- **Noise when**: the server correctly and rigidly sets content-types for all content and users have no control over what's returned (eg. static content with hardcoded types)
 
+#### X-Frame-Options
+- **Stops**: clickjacking - the page being framed and the user tricked into clicking through to it.
+- **Real finding when**: the page has authenticated, state-changing functionality reachable via a simple click (worth stealing a click for).
+- **Noise when**: its a static/read-only page or `Content-Security-Policy: frame-ancestors` is already set as it take president over `X-Frame-Options`.
 ### 4.3 - Cross-Domain Policy
 - Overly permissive cross-domain policies
 	- Server reflects a third-party `origin` in its response
