@@ -185,9 +185,17 @@ debugInConsole: false # Print debug info in Obsidian console
 ### 4.2 - HTTP Headers
 #### Content-Security-Policy
 - **Stops**: script execution/exfil from injected content (reduce XSS impact, not prevent it)
-- **Real finding when**: 
-- `Content-Security-Policy` defines what servers can provide content for the requested webpage. This can prevents some XSS or content-injections by preventing a compromised webpage from referencing third-party content.
-- HTTP `Strict-Transport-Security` (HSTS) instructs the browser to disable future plaintext HTTP connections to the same web server. Makes MITM harder.
+- **Real finding when**: the page dynamically renders HTML elements that could potentially have XSS vulnerabilities now or in future.
+- **Noise when**: the response is a static asset, a pure JSON api, or a redirect/error page that never reflects anything.
+- **Misconfig traps**: `unsafe-inline` on `script-src` with no nonce/hash defeats the entire point. A wildcard like `script-src *` is equally void. `default-src 'self'` alone with no `script-src` override is fine and often sufficient.
+
+#### HSTS
+- **Stops**: a MITM stripping HTTPS down to HTTP on a future visit. Does not affect current request.
+- **Real finding when**: the app serves over HTTPS and there's a plausible path to a user hitting it over plain HTTP first (typed URL, old bookmark, HTTP link somewhere).
+
+#### Referrer-Policy
+- **Stops**: the full URL (path + query string)
+
 - `Referrer-Policy` defines when the browser should send a referer [sic] header for secondary requests. This can prevent referrer leakage to third-party websites.
 - `X-Content-Type-Options` instructs the browser to disable automatic detection of the content's MIME type. Automatic detection can introduce XSS vulnerabilities.
 - `X-Frame-Options` defines when the browser can open the site in an iframe. This prevents click-jacking and other misuse of content by third-party sites.
