@@ -16,6 +16,7 @@ debugInConsole: false # Print debug info in Obsidian console
 - Silent logic errors (eg. `long` being cast to `32-bit int`, localisation issues with text manipulation)
 - Unsafe validation (sanitising inputs, size validation for memory-sensitive contexts)
 - Dead code
+- Ambiguity introduced by data types (eg. two-digit year format ('yy') instead of 'yyyy', incorrect string comparison using `==` instead of `.equals()` in java)
 
 Reference CWE dangerous software weaknesses
 
