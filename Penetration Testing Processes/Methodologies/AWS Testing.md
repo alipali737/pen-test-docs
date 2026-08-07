@@ -300,6 +300,49 @@ aws sts assume-role --role-arn arn:aws:iam::<account-id>:role/<review-role> \
 - No host to break out to, so focus shifts entirely to task/pod IAM scope and network reachability between Fargate tasks (SGs, NetworkPolicies where supported)
 - Confirm logging (awslogs driver / Fargate log router) actually captures what's needed since there's no host-level log access for later investigation
 
+### 8.7 - Simulated Container Compromise & Escape Testing
+> Requires explicit authorisation beyond passive config review - this is active testing (`kubectl exec` / `aws ecs execute-command` into a running workload, or standing up a throwaway pod/task from the same image+config). Frame it as: *"if an attacker got RCE in this specific container via a vulnerable dependency, what's the actual blast radius?"* - config review alone tells you the theoretical exposure, this confirms it's real.
+
+**Establishing the foothold**
+- Get a shell in a representative container: `kubectl exec -it <pod> -n <ns> -- sh` or `aws ecs execute-command --cluster <c> --task <t> --container <name> --interactive --command "/bin/sh"`
+- If direct exec isn't permitted/available, reproduce locally by pulling the same image and replicating the task def / pod spec (`securityContext`, mounts, env) as closely as possible
+
+**Credential theft from the container's own scope**
+- Dump environment variables and mounted files for anything credential-shaped
+- EKS/IRSA: `echo $AWS_WEB_IDENTITY_TOKEN_FILE $AWS_ROLE_ARN`, read the token file, and the SA token at `/var/run/secrets/kubernetes.io/serviceaccount/token`
+- ECS: task role creds are reachable via the container credentials endpoint - `curl $AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` (or full URI var, depending on launch type)
+- Feed whatever's obtained into `aws sts get-caller-identity` and back into [[AWS Testing#2.4 - Privilege Escalation Paths|the account-wide privesc graph]] ([[PMapper]]) - confirm the role is actually as scoped as the config review assumed
+
+**IMDS reachability**
+```bash
+curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/ --max-time 2
+```
+- If reachable at all from inside the container, compare the privileges of the stolen **node** role against the container's own scoped task/pod role - reaching node IMDS from a container is itself a finding regardless of what the node role can do (see [[#8.3 - IMDS Exposure]])
+
+**Container → host escape vectors**
+- `hostPID` / `hostIPC` / `hostNetwork` set, or `privileged: true`
+- Docker/containerd socket mounted into the container (`/var/run/docker.sock`) - trivial host takeover if present
+- Writable `hostPath` mounts, especially anything under `/etc`, `/var`, or the kubelet's working directories
+- Dangerous capabilities retained (`CAP_SYS_ADMIN`, `CAP_SYS_PTRACE`, `CAP_NET_RAW` beyond what's needed) - `capsh --print` or check `securityContext.capabilities` in the spec
+- Tools: **deepce** or **amicontained** for fast in-container enumeration of the above rather than checking each manually
+
+**Container → container / same-node lateral movement**
+- Can the pod reach the Kubernetes API server directly using its mounted SA token? `kubectl auth can-i --list --token <token>` (or `curl` the API server with the token as Bearer auth) enumerates exactly what's permitted
+- Can it reach other pods on the same node, bypassing intended NetworkPolicy? (confirms whether policy is actually enforced by the CNI, not just defined)
+- ECS with `awsvpc` networking: confirm SGs actually isolate tasks from each other rather than relying on a shared "cluster" SG that's effectively flat
+
+**Container → cluster-wide privilege escalation**
+- With the stolen SA token, attempt: listing/reading Secrets in-namespace and cross-namespace, `exec`-ing into other pods, creating a new pod that mounts a more privileged service account
+- **Peirates** automates most of this SA-token-to-cluster-privesc chain (K8s equivalent of what [[Pacu]] does for the wider AWS account) - useful if this whole exercise is being repeated across multiple clusters
+- If `cluster-admin` or another highly-privileged `ClusterRoleBinding` is reachable, that's the headline finding for this section
+
+**Container → AWS account pivot**
+- With whatever AWS credentials were obtained (task role, IRSA role, or stolen node role via IMDS), attempt lateral movement into other AWS services - S3 buckets, other Lambda functions, Secrets Manager - to confirm the intended blast radius actually holds as a boundary
+- This closes the loop back to [[#2.4 - Privilege Escalation Paths]] - a "scoped" container credential that turns out to reach far more than the workload needs is one of the highest-value findings in the whole review
+
+**Reporting angle**
+- Even where full exploitation isn't performed (time-boxed engagement, production caution), document the *theoretical* blast radius from a compromised container as the finding - "container X's task role can read/write every bucket in the account" is a far more actionable finding for the client than a checklist pass/fail on IAM policy wording
+
 ---
 
 ## 9 - Other Managed Services (Quick Hits)
