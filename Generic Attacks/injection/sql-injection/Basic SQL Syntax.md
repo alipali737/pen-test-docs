@@ -30,7 +30,7 @@ By default the `localhost` address will be used if not passed, otherwise a host 
 The default port for MySQL/MariaDB is (`3306`)
 
 ### Creating the DB
-Once authentiacted you can create a database with:
+Once authenticated you can create a database with:
 ```sql
 CREATE DATABASE users;
 
@@ -202,3 +202,7 @@ CREATE TABLE logins (
 - **UNION** - combines results from multiple `SELECT` statements
 - **CROSS JOIN** - combines rows from each row in one table with each row in another table in the result set
 - **JOIN** - combine results from multiple tables based on a common column
+
+
+
+201f00b5ca5d65a1c118e5e32431514c
